@@ -1,0 +1,17 @@
+<h2>Thư mục: <%= folderName %></h2>
+
+<form action="/upload/<%= folderName %>" method="POST" enctype="multipart/form-data">
+  <input type="file" name="image" required>
+  <button type="submit">Tải lên ảnh</button>
+</form>
+
+<div style="display: flex; flex-wrap: wrap;">
+  <% images.forEach(img => { %>
+    <div style="margin: 10px;">
+      <img src="/uploads/<%= folderName %>/<%= img %>" width="150">
+      <p><%= img %></p>
+    </div>
+  <% }) %>
+</div>
+
+<a href="/">← Quay lại</a>

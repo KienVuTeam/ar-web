@@ -1,0 +1,21 @@
+<h1>Thư viện ảnh</h1>
+
+<form action="/create-folder" method="POST">
+  <input type="text" name="folderName" placeholder="Tên thư mục" required>
+  <button type="submit">Thêm thư mục</button>
+</form>
+
+<form action="/delete-folder" method="POST">
+  <select name="folderName">
+    <% folders.forEach(folder => { %>
+      <option value="<%= folder %>"><%= folder %></option>
+    <% }) %>
+  </select>
+  <button type="submit">Xóa thư mục</button>
+</form>
+
+<ul>
+  <% folders.forEach(folder => { %>
+    <li><a href="/folder/<%= folder %>"><%= folder %></a></li>
+  <% }) %>
+</ul>
