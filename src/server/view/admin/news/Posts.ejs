@@ -1,0 +1,67 @@
+<!-- breack-crum -->
+<div class="page-header">
+  <div class="page-block">
+    <div class="row align-items-center">
+      <div class="col-md-12">
+        <div class="page-header-title">
+          <h5 class="m-b-10">News</h5>
+        </div>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#!">Category</a></li>
+          <li class="breadcrumb-item"><a href="#!">post list</a></li>
+          <!-- <li class="breadcrumb-item" aria-current="page">Home</li> -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- breack-crum -->
+ <h1>All Post</h1> 
+ <br>
+ <div class="card">
+    <div class="card-body">
+        <div class="post-control">
+        <div class="row mt-3">
+           <div class="col-4">
+            <input class="form-control" type="search" name="" id="">
+           </div> 
+           <div class="col-6">
+            <select class="form-select" name="" id="">
+                <option value="1">All</option>
+                <option value="2">Option 2</option>
+                <option value="3">Option 3</option>
+            </select>
+                
+           </div>
+        </div>
+    </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% categories.forEach((cat, index)=>{%> 
+                    <tr>
+                        <td><%= cat.name %></td>
+                        <td><%= cat.slug %></td>
+                        <td><%= cat.description %></td>
+                        <td>
+
+                            <% cat.id === true ?"<button class="btn btn-primary">Edit</button>" :"<button class="btn btn-danger">Delete</button>"  %>
+                        </td>
+                    </tr>    
+                <%})%>
+            </tbody>
+        </table>
+        <!-- table 2 -->
+          
+         
+ </div>
+

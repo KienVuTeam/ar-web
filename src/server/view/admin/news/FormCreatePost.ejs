@@ -24,55 +24,31 @@
       </div>
       <div class="card-body">
         <div class="form-group">
-          <label for="" class="form-label">Title</label>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Enter title here"
-          />
+          <label for="tile" class="form-label">Title (*)</label>
+          <input type="text" id="title" class="form-control" required placeholder="Enter title here" />
         </div>
         <div class="form-group">
-          <label for="" class="form-label">Desc</label>
-          <textarea
-            type="text"
-            class="form-control"
-            placeholder="Enter desc"
-            rows="6"
-          ></textarea>
+          <label for="desc" class="form-label">Desc</label>
+          <textarea id="desc" type="text" class="form-control" placeholder="Enter desc" rows="6"></textarea>
         </div>
         <br />
       </div>
       <div class="card-header">
-        <h5>TinyMCE with All features</h5>
+        <h5>Content post</h5>
       </div>
       <div class="card-body">
-        <textarea
-          id="pc-tinymce-4"
-          name="pc-tinymce-4"
-          class="tox-target"
-          placeholder="Write here"
-        >
+        <textarea id="pc-tinymce-4" name="pc-tinymce-4" class="tox-target" placeholder="Write here">
         </textarea>
       </div>
       <br />
       <div class="card-body">
         <div class="form-group">
           <div class="form-label">SEO keyword</div>
-          <textarea
-            class="form-control"
-            id="exampleFormControlTextarea1"
-            rows="3"
-            style="height: 96px"
-          ></textarea>
+          <textarea class="form-control" id="keyMeta" rows="3" style="height: 96px"></textarea>
         </div>
         <div class="form-group">
           <div class="form-label">SEO Description</div>
-          <textarea
-            class="form-control"
-            id="exampleFormControlTextarea1"
-            rows="3"
-            style="height: 96px"
-          ></textarea>
+          <textarea class="form-control" id="descMeta" rows="3" style="height: 96px"></textarea>
         </div>
       </div>
     </div>
@@ -87,34 +63,28 @@
         <!-- </div> -->
         <div class="form-group">
           <!-- <label class="form-label">Default select</label> -->
-          <select class="form-select">
-            <option>Option 1</option>
-            <option>Option 2</option>
-            <option>Option 3</option>
-            <option>Option 4</option>
-          </select>
+           <select id="formSelectCategory" class="form-select">
+             <option value="default">Choose opotions</option>
+             <% categories.forEach(cat=>{ %>
+              <option value="<%=cat.id%>"><%= cat.name %></option>
+              <%})%>
+            </select>
         </div>
         <div class="form-group">
           <label for="" class="form-label">Alias Link</label>
           <input type="text" class="form-control" />
         </div>
-        <label class="form-label">Choose image</label>
-        <div class="input-group mb-3">
-          <input type="file" class="form-control" id="inputGroupFile02" />
-          <!-- <label class="input-group-text" for="inputGroupFile02">Upload</label> -->
-        </div>
-        <div class="form-group">
-          <button
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
-          >
-            Choose image
-          </button>
+        <div class="show-image" style="margin: 0 auto;" id="show-image">
+          <img src="/img/hero-banner.jpg" data-folder="image-1.png" alt="pre-img" style="display: inline-block; width: 100%; height: 250px; object-fit: cover; ">
+        </div> <br>
+        <div class="form-group mb-3">
+          <label class="form-label">Choose image</label>
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Choose image</button>
+
         </div>
         <!-- action -->
         <div class="form-group">
-          <button type="submit" class="btn btn-primary">Save</button>
+          <button id="submitMaster" type="submit" class="btn btn-primary">Save</button>
           <button type="reset" class="btn btn-secondary">Reset</button>
           <!-- <button type="button" class="btn btn-danger">Delete</button> -->
         </div>
@@ -123,7 +93,7 @@
   </div>
 </div>
 
-<!-- our -->
+<!-- our ========================================================================================================================================================-->
 <!-- [Page Specific JS] start -->
 <!-- <script src="../assets/js/plugins/tinymce/tinymce.min.js"></script> -->
 <script src="/admin/assets/js/plugins/tinymce/tinymce.min.js"></script>
@@ -168,34 +138,18 @@
 
 <!-- [Modal ] -->
 <!-- Button trigger modal -->
-<button
-  type="button"
-  class="btn btn-primary"
-  data-bs-toggle="modal"
-  data-bs-target="#exampleModal"
->
+<!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
   Launch demo modal
-</button>
+</button> -->
 
-<!-- Modal -->
-<div
-  class="modal fade"
-  id="exampleModal"
-  data-bs-backdrop="static"
-  tabindex="-1"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
->
+<!-- Modal=========================================================================================================================== -->
+<div class="modal fade" id="exampleModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-fullscreen">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="row">
@@ -205,13 +159,7 @@
                 <h1>Thư viện ảnh</h1>
 
                 <form action="/create-folder" method="POST" class="mb-3">
-                  <input
-                    type="text"
-                    name="folderName"
-                    placeholder="Tên thư mục"
-                    required
-                    class="form-control"
-                  />
+                  <input type="text" name="folderName" placeholder="Tên thư mục" required class="form-control" />
                   <button type="submit" class="btn btn-primary">
                     Thêm thư mục
                   </button>
@@ -220,9 +168,11 @@
 
                 <form action="/delete-folder" method="POST" class="mb-3">
                   <select name="folderName" class="form-select">
-                    <% folders.forEach(folder => { %>
-                    <option value="<%= folder %>"><%= folder %></option>
-                    <% }) %>
+                    <% folders.forEach(folder=> { %>
+                      <option value="<%= folder %>">
+                        <%= folder %>
+                      </option>
+                      <% }) %>
                   </select>
                   <button type="submit" class="btn btn-primary">
                     Xóa thư mục
@@ -230,9 +180,11 @@
                 </form>
 
                 <ul id="myListFolder" class="list-group">
-                  <% folders.forEach(folder => { %>
-                  <li data-id-folder="<%=folder%>"><%= folder %></li>
-                  <% }) %>
+                  <% folders.forEach(folder=> { %>
+                    <li data-id-folder="<%=folder%>">
+                      <%= folder %>
+                    </li>
+                    <% }) %>
                 </ul>
               </div>
             </div>
@@ -240,13 +192,10 @@
           <div class="col-8">
             <div class="card">
               <div class="card-body">
-                <h2>Thư mục: <%= folderName %></h2>
+                <h2>Thư mục: <%= folderName %>
+                </h2>
 
-                <form
-                  action="/upload/<%= folderName %>"
-                  method="POST"
-                  enctype="multipart/form-data"
-                >
+                <form action="/upload/<%= folderName %>" method="POST" enctype="multipart/form-data">
                   <input type="file" name="image" required />
                   <button type="submit">Tải lên ảnh</button>
                 </form>
@@ -255,7 +204,7 @@
             </div>
           </div>
         </div>
-      </div>
+        </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           Close
@@ -299,8 +248,48 @@
     // alert('JQuery is working!');
 
     // })
+    $('#submitMaster').on('click', (e)=>{
+      e.preventDefault(); //tranh readload trang
+      const title  = $('#title').val();
+      const desc = $('#desc').val();
+      const content = tinymce.get("pc-tinymce-4").getContent();
+      const category = $('#formSelectCategory').val();
+      const keyMeta =$('#keyMeta').val();
+      const descMeta =$('#descMeta').val();
+      const dataFolder = $('#show-image img').data('folder');
+      // console.log(title, desc, content, category, keyMeta, descMeta, dataFolder);  //check data
+      //ajax
+      $.ajax({
+        url: '/admin/news/form-create-post',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          title,
+          desc,
+          content,
+          category,
+          keyMeta,
+          descMeta,
+          dataFolder
+        }),
+        success: (resp)=>{
+          // alert("Tạo bài viết thành công!");
+          alert("server resp: " + resp);
+        },
+        error: (err)=>{
+          alert("Lỗi khi gửi yêu cầu AJAX"+ err);
+        }
+
+      });
+      // ===
+
+
+
+    })
+
     $("#saveBtn").on("click", function (e) {
       e.preventDefault(); // tránh reload
+
 
       // Lấy dữ liệu từ input
       const title = $("#title").val();

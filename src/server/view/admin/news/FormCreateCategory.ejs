@@ -18,16 +18,11 @@
 <h1>form create category</h1>
 <hr />
 <!-- Button trigger modal -->
-<button
-  type="button"
-  class="btn btn-primary"
-  data-bs-toggle="modal"
-  data-bs-target="#exampleModal"
->
-  Launch demo modal
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Create new category
 </button>
 
-<table class="table table-striped .table-hover">
+<table id="category_tbl" class="table table-striped .table-hover">
   <thead>
     <tr>
       <th scope="col">#</th>
@@ -38,86 +33,236 @@
     </tr>
   </thead>
   <tbody>
-    <% var i =0 %> <% categories.forEach(cat => { %>
-    <tr>
-      <td><%= ++i%></td>
-      <td><%= cat.name %></td>
-      <td><%= cat.slug %></td>
-      <td><%= cat.description %></td>
-      <td>
-        <%- cat.status ? '<span class="btn btn-success">Hiện</span>' :
-        '<span class="btn btn-danger">Ẩn</span>' %>
-      </td>
-    </tr>
-    <% }) %>
+    <% var i=0 %>
+      <% categories.forEach(cat=> { %>
+        <tr class="clickable-row" data-id="<%= cat.id %>" data-name="<%= cat.name %>" data-slug="<%= cat.slug %>"
+          data-description="<%= cat.description %>" data-status="<%= cat.status %>">
+          <td>
+            <%= ++i%>
+          </td>
+          <td>
+            <%= cat.name %>
+          </td>
+          <td>
+            <%= cat.slug %>
+          </td>
+          <td>
+            <%= cat.description %>
+          </td>
+          <td style="text-align: center">
+            <%- cat.status ? '<button class="btn btn-success">Hiện</button>'
+              : '<button class="btn btn-danger">Ẩn</button>' %>
+          </td>
+        </tr>
+        <% }) %>
   </tbody>
 </table>
 
 <!-- outdoor -->
 
-<!-- Modal -->
-<div
-  class="modal fade"
-  id="exampleModal"
-  tabindex="-1"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
->
+<!-- Modal create -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Add new category</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="/admin/blog/add-new-category" method="post">
-        <div class="modal-body">
-          <div class="form-group">
-            <!-- <label for="" class="form-label"></label> -->
-            <input
-              type="text"
-              class="form-control"
-              name="name"
-              placeholder="name"
-            />
-          </div>
-          <div class="form-group">
-            <!-- <label for="" class="form-label"></label> -->
-            <input
-              type="text"
-              class="form-control"
-              name="nameEN"
-              placeholder="name(EN)"
-            />
-          </div>
-          <div class="form-group">
-            <!-- <label for="" class="form-label"></label> -->
-            <input
-              type="text"
-              class="form-control"
-              name="slug"
-              placeholder="Slug(default)"
-            />
-          </div>
-          <div class="form-group">
-            <input type="checkbox" class="" /> <span>Hiện trên web</span>
-          </div>
+      <!-- <form action="/admin/news/add-new-category" method="post"> -->
+      <div class="modal-body">
+        <div class="form-group">
+          <!-- <label for="" class="form-label"></label> -->
+          <input type="text" class="form-control" required name="name" placeholder="name(*)" />
         </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Close
-          </button>
-          <button type="submit" class="btn btn-primary">Save changes</button>
+        <div class="form-group">
+          <!-- <label for="" class="form-label"></label> -->
+          <input type="text" class="form-control" name="nameEN" placeholder="name(EN)" />
         </div>
-      </form>
+        <div class="form-group">
+          <!-- <label for="" class="form-label"></label> -->
+          <input type="text" class="form-control" name="slug" placeholder="Slug" />
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="mc-isActive" name="isActive" />
+          <label class="form-check-label" for="isActive">Hiện trên web</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="submit" id="mc-createCategory" class="btn btn-primary">
+          Save changes
+        </button>
+      </div>
+      <!-- </form> -->
     </div>
   </div>
 </div>
+<!-- Modal edit -->
+<div class="modal fade" id="categoryEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit category</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <!-- <form action="/admin/news/add-new-category" method="post"> -->
+      <div class="modal-body">
+        <div class="form-group">
+          <!-- <label for="" class="form-label"></label> -->
+          <input type="text" class="form-control" id="me-name" name="name" placeholder="name" />
+        </div>
+        <div class="form-group">
+          <!-- <label for="" class="form-label"></label> -->
+          <input type="text" class="form-control" id="me-nameEN" name="nameEN" placeholder="name(EN)" />
+        </div>
+        <div class="form-group">
+          <!-- <label for="" class="form-label"></label> -->
+          <input type="text" class="form-control" id="me-slug" name="slug" placeholder="Slug(default)" />
+        </div>
+        <input type="text" class="form-control" id="me-id" name="id" placeholder="Id" hidden />
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="me-isActive" name="isActive" />
+          <label class="form-check-label" for="isActive">Hiện trên web</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="submit" id="me-updatePost" class="btn btn-primary">
+          Update
+        </button>
+      </div>
+      <!-- </form> -->
+    </div>
+  </div>
+</div>
+<!-- modal edit end-->
+
+<script>
+  //create category
+  $("#mc-createCategory").on("click", function (e) {
+    this.blur(); // Remove focus from the button to prevent accidental double clicks
+    e.preventDefault();
+    const name = $('input[name="name"]').val();
+    const nameEN = $('input[name="nameEN"]').val();
+    const slug = $('input[name="slug"]').val();
+    const isActive = $("#mc-isActive").is(":checked");
+    $("#me-isActive").is(":checked");
+    console.log(typeof isActive);
+    console.log(name, nameEN, slug, isActive);
+    $.ajax({
+      url: `/admin/news/add-new-category`,
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify({
+        name: name,
+        nameEN: nameEN,
+        slug: slug,
+        isActive: isActive,
+      }),
+      success: (resp) => {
+        // console.log(resp.mess);
+        renderTableBody(resp);
+        //hide by api modal
+        console.log(resp);
+        const modalEl = document.getElementById("exampleModal");
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal.hide();
+        //
+      },
+      error: (err) => {
+        console.error("Error creating category:", err);
+      },
+    });
+  });
+  //listen lick row
+  $("#category_tbl tbody").on("click", "tr.clickable-row", function () {
+    const id = $(this).data("id");
+    const name = $(this).data("name");
+    const slug = $(this).data("slug");
+    const description = $(this).data("description");
+    const status = $(this).data("status");
+    if (!status) {
+      $("#me-isActive").prop("checked", false);
+    } else {
+      $("#me-isActive").prop("checked", true);
+    }
+    // Hiển thị modal
+    const modal = new bootstrap.Modal(
+      document.getElementById("categoryEditModal")
+    );
+    // Cập nhật nội dung modal
+    $("#me-id").val(id);
+    $("#me-name").val(name);
+    $("#me-nameEN").val(name);
+    $("#me-slug").val(slug);
+
+    // Hiển thị modal
+    modal.show();
+  });
+  //edit
+  $("#me-updatePost").on("click", function () {
+    this.blur(); // Remove focus from the button to prevent accidental double clicks
+    const id = $("#me-id").val();
+    const name = $("#me-name").val();
+    const nameEN = $("#me-nameEN").val();
+    const slug = $("#me-slug").val();
+    const isActive = $("#me-isActive").is(":checked");
+    console.log(name, nameEN, slug, isActive, id);
+    //
+    $.ajax({
+      url: `/admin/news/update-category/${id}`,
+      type: "PUT",
+      contentType: "application/json",
+      data: JSON.stringify({
+        name: name,
+        nameEN: nameEN,
+        slug: slug,
+        isActive: isActive,
+      }),
+      success: (resp) => {
+        console.log(resp);
+        renderTableBody(resp);
+        //hide by api modal
+        const modalEl = document.getElementById("categoryEditModal");
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal.hide();
+      },
+      error: (err) => {
+        console.error("Error updating category:", err);
+      },
+    });
+  });
+
+  //render lai html body table
+  function renderTableBody(categories) {
+    const tbody = $("#category_tbl tbody");
+    tbody.empty(); // Xóa nội dung cũ
+
+    categories.forEach((cat, index) => {
+      const statusBtn = cat.status
+        ? '<button class="btn btn-success">Hiện</button>'
+        : '<button class="btn btn-danger">Ẩn</button>';
+
+      const row = `
+      <tr class="clickable-row"
+          data-id="${cat._id}"
+          data-name="${cat.name}"
+          data-slug="${cat.slug}"
+          data-description="${cat.description}"
+          data-status="${cat.status}">
+        <td>${index + 1}</td>
+        <td>${cat.name}</td>
+        <td>${cat.slug}</td>
+        <td>${cat.description}</td>
+        <td style="text-align="center">${statusBtn}</td>
+      </tr>
+    `;
+      tbody.append(row);
+    });
+  }
+</script>
+<!-- outdoor -->

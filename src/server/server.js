@@ -1,6 +1,6 @@
 const app = require("./app");
 require("dotenv").config();
-const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 3000;
 const multerUpload = require("./config/multerUpload");
 
 //test
@@ -8,6 +8,6 @@ const multerUpload = require("./config/multerUpload");
 
 //end test
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Server running at http://localhost:${process.env.PORT}`);
 });
