@@ -1,0 +1,18 @@
+<% posts.forEach((post, index)=>{%>
+    <div class="card">
+        <div class="card-header " style="margin-bottom: 20px;">
+            <h2><%= post.title%></h2>
+            <p class="card-text"><small class="text-muted">Last updated <%= post.updatedAt.toLocaleDateString() %></small></p>
+
+            <!-- <p><%= post.desc%></p> -->
+        </div>
+        <div class="card-body" >
+            <!-- <h5 class="card-title"><%= post.title %></h5> -->
+            <p class="card-text"><%- post.content %></p>
+            <!-- <div class="d-flex justify-content-between">
+                <a href="/news/<%= post._id %>" class="btn btn-primary">View</a>
+                <a href="/news/edit/<%= post._id %>" class="btn btn-secondary">Edit</a>
+            </div> -->
+        </div>
+    </div>
+<%})%>

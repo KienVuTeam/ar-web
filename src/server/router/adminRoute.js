@@ -5,9 +5,7 @@ const HomeController = require('../areas/admin/controller/HomeController');
 const NewsController = require('../areas/admin/controller/NewsController');
 
 
-function MyBind(controller) {
-    return controller.bind(controller);
-}
+
 //blogController
 router.post('/mews/handle-image/:name', NewsController.ShowImagePartial)
 
