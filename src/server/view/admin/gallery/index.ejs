@@ -1,0 +1,100 @@
+<style>
+  .folder-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  .folder-item {
+    cursor: pointer;
+    padding: 5px 0;
+    user-select: none;
+  }
+  .folder-children {
+    list-style: none;
+    padding-left: 20px;
+    display: none;
+  }
+  .folder-item.open > .folder-children {
+    display: block;
+  }
+  .folder-icon {
+    margin-right: 5px;
+    color: #0d6efd;
+  }
+  .toggle {
+    margin-right: 5px;
+    font-size: 12px;
+    color: #555;
+  }
+</style>
+<h1>Gallery content</h1>
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-4">
+        <!-- <div class="p-3 bg-light" style="width: 280px"> -->
+        <h6 class="text-muted">THƯ MỤC</h6>
+        <ul class="folder-list">
+          <li class="folder-item">
+            <span class="toggle">▶</span>
+            <span class="folder-icon">📁</span> Thư mục gốc
+            <ul class="folder-children">
+              <li class="folder-item">
+                <span class="folder-icon">📁</span> Ảnh
+              </li>
+              <li class="folder-item">
+                <span class="toggle">▶</span>
+                <span class="folder-icon">📁</span> Công việc
+                <ul class="folder-children">
+                  <li class="folder-item">
+                    <span class="toggle">▶</span>
+                    <span class="folder-icon">📁</span> Thiết kế
+                    <ul class="folder-children">
+                      <li class="folder-item">
+                        <span class="toggle">▶</span>
+                        <span class="folder-icon">📁</span> Logo
+                        <ul class="folder-children">
+                          <li class="folder-item">
+                            <span class="folder-icon">📁</span> Logo phiên bản
+                            cũ
+                          </li>
+                          <li class="folder-item">
+                            <span class="folder-icon">📁</span> Logo phiên bản
+                            mới
+                          </li>
+                        </ul>
+                      </li>
+                      <li class="folder-item">
+                        <span class="folder-icon">📁</span> Banner
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="folder-item">
+                    <span class="folder-icon">📁</span> Thương hiệu
+                  </li>
+                </ul>
+              </li>
+              <li class="folder-item">
+                <span class="folder-icon">📁</span> Dự án
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <!-- </div> -->
+      </div>
+      <div class="col-8">sfd</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".toggle").forEach((toggleBtn) => {
+      toggleBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        let parent = this.parentElement;
+        parent.classList.toggle("open");
+        this.textContent = parent.classList.contains("open") ? "▼" : "▶";
+      });
+    });
+  });
+</script>

@@ -1,0 +1,305 @@
+<style>
+  .form-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 900px;
+    margin: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  h2 {
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 6px;
+  }
+  input[type="text"],
+  input[type="datetime-local"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .date-range {
+    display: flex;
+    gap: 10px;
+  }
+  .date-range input {
+    flex: 1;
+  }
+  .btn-media {
+    background: #6c63ff;
+    color: #fff;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .btn-media:hover {
+    background: #5848d6;
+  }
+</style>
+<!--  -->
+
+<div class="page-header">
+  <div class="page-block">
+    <div class="row align-items-center">
+      <div class="col-md-12">
+        <div class="page-header-title">
+          <h5 class="m-b-10">Event</h5>
+        </div>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#!">Post</a></li>
+          <li class="breadcrumb-item"><a href="#!">create new post</a></li>
+          <!-- <li class="breadcrumb-item" aria-current="page">Home</li> -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- breack-crum -->
+<h1>Cresate new event</h1>
+<br />
+
+<div class="row">
+  <div class="col-8">
+    <div class="card">
+      <div class="card-body">
+        <!--  -->
+        <div class="form-group">
+          <label for="event-name" >Tên sự kiện <small>(*)</small></label>
+          <input type="text" id="title" name="title" placeholder="Nhập tên sự kiện" />
+        </div>
+
+        <div class="form-group">
+          <label for="event-link">Link <small>Tự động có theo tên sự kiện</small></label>
+          <input type="text" id="slug" name="slug" placeholder="Nhập link" />
+        </div>
+
+        <div class="form-group">
+          <label>Thời gian sự kiện <small>(*)</small></label>
+          <div class="date-range">
+            <input class="form-control" type="date" name="startDate" id="startDate" />
+            <input class="form-control" type="date" name="endDate" id="endDate" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Thời gian đóng ủy quyền <small>(*)</small></label>
+          <input class="form-control" type="date" name="authorityDate" id="authorityDate" />
+        </div>
+
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="no-sale" />
+          <label for="no-sale">Sự kiện không bán vé trên TimVe365</label>
+        </div>
+
+        <!-- <div class="form-group">
+          <label>Nội dung giới thiệu</label>
+          <button class="btn-media">Thêm media</button> <br />
+          <br />
+          <textarea
+            id="description"
+            placeholder="Nhập nội dung giới thiệu..."
+          ></textarea>
+        </div> -->
+        <br />
+        <!-- content 2 -->
+        <div class="form-group">
+          <label>Nội dung giới thiệu <small>(*)</small></label>
+          <button class="btn-media">Thêm media</button> <br /> <br>
+          <!-- <label for=""></label> -->
+          <textarea id="event-tinymce-4" name="event-tinymce-4" class="tox-target" placeholder="Write here">
+        </textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="api-chipt">API chiptime</label>
+          <input type="text" id="apiLink" name="apiLink" placeholder="Nhập API chiptime" />
+        </div>
+
+        <div class="form-group">
+          <label for="rank-type">Lấy xếp hạng theo <small>(*)</small></label>
+          <select id="rankType">
+            <option value="1">Gun time</option>
+            <option value="0">Net time</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="select-event">Chọn sự kiện từ Tìm Hình</label>
+          <select id="select-event">
+            <option>---</option>
+            <option>Sự kiện A</option>
+            <option>Sự kiện B</option>
+          </select>
+        </div>
+
+        <!-- <div class="form-group">
+          <label for="event-type">Loại sự kiện</label>
+          <select id="event-type">
+            <option>General</option>
+            <option>Sport</option>
+            <option>Music</option>
+          </select>
+        </div> -->
+        <div class="form-group">
+          <label for="" class="form-label">Staus <small>(*)</small></label>
+          <select class="form-select" id="eventStatus">
+            <option value="default">choose option</option>
+            <option value="1">Initial</option>
+            <option value="2">Dan Bib</option>
+            <option value="3">Send QR code</option>
+          </select>
+        </div>
+        <!--  -->
+      </div>
+      <div class="card-footer">
+        <button id="eventSubmit" class="btn btn-primary">Create new event</button>
+        <button class="btn btn-secondary">Hủy</button>
+      </div>
+    </div>
+  </div>
+  <!-- haft -->
+  <div class="col-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="form-group">
+          <!-- <label for="">hiện trên web</label> -->
+          <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="isShow" name="isActive" />
+          <label class="form-check-label" for="isActive">Hiện trên web</label>
+        </div>
+        </div>
+        <div class="form-group">
+          <label for="" class="form-label" >Place <small>(*)</small></label>
+          <select name="" id="event-place" class="form-select">
+            <option value="default">choose option</option>
+            <option value="HCM">HoChiMinh</option>
+            <option value="HCM">HaNoi</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="" class="form-label">Choose imge</label>
+          <input type="text" value="image1.png" id="imgPath">
+        </div>
+        <div class="form-group">
+          <label for="" class="form-label">Hinh Banner:</label>
+          <div class="show-image" style="margin: 0 auto;" id="show-image">
+          <img src="/img/hero-banner.jpg" data-folder="image-1.png" alt="pre-img" style="display: inline-block; width: 100%; height: 250px; object-fit: cover; ">
+        </div> <br>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- [Script start] -->
+ <script>
+  $('#eventSubmit').on('click', function(e){
+    // alert("click")
+    const title = $('#title').val();
+    const slug = null;
+    const content = tinymce.get('event-tinymce-4').getContent();
+    const startDate = $('#startDate').val();
+    const endDate = $('#endDate').val();
+    const authorityDate = $('#authorityDate').val();
+    const imagePath = $('#imgPath').val();
+    const rankType = $('#rankType').val();
+    const eventStatus = $('#eventStatus').val();
+    const apiLink = $('#apiLink').val();
+    const place = $('#event-place').val();
+    const isShow =$('#isShow').is(':checked');
+    const dataSend={
+      title,
+      slug,
+      content,
+      startDate,
+      endDate,
+      authorityDate,
+      imagePath,
+      rankType,
+      eventStatus,
+      apiLink,
+      place,
+      isShow
+    }
+    //test
+    // console.log(title, slug, content, startDate, endDate, authorityDate, imagePath, rankType, eventStatus, apiLink, place, isShow);
+    console.log(dataSend);
+    //ajax
+    $.ajax({
+      url: `/admin/event/new-event`,
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(dataSend),
+      success: (res)=>{
+        alert("ok");
+        console.log(res);
+      },
+      error: (err)=>{
+        console.log(err);
+      }
+    })
+  })
+ </script>
+ <!-- [Script end] -->
+<!-- [Ourdoor start] -->
+ <script src="/admin/assets/js/plugins/tinymce/tinymce.min.js"></script>
+<!-- tagify -->
+<script>
+  tinymce.init({
+    selector: "#pc-tinymce-1",
+    toolbar: false,
+    height: "400",
+    content_style: 'body { font-family: "Inter", sans-serif; }',
+    statusbar: false,
+  });
+
+  tinymce.init({
+    selector: "#pc-tinymce-2",
+    height: "400",
+    content_style: 'body { font-family: "Inter", sans-serif; }',
+  });
+
+  tinymce.init({
+    height: "400",
+    selector: "#pc-tinymce-3",
+    content_style: 'body { font-family: "Inter", sans-serif; }',
+    toolbar: "advlist | autolink | link image | lists charmap | print preview",
+    plugins: "advlist autolink link image lists charmap print preview",
+  });
+
+  tinymce.init({
+    height: "400",
+    selector: "#event-tinymce-4",
+    content_style: 'body { font-family: "Inter", sans-serif; }',
+    menubar: false,
+    toolbar: [
+      "styleselect fontselect fontsizeselect",
+      "undo redo | cut copy paste | bold italic | link image | alignleft aligncenter alignright alignjustify",
+      "bullist numlist | outdent indent | blockquote subscript superscript | advlist | autolink | lists charmap | print preview |  code",
+    ],
+    plugins: "advlist autolink link image lists charmap print preview code",
+  });
+</script>
+<!-- [Page Specific JS] end -->
+<!-- [Ourdoor end] -->

@@ -48,7 +48,7 @@ class NewsController {
   async FormCreateCategory(req, res) {
     const categories = await Category.find();
     // res.render('admin/category/index', { categories }); // Gửi sang view EJS
-    res.render("admin/news/FormCreateCategory", {
+    res.render("admin/news/formCreateCategory", {
       layout: "layout/layoutAdmin",
       categories,
     });
@@ -96,7 +96,7 @@ class NewsController {
         //Lay danh sach thu muc
         const categories = await this._LoadCategories();
 
-      res.render("admin/news/FormCreatePost", {
+      res.render("admin/news/formCreatePost", {
         layout: "layout/layoutAdmin",
         folders: folders,
         // images: images,

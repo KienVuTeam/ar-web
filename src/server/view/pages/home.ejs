@@ -1,8 +1,106 @@
-  <!-- Fake content để thử scroll -->
-   <div class="hero"></div>
-  <div>
-    <div style="height: 2000px; background: linear-gradient(#fff, #ccc);"></div>
+<style>
+  .banner {
+    height: calc(100vh - 80px);
+    background: url("/img/ar-hero.jpg") center/cover no-repeat;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .banner::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1515); /* tăng độ tối overlay từ 0.2 lên 0.45 */
+  }
+  .banner-content h2,
+  .banner-content p {
+    color: #fff; /* chữ trắng rõ ràng */
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85); /* bóng chữ đậm hơn */
+    font-weight: 700; /* chữ đậm */
+  }
+  .banner-content {
+    background: rgba(0, 0, 0, 0.35); /* nền mờ chỉ cho phần chữ */
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    padding: 0 20px;
+  }
+  .banner-content h2 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    animation: fadeInUp 1s ease forwards;
+  }
+  .banner-content p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    animation: fadeInUp 1.5s ease forwards;
+  }
+  .banner-content button {
+    background: #ffcc00;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    animation: fadeInUp 2s ease forwards;
+  }
+  .banner-content button:hover {
+    opacity: 1;
+    background: #ff9900;
+    transform: scale(1.05);
+  }
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  section {
+    padding: 80px 20px;
+    text-align: center;
+    background: #fff;
+    color: #333;
+  }
+  section h3 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  section p {
+    font-size: 1rem;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+</style>
+<div class="banner">
+  <div class="banner-content">
+    <h2>Chinh Phục Đường Chạy</h2>
+    <p>Tham gia giải chạy thành phố 2025 - nơi thử thách và cảm hứng hội tụ.</p>
+    <button onclick="scrollToSection('about')">Khám phá ngay</button>
   </div>
-<h1>Chào mừng đến với trang chủ!</h1>
-<p>Đây là nội dung động được render vào layout.</p>
-<button class="btn btn-primary">click </button>
+</div>
+
+<section id="about">
+  <h3>Về Sự Kiện</h3>
+  <p>
+    Giải chạy thành phố 2025 là sự kiện thể thao quy mô lớn, quy tụ hàng ngàn
+    vận động viên từ khắp nơi. Cùng nhau trải nghiệm không khí sôi động, khẳng
+    định bản thân và lan tỏa tinh thần sống khỏe.
+  </p>
+</section>
+
+<script>
+  function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+  }
+</script>

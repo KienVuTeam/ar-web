@@ -3,10 +3,18 @@ const router = express.Router();
 
 const HomeController = require('../areas/admin/controller/HomeController');
 const NewsController = require('../areas/admin/controller/NewsController');
+const GalleryController = require('../areas/admin/controller/GalleryController');
+const EventController = require('../areas/admin/controller/EventController');
 
 
+//EventController
+router.post('/event/new-event', EventController.AddEvent.bind(EventController))
+router.use('/event/form-add-event', EventController.FormAddEvent.bind(EventController))
+router.use('/event', EventController.Index.bind(EventController))
 
-//blogController
+//Gallery
+router.use('/gallery', GalleryController.Index.bind(GalleryController))
+//NewsController
 router.post('/mews/handle-image/:name', NewsController.ShowImagePartial)
 
 router.use('/news/form-create-category', NewsController.FormCreateCategory)
