@@ -13,7 +13,7 @@ class NewsController {
 
   //
   Index(req, res) {
-    res.send("blog controller");
+    res.send("New controller action index");
   }
   async AddCategory(req, res) {
     try {
@@ -48,7 +48,7 @@ class NewsController {
   async FormCreateCategory(req, res) {
     const categories = await Category.find();
     // res.render('admin/category/index', { categories }); // Gửi sang view EJS
-    res.render("admin/news/formCreateCategory", {
+    res.render("admin/news/form_create_category", {//formCreateCategory
       layout: "layout/layoutAdmin",
       categories,
     });
@@ -96,7 +96,7 @@ class NewsController {
         //Lay danh sach thu muc
         const categories = await this._LoadCategories();
 
-      res.render("admin/news/formCreatePost", {
+      res.render("admin/news/form_create_post", { //formCreatePost
         layout: "layout/layoutAdmin",
         folders: folders,
         // images: images,

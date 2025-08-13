@@ -10,7 +10,7 @@ exports.Action2 = async (req, res, next) => {
     //   name: "KIEN",
     //   email: "kien@example.com",
     // });
-        const ifo = new Info({ name: "Kien", email: "kienvu.dev@gamil.com" });
+        const ifo = new Info({ name: "Admin", email: "test@gamil.com" });
         await ifo.save();
         res.json({ message: "User saved!", data: ifo });
     } catch (error) {

@@ -11,7 +11,7 @@ class EventController{
             }else{
                 console.log('🚩 check: 🔴')
             }
-        res.render('admin/event/index', {layout: 'layout/layoutAdmin', title: 'Event Management', events: result.data });
+        res.render('admin/event/index', {layout: 'layout/layoutAdmin', title: 'Event Management', events: null }); //result.data
     }
     FormAddEvent(req, res){
         // res.send("Admin: event cpntroller form add event");

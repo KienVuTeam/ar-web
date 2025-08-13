@@ -28,6 +28,6 @@ router.get('/news/post-list', NewsController.PostList.bind(NewsController))
 router.use('/news', NewsController.Index)
 
 //dashboard
-router.use('/', HomeController.Index)
+// router.use('/', HomeController.Index)
 
 module.exports = router;

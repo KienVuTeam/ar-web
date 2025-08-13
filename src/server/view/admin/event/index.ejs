@@ -17,37 +17,44 @@
 <!-- breack-crum -->
 
 <div class="card">
-    <div class="card-header">
-        <h2>Event List</h2>
-        <p class="card-text"><small class="text-muted">Manage your events here</small></p>
-        <a class="btn btn-primary" href="/admin/event/form-add-event">New event</a>
-    </div>
-    <div class="card-body">
-        <table class="table .table-hover">
-            <thead>
-                <tr>
-                    <th >Name</th>
-                    <th>Place</th>
-                    <th>Start date</th>
-                    <th>End date</th>
-                    <th>Status</th>
-                    <th>Show</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-              <% events.forEach((e, index)=>{ %>
-                <tr>
-                  <td data-id="<%=e._id%>"><%=e.name %></td>
-                  <td><%=e.place%></td>
-                  <td><%=new Date(e.startDate).toLocaleDateString('vi-VN')%></td>
-                  <td><%=new Date(e.endDate).toLocaleDateString('vi-VN')%></td>
-                  <td><%=e.staus%></td>
-                  <td><%=e.isShow%></td>
-                  <td><button class="btn btn-danger">Action</button></td>
-                </tr>
-              <% })%>
-                <!-- <tr>
+  <div class="card-header">
+    <h2>Event List</h2>
+    <p class="card-text">
+      <small class="text-muted">Manage your events here</small>
+    </p>
+    <a class="btn btn-primary" href="/admin/event/form-add-event">New event</a>
+  </div>
+  <div class="card-body">
+    <table class="table .table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Place</th>
+          <th>Start date</th>
+          <th>End date</th>
+          <th>Status</th>
+          <th>Show</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (events && events.length > 0) { %> <% events.forEach((e, index) =>
+        { %>
+        <tr>
+          <td data-id="<%= e._id %>"><%= e.name %></td>
+          <td><%= e.place %></td>
+          <td><%= new Date(e.startDate).toLocaleDateString('vi-VN') %></td>
+          <td><%= new Date(e.endDate).toLocaleDateString('vi-VN') %></td>
+          <td><%= e.status %></td>
+          <td><%= e.isShow %></td>
+          <td><button class="btn btn-danger">Action</button></td>
+        </tr>
+        <% }) %> <% } else { %>
+        <tr>
+          <td colspan="7" class="text-center">Không có sự kiện nào</td>
+        </tr>
+        <% } %>
+        <!-- <tr>
                     <td>Test Event</td>
                     <td>HCM</td>
                     <td>14-08-2025</td>
@@ -56,7 +63,7 @@
                     <td>Show</td>
                     <td><button class="btn btn-danger">Delete</button></td>
                 </tr> -->
-            </tbody>
-        </table>
-    </div>
+      </tbody>
+    </table>
+  </div>
 </div>
