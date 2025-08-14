@@ -1,0 +1,297 @@
+<style>
+    .form-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 900px;
+      margin: auto;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 6px;
+    }
+    input[type="text"],
+    input[type="datetime-local"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .date-range {
+      display: flex;
+      gap: 10px;
+    }
+    .date-range input {
+      flex: 1;
+    }
+    .btn-media {
+      background: #6c63ff;
+      color: #fff;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-media:hover {
+      background: #5848d6;
+    }
+  </style>
+  <!--  -->
+  
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col-md-12">
+          <div class="page-header-title">
+            <h5 class="m-b-10">Event</h5>
+          </div>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#!">Event</a></li>
+            <li class="breadcrumb-item"><a href="#!">edit</a></li>
+            <!-- <li class="breadcrumb-item" aria-current="page">Home</li> -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- breack-crum -->
+  
+  <div class="row">
+    <div class="col-8">
+      <div class="card">
+        <div class="card-body">
+          <!--  -->
+          <div class="form-group">
+            <label for="event-name" >Tên sự kiện <small>(*)</small></label>
+            <input type="text" id="title" name="title" placeholder="Nhập tên sự kiện" value="<%=event.name%>" />
+          </div>
+  
+          <div class="form-group">
+            <label for="event-link">Link <small>Tự động có theo tên sự kiện</small></label>
+            <input type="text" id="slug" name="slug" placeholder="Nhập link" value="<%=event.slug%>" />
+          </div>
+  
+          <div class="form-group">
+            <label>Thời gian sự kiện <small>(*)</small></label>
+            <div class="date-range">
+              <input class="form-control" type="date" name="startDate" id="startDate"   value="<%=event.startDate%>" />
+              <input class="form-control" type="date" name="endDate" id="endDate" value="<%=event.endDate%>"/>
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label>Thời gian đóng ủy quyền <small>(*)</small></label>
+            <input class="form-control" type="date" name="authorityDate" id="authorityDate" value="<%=event.authorityDate%>" />
+          </div>
+  
+          <!-- <div class="form-group checkbox-group">
+            <input type="checkbox" id="no-sale" />
+            <label for="no-sale">Sự kiện không bán vé trên TimVe365</label>
+          </div> -->
+  
+          <!-- <div class="form-group">
+            <label>Nội dung giới thiệu</label>
+            <button class="btn-media">Thêm media</button> <br />
+            <br />
+            <textarea
+              id="description"
+              placeholder="Nhập nội dung giới thiệu..."
+            ></textarea>
+          </div> -->
+          <br />
+          <!-- content 2 -->
+          <div class="form-group">
+            <label>Nội dung giới thiệu <small>(*)</small></label>
+            <!-- <button class="btn-media">Thêm media</button> <br /> <br> -->
+            <!-- <label for=""></label> -->
+            <textarea id="event-tinymce-4" name="event-tinymce-4" class="tox-target" placeholder="Write here"><%- event.content %></textarea>
+          </div>
+  
+          <div class="form-group">
+            <label for="api-chipt">API chiptime</label>
+            <input type="text" id="apiLink" name="apiLink" placeholder="Nhập API chiptime" value="<%=event.apiLink%>"/>
+          </div>
+  
+          <div class="form-group">
+            <label for="rank-type">Lấy xếp hạng theo <small>(*)</small></label>
+            <select id="rankType">
+                <option value="1" <%= event.rankType ? 'selected' : '' %>>Gun time</option>
+                <option value="0" <%= !event.rankType ? 'selected' : '' %>>Net time</option>
+            </select>
+          </div>
+  
+          <!-- <div class="form-group">
+            <label for="select-event">Chọn sự kiện từ Tìm Hình</label>
+            <select id="select-event">
+              <option>---</option>
+              <option>Sự kiện A</option>
+              <option>Sự kiện B</option>
+            </select>
+          </div> -->
+  
+          <!-- <div class="form-group">
+            <label for="event-type">Loại sự kiện</label>
+            <select id="event-type">
+              <option>General</option>
+              <option>Sport</option>
+              <option>Music</option>
+            </select>
+          </div> -->
+          <div class="form-group">
+            <label for="" class="form-label">Staus <small>(*)</small></label>
+            <select class="form-select" id="eventStatus">
+                <option value="default">choose option</option>
+                <option value="1" <%= event.status === 1 ? 'selected' : '' %>>Initial</option>
+                <option value="2" <%= event.status === 2 ? 'selected' : '' %>>Dan Bib</option>
+                <option value="3" <%= event.status === 3 ? 'selected' : '' %>>Send QR code</option>
+            </select>
+          </div>
+          <!--  -->
+        </div>
+        <div class="card-footer">
+          <button id="eventSubmit" class="btn btn-primary">Update event</button>
+          <input type="hidden"  value="<%=event._id%>" id="idObject">
+          <!-- <button class="btn btn-secondary">Hủy</button> -->
+        </div>
+      </div>
+    </div>
+    <!-- haft -->
+    <div class="col-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="form-group">
+            <!-- <label for="">hiện trên web</label> -->
+            <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="isShow" name="isActive" <%= event.isShow ? 'checked' : '' %>  />
+            <label class="form-check-label" for="isActive">Hiện trên web</label>
+          </div>
+          </div>
+          <div class="form-group">
+            <label for="" class="form-label" >Place <small>(*)</small></label>
+            <input type="text" id="event-place" value="<%=event.place%>">
+            <!-- <select name="" id="event-place" class="form-select">
+              <option value="default">choose option</option>
+              <option value="HCM">HoChiMinh</option>
+              <option value="HCM">HaNoi</option>
+            </select> -->
+          </div>
+          <div class="form-group">
+            <label for="" class="form-label">Choose imge</label>
+            <input type="text" value="<%=event.imagePath%>" id="imgPath">
+          </div>
+          <div class="form-group">
+            <label for="" class="form-label">Hinh Banner:</label>
+            <div class="show-image" style="margin: 0 auto;" id="show-image">
+            <img src="/img/hero-banner.jpg" data-folder="image-1.png" alt="pre-img" style="display: inline-block; width: 100%; height: 250px; object-fit: cover; ">
+          </div> <br>
+          </div>
+          <!--  -->
+          <button class="btn btn-primary" onclick="secondEventSubmit()">Update Event</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- [Script start] -->
+   <script>
+    function secondEventSubmit(){
+      // alert('here')
+      eventSubmitHandle();
+    }
+    function eventSubmitHandle(){
+      const idEvent =$('#idObject').val();
+      console.log('id '+idEvent)
+      const title = $('#title').val();
+      const slug = $("#slug").val();
+      const content = tinymce.get('event-tinymce-4').getContent();
+      const startDate = $('#startDate').val();
+      const endDate = $('#endDate').val();
+      const authorityDate = $('#authorityDate').val();
+      const imagePath = $('#imgPath').val();
+      const rankType = $('#rankType').val();
+      const eventStatus = $('#eventStatus').val();
+      const apiLink = $('#apiLink').val();
+      const place = $('#event-place').val();
+      const isShow =$('#isShow').is(':checked');
+      const dataSend={
+        title,
+        slug,
+        content,
+        startDate,
+        endDate,
+        authorityDate,
+        imagePath,
+        rankType,
+        eventStatus,
+        apiLink,
+        place,
+        isShow
+      }
+      //test
+      console.log(title, slug, content, startDate, endDate, authorityDate, imagePath, rankType, eventStatus, apiLink, place, isShow, idEvent);
+      console.log(dataSend);
+      //ajax
+      $.ajax({
+        url: `/admin/event/update-event/${idEvent}`, ///event/update-event
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(dataSend),
+        success: (res)=>{
+          if(res.status){
+            window.location.href = '/admin/event';
+          }
+          console.log(res);
+        },
+        error: (err)=>{
+          console.log(err);
+        }
+      })
+    }
+    $('#eventSubmit').on('click', function(){
+      // alert("click")
+      eventSubmitHandle();
+      
+    })
+   </script>
+   <!-- [Script end] -->
+  <!-- [Ourdoor start] -->
+   <script src="/admin/assets/js/plugins/tinymce/tinymce.min.js"></script>
+  <!-- tagify -->
+  <script>
+  
+    tinymce.init({
+      height: "300",
+      selector: "#event-tinymce-4",
+      content_style: 'body { font-family: "Inter", sans-serif; }',
+      menubar: false,
+      toolbar: [
+        "styleselect fontselect fontsizeselect",
+        "undo redo | cut copy paste | bold italic | link image | alignleft aligncenter alignright alignjustify",
+        "bullist numlist | outdent indent | blockquote subscript superscript | advlist | autolink | lists charmap | print preview |  code",
+      ],
+      plugins: "advlist autolink link image lists charmap print preview code",
+    });
+  </script>
+  <!-- [Page Specific JS] end -->
+  <!-- [Ourdoor end] -->

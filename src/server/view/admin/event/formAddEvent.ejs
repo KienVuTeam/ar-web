@@ -76,7 +76,7 @@
   </div>
 </div>
 <!-- breack-crum -->
-<h1>Cresate new event</h1>
+<h1>Form Add Event</h1>
 <br />
 
 <div class="row">
@@ -107,10 +107,10 @@
           <input class="form-control" type="date" name="authorityDate" id="authorityDate" />
         </div>
 
-        <div class="form-group checkbox-group">
+        <!-- <div class="form-group checkbox-group">
           <input type="checkbox" id="no-sale" />
           <label for="no-sale">Sự kiện không bán vé trên TimVe365</label>
-        </div>
+        </div> -->
 
         <!-- <div class="form-group">
           <label>Nội dung giới thiệu</label>
@@ -124,8 +124,8 @@
         <br />
         <!-- content 2 -->
         <div class="form-group">
-          <label>Nội dung giới thiệu <small>(*)</small></label>
-          <button class="btn-media">Thêm media</button> <br /> <br>
+          <!-- <label>Nội dung giới thiệu <small>(*)</small></label>
+          <button class="btn-media">Thêm media</button> <br /> <br> -->
           <!-- <label for=""></label> -->
           <textarea id="event-tinymce-4" name="event-tinymce-4" class="tox-target" placeholder="Write here">
         </textarea>
@@ -144,23 +144,15 @@
           </select>
         </div>
 
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label for="select-event">Chọn sự kiện từ Tìm Hình</label>
           <select id="select-event">
             <option>---</option>
             <option>Sự kiện A</option>
             <option>Sự kiện B</option>
           </select>
-        </div>
-
-        <!-- <div class="form-group">
-          <label for="event-type">Loại sự kiện</label>
-          <select id="event-type">
-            <option>General</option>
-            <option>Sport</option>
-            <option>Music</option>
-          </select>
         </div> -->
+
         <div class="form-group">
           <label for="" class="form-label">Staus <small>(*)</small></label>
           <select class="form-select" id="eventStatus">
@@ -191,11 +183,12 @@
         </div>
         <div class="form-group">
           <label for="" class="form-label" >Place <small>(*)</small></label>
-          <select name="" id="event-place" class="form-select">
+          <input class="form-control" type="email" name="" placeholder="Enter place"  id="event-place">
+          <!-- <select name="" id="event-place" class="form-select">
             <option value="default">choose option</option>
             <option value="HCM">HoChiMinh</option>
             <option value="HCM">HaNoi</option>
-          </select>
+          </select> -->
         </div>
         <div class="form-group">
           <label for="" class="form-label">Choose imge</label>
@@ -207,6 +200,8 @@
           <img src="/img/hero-banner.jpg" data-folder="image-1.png" alt="pre-img" style="display: inline-block; width: 100%; height: 250px; object-fit: cover; ">
         </div> <br>
         </div>
+        <!--  -->
+        <button class="btn btn-primary" id="secondSubmitAddEvent">Add Event</button>
       </div>
     </div>
   </div>
@@ -214,8 +209,11 @@
 
 <!-- [Script start] -->
  <script>
-  $('#eventSubmit').on('click', function(e){
-    // alert("click")
+  document.getElementById('secondSubmitAddEvent').addEventListener('click', (el)=>{
+    // alert('click')
+    submitEventHandler()
+  })
+  function submitEventHandler(){
     const title = $('#title').val();
     const slug = null;
     const content = tinymce.get('event-tinymce-4').getContent();
@@ -252,13 +250,20 @@
       contentType: 'application/json',
       data: JSON.stringify(dataSend),
       success: (res)=>{
-        alert("ok");
-        console.log(res);
+        if(res.status){
+          alert('add event success ||')
+          window.location="/admin/event"
+        }
       },
       error: (err)=>{
+        alert('Xóa event thất bại')
         console.log(err);
       }
     })
+  }
+  $('#eventSubmit').on('click', function(e){
+    // alert("click")
+    submitEventHandler();
   })
  </script>
  <!-- [Script end] -->
@@ -267,29 +272,7 @@
 <!-- tagify -->
 <script>
   tinymce.init({
-    selector: "#pc-tinymce-1",
-    toolbar: false,
-    height: "400",
-    content_style: 'body { font-family: "Inter", sans-serif; }',
-    statusbar: false,
-  });
-
-  tinymce.init({
-    selector: "#pc-tinymce-2",
-    height: "400",
-    content_style: 'body { font-family: "Inter", sans-serif; }',
-  });
-
-  tinymce.init({
-    height: "400",
-    selector: "#pc-tinymce-3",
-    content_style: 'body { font-family: "Inter", sans-serif; }',
-    toolbar: "advlist | autolink | link image | lists charmap | print preview",
-    plugins: "advlist autolink link image lists charmap print preview",
-  });
-
-  tinymce.init({
-    height: "400",
+    height: "300",
     selector: "#event-tinymce-4",
     content_style: 'body { font-family: "Inter", sans-serif; }',
     menubar: false,

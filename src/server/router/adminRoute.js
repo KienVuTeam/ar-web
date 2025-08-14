@@ -8,16 +8,19 @@ const EventController = require('../areas/admin/controller/EventController');
 
 
 //EventController
+router.put('/event/update-event/:id', EventController.UpdateEvent.bind(EventController)) //admin/event/delete-event
+router.delete('/event/delete-event/:id',EventController.DeleteEvent.bind(EventController))
 router.post('/event/new-event', EventController.AddEvent.bind(EventController))
-router.use('/event/form-add-event', EventController.FormAddEvent.bind(EventController))
-router.use('/event', EventController.Index.bind(EventController))
+router.get('/event/form-add-event', EventController.FormAddEvent.bind(EventController))
+router.get('/event/form-edit-event', EventController.FormEditEvent.bind(EventController))
+router.use('/event', EventController.Index.bind(EventController)) //dat cuoi 
 
 //Gallery
 router.use('/gallery', GalleryController.Index.bind(GalleryController))
 //NewsController
 router.post('/mews/handle-image/:name', NewsController.ShowImagePartial)
 
-router.use('/news/form-create-category', NewsController.FormCreateCategory)
+router.get('/news/form-create-category', NewsController.FormCreateCategory)
 router.post('/news/add-new-category', NewsController.AddCategory.bind(NewsController))
 router.put('/news/update-category/:id', NewsController.UpdateCategory.bind(NewsController))
 // 
