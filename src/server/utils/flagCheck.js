@@ -1,5 +1,5 @@
-function FlagCheck(input, action){
-    const label = (action ? ' | '+action : '').toString();
+function FlagCheck(input, mess){
+    const label = (mess ? ' | '+action : '').toString();
     if(input){
         console.log('🚩 Check: 🟢'+label)
     }else{

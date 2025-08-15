@@ -1,10 +1,12 @@
 const express = require('express')
 const router = express.Router();
+const upload = require('../config/multerUpload')
 
 const HomeController = require('../areas/admin/controller/HomeController');
 const NewsController = require('../areas/admin/controller/NewsController');
 const GalleryController = require('../areas/admin/controller/GalleryController');
 const EventController = require('../areas/admin/controller/EventController');
+const AthleteController = require('../areas/admin/controller/AthleteController');
 
 
 //EventController
@@ -15,6 +17,10 @@ router.get('/event/form-add-event', EventController.FormAddEvent.bind(EventContr
 router.get('/event/form-edit-event', EventController.FormEditEvent.bind(EventController))
 router.use('/event', EventController.Index.bind(EventController)) //dat cuoi 
 
+//Athlete
+router.get('/athlete/manage-list', AthleteController.ManageList.bind(AthleteController));
+router.post('/athlete/xlsx-upload',upload.single('file') ,AthleteController.UploadExcel.bind(AthleteController));
+router.get('/athlete', AthleteController.Index.bind(AthleteController))
 //Gallery
 router.use('/gallery', GalleryController.Index.bind(GalleryController))
 //NewsController

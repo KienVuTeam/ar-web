@@ -4,9 +4,9 @@ class NewsController{
     //Action
     async Index(req, res){
         try{
-            var post = await Post.findById('6896ca1027bb8da2d4202346');
-            // res.render('pages/news', {title: "News", post})
-            res.render('pages/news', {title: "News", posts:[post]})
+            var post = await Post.find();
+            res.render('pages/news', {title: "News", posts:post})
+            // res.render('pages/news', {title: "News", posts:[post]})
 
         }catch(error){
             console.error("Error fetching posts:", error);

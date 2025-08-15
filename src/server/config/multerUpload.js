@@ -13,7 +13,18 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname + '-' + uniqueSuffix + ext);
   }
 });
-const upload = multer({storage});
+// Chỉ cho phép file Excel
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+    file.mimetype === 'application/vnd.ms-excel'
+  ) {
+    cb(null, true);
+  } else {
+    cb(new Error('Chỉ cho phép file Excel (.xls, .xlsx)!'), false);
+  }
+};
+const upload = multer({storage, fileFilter});
 
 
 module.exports = upload;

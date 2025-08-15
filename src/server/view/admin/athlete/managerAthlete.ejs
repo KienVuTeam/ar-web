@@ -1,0 +1,164 @@
+<style>
+    body {
+        font-family: Arial;
+        padding: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 10px;
+    }
+
+    th,
+    td {
+        border: 1px solid #ccc;
+        padding: 6px 8px;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    th {
+        background-color: #f5f5f5;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .pagination button {
+        padding: 5px 10px;
+        margin: 0 2px;
+    }
+
+    select {
+        padding: 4px;
+    }
+</style>
+<div class="page-header">
+  <div class="page-block">
+    <div class="row align-items-center">
+      <div class="col-md-12">
+        <div class="page-header-title">
+          <h5 class="m-b-10">Event</h5>
+        </div>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#!">Post</a></li>
+          <li class="breadcrumb-item"><a href="#!">create new post</a></li>
+          <!-- <li class="breadcrumb-item" aria-current="page">Home</li> -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- breack-crum -->
+<div class="row">
+    <!-- <div class="card-body"> -->
+        <h2>Danh sách VĐV</h2>
+
+        <div class="pagination">
+            <div>
+                Hiển thị
+                <select id="recordsPerPage">
+                    <option value="10">10</option>
+                    <option value="20" selected>20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                bản ghi / trang
+            </div>
+            <div>
+                <button id="prevPage">Prev</button>
+                <span id="pageInfo"></span>
+                <button id="nextPage">Next</button>
+            </div>
+        </div>
+
+        <table id="athleteTable">
+            <thead>
+                <tr>
+                    <th>Bib/Cự ly</th>
+                    <th>ChipId</th>
+                    <th>Họ tên</th>
+                    <th>Đã checkin</th>
+                    <th>Checkin theo nhóm</th>
+                    <th>Mail QR</th>
+                    <th>Ủy quyền</th>
+                    <th>Ký miễn trừ</th>
+                    <th>Giới tính</th>
+                    <th>DOB</th>
+                    <th>CCCD/Email</th>
+                    <th>Size áo</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- JS sẽ render dữ liệu ở đây -->
+            </tbody>
+    <!-- </div> -->
+</div>
+
+<script>
+    // Dữ liệu từ server
+    const data = <%- JSON.stringify(athletes || []) %>;
+
+    let currentPage = 1;
+    let recordsPerPage = parseInt(document.getElementById("recordsPerPage").value);
+
+    function renderTable() {
+        const tbody = document.querySelector("#athleteTable tbody");
+        tbody.innerHTML = "";
+
+        const start = (currentPage - 1) * recordsPerPage;
+        const end = start + recordsPerPage;
+        const pageData = data.slice(start, end);
+
+        pageData.forEach(item => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+        <td>${item.bib} / ${item.distance || ""}</td>
+        <td>${item.chip || ""}</td>
+        <td>${item.name || ""}</td>
+        <td>${item.checkin?"✅":"✖️"}</td>
+        <td>${item.groupCheckin || ""}</td>
+        <td>${item.mailQR || ""}</td>
+        <td>${item.proxy || ""}</td>
+        <td>${item.waiver || ""}</td>
+        <td>${item.gender ? '<span style="color:blue">M</span>' : '<span style="color:pink">F</span>'}</td>
+        <td>${item.dob || ""}</td>
+        <td>${item.cccd || ""}<br>${item.email} </td>
+        <td>${item.shirtSize || ""}</td>
+        <td>${item.action || ""}</td>
+      `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById("pageInfo").textContent =
+            `Trang ${currentPage} / ${Math.ceil(data.length / recordsPerPage)}`;
+    }
+
+    document.getElementById("recordsPerPage").addEventListener("change", e => {
+        recordsPerPage = parseInt(e.target.value);
+        currentPage = 1;
+        renderTable();
+    });
+
+    document.getElementById("prevPage").addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+        }
+    });
+
+    document.getElementById("nextPage").addEventListener("click", () => {
+        if (currentPage < Math.ceil(data.length / recordsPerPage)) {
+            currentPage++;
+            renderTable();
+        }
+    });
+
+    renderTable();
+</script>
