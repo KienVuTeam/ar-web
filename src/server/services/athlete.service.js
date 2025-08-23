@@ -31,7 +31,7 @@ class AthleteService {
 
       // Giả sử eventId lấy từ query hoặc body
       // var eventId = req.body.eventId || null;
-      eventId = "689d3e161d99d1e9a91f9682"; //689d3e161d99d1e9a91f9682 || 689d4480638544c8d475a5c8
+      // eventId = "689d3e161d99d1e9a91f9682"; //689d3e161d99d1e9a91f9682 || 689d4480638544c8d475a5c8
 
       const mappedData = rawData.map((row) => {
         return mapExcelRowToAthlete(row, eventId);
@@ -77,13 +77,14 @@ class AthleteService {
       return { status: false, mess: "Err_Service: ExcelToDb" };
     }
   }
-  async EventList(eventId) {
+  //GetList
+  async AthleteList(eventId) {
     // eventId ="689d3e161d99d1e9a91f9682"
     try {
       const athletes = await Athlete.find({
         event_id: new mongoose.Types.ObjectId(eventId),
-      }); // convert string sang ObjectId
-      console.log(athletes.length);
+      }).lean(); // convert string sang ObjectId
+      // console.log(athletes.length);
       return { status: true, data: athletes };
     } catch (error) {
       console.log(error);
@@ -96,7 +97,7 @@ class AthleteService {
       const result = await Athlete.findOne({
         _id: athleteId,
         event_id: eventId,
-      });
+      }).lean();
       return { status: true, data: result };
     } catch (error) {
       console.log(error);

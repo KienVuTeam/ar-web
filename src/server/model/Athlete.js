@@ -5,14 +5,16 @@ const AthleteSchema = new mongoose.Schema(
   {
     event_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Event",
+      ref: "Event", 
+      required: true
     },
-    bib: { type: String },
+    bib: { type: String},
     name: { type: String },
     bib_name: { type: String },
     gender: { type: Boolean }, // true = nam, false = nữ (tùy quy ước)
     email: { type: String },
     phone: { type: String },
+    dob: {type: Date},
     cccd: { type: String },
     nation: { type: String },
     city: { type: String },

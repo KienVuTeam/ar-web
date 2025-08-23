@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Danh sách VĐV</title>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+
+  <style>
+    a{
+      text-decoration: none;
+    }
+    table.dataTable {
+      width: 100% !important;
+    }
+
+    #athletesTable {
+      font-size: 12px;
+      color: #333;
+    }
+
+    #athletesTable thead th {
+      color: black;
+      font-size: 12px !important;
+    }
+
+    #athletesTable thead th tr {
+      font-size: 12px !important;
+      font-weight: 600;
+    }
+
+    #athletesTable tbody tr:nth-child(odd) {
+      background-color: #f9f9f9;
+    }
+
+    #athletesTable tbody tr:hover {
+      background-color: #ffeeba;
+    }
+
+    #athletesTable td:nth-child(3) {
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    #athletesTable .btn-primary {
+      font-size: 12px;
+      padding: 2px 8px;
+    }
+
+    table.dataTable thead th,
+    table.dataTable tbody td {
+      white-space: nowrap;
+      box-sizing: border-box;
+      padding: 6px 10px;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    tfoot input {
+      width: 100%;
+      font-size: 11px;
+      padding: 2px;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+
+<body class="p-4">
+  <h2 class="mb-3">Danh sách VĐV</h2>
+
+  <div class="table-responsive">
+    <table id="athletesTable" class="table table-striped table-bordered nowrap" style="width: 100%">
+      <thead>
+        <tr style="font-size: 12px">
+          <th>Bib/Cự ly</th>
+          <th>ChipId</th>
+          <th>Name-CCCD-Email</th>
+          <th>Giới tính</th>
+          <th>Size</th>
+          <th>Checkin P</th>
+          <th>Checkin G</th>
+          <th>Mail QR</th>
+          <th>Ủy quyền</th>
+          <th>E-waiver</th>
+          <th>DOB</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tfoot>
+        <tr>
+          <th>Bib/Cự ly</th>
+          <th>ChipId</th>
+          <th>Name-CCCD-Email</th>
+          <th>Giới tính</th>
+          <th>Size</th>
+          <th>Checkin P</th>
+          <th>Checkin G</th>
+          <th>Mail QR</th>
+          <th>Ủy quyền</th>
+          <th>E-waiver</th>
+          <th>DOB</th>
+          <th>Action</th>
+        </tr>
+      </tfoot>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script> -->
+  <!-- [outdoor] -->
+  <div class="modal" id="modalAthlete" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Thông tin VĐV: | <span id="ath-createAt"></span> </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>
+            <div class="row" style="padding: 0 50px;">
+              <div class="col-6">
+                <input type="checkbox" name="" id=""> <span>Đã checkin</span> <br> <br>
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                  <label for="" class="form-label">Cự ly</label>
+                  <input type="text" id="ath-distance" class="form-control" id="ath_distance">
+                </div>
+                  </div>
+                  <div class="col-6">
+<div class="form-group">
+                  <label for="" class="form-label">ChipId</label>
+                  <input type="text" class="form-control" id="ath-chip">
+                </div>
+                  </div>
+                </div>
+                
+                
+                <!-- <div class="form-group"><label for="" class="form-label">Họ</label><input type="text" class="form-control" id="ath-ho"></div> -->
+                <!-- <div class="form-group"><label for="" class="form-label">Giới tính</label><input type="text" class="form-control" id="ath-gender"></div> -->
+                <div class="row">
+                  <div class="col-6">
+                <div class="form-group"><label for="" class="form-label">Tên</label><input type="text" class="form-control" id="ath-name"></div>
+
+                  </div>
+                  <div class="col-6">
+                <div class="form-group"><label for="" class="form-label">SĐT</label><input type="text" class="form-control" id="ath-phone"></div>
+
+                  </div>
+                </div>
+                
+                
+                
+                <div class="form-group"><label for="" class="form-label">Email</label><input type="text" class="form-control" id="ath-email"></div>
+                <div class="form-group"><label for="" class="form-label">CMND/CCCD/Passport/</label><input type="text" class="form-control" id="ath-cccd"></div>
+                <div class="form-group"><label for="" class="form-label">CLB/Nhóm</label><input type="text" class="form-control" id="ath-team"></div>
+                <div class="form-group"><label for="" class="form-label">Tên trên BIB</label><input type="text" class="form-control" id="ath-bibName"></div>
+                
+                <input type="checkbox" name="" id=""> <span>Ủy quyền nhận BIB</span>
+
+              </div>
+              <div class="col-6">
+                <input type="checkbox" name="" id=""> <span>checkin theo nhóm</span> <br><br>
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group"><label for="" class="form-label">BIB</label><input type="text" class="form-control" id="ath-bib"></div>
+                  </div>
+                  <div class="col-6">
+                <div class="form-group"><label for="" class="form-label">EPC</label><input type="text" class="form-control" id="ath-epc"></div>
+
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                  <label for="" class="form-label">Giới tính</label>
+                  <select class="form-select w-75" name="" id="ath-gender" >
+                    <option value="true">Nam</option>
+                    <option value="false">Nữ</option>
+                  </select>
+                </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group"><label for="" class="form-label">Nhóm máu</label><input type="text" class="form-control" id="ath-blood"></div>
+                    
+                  </div>
+                </div> 
+                <div class="row">
+                  <div class="col-6"><div class="form-group"><label for="" class="form-label">DOB <small>(mm/dd/yyyy)</small></label><input type="date" class="form-control" id="ath-dob"></div>
+              </div>
+                  <div class="col-6">
+                <div class="form-group"><label for="" class="form-label">Thông tin y tế</label><input type="text" class="form-control" id="ath-medical"></div>
+
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                <div class="form-group"><label for="" class="form-label">Quốc tịch</label><input type="text" class="form-control" id="ath-nation"></div>
+
+                  </div>
+                  <div class="col-6">
+                <div class="form-group w-50"><label for="" class="form-label">Size áo</label><input type="text" class="form-control" id="ath-size"></div>
+
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                <div class="form-group"><label for="" class="form-label">Người liên hệ khẩn cấp</label><input type="text" class="form-control" id="ath-patronName"></div>
+
+                  </div>
+                  <div class="col-6">
+                <div class="form-group"><label for="" class="form-label">SĐT người liên hệ khẩn cấp</label><input type="text" class="form-control" id="ath-patronPhone"></div>
+
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function openModal(id) {
+      const modalElement = document.getElementById("modalAthlete");
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+      // const ath_name = document.getElementById('ath-name');
+      // ath_name.value =id;
+      
+    }
+  </script>
+  <!-- [outdoor end] -->
+  <!-- prettier-ignore -->
+  <script>
+    window.athletes = <%- JSON.stringify(athletes || []) %>;
+
+    $(document).ready(function () {
+      // Thêm ô input vào từng cột trong footer
+      $("#athletesTable tfoot th").each(function () {
+        const title = $(this).text();
+        if (title !== "Action") {
+          $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+        } else {
+          $(this).html("");
+        }
+      });
+
+      let table = $("#athletesTable").DataTable({
+        data: athletes,
+        columns: [
+          { data: null, render: (d) => `${d.bib || ""}<br>${d.distance || ""}` },
+          { data: "chip", defaultContent: "" },
+          {
+            data: null, render: (d) => `
+                    <div class="athlete-info"
+                    data-id ="${d._id}"
+                    >
+                    ${d.name || ""}<br>${d.cccd || ""}<br>${d.email || ""}
+                    </div>
+                    ` },
+          { data: "gender", render: (g) => g ? '<span class="text-primary">M</span>' : '<span class="text-danger">F</span>' },
+          { data: "shirtSize", defaultContent: "" },
+          { data: "checkin", render: (c) => (c ? "✅" : "✖️") },
+          { data: "groupCheckin", defaultContent: "" },
+          { data: "mailQR", defaultContent: "" },
+          { data: "proxy", defaultContent: "" },
+          { data: "waiver", defaultContent: "" },
+          { data: "dob", defaultContent: "" },
+          { data: null, orderable: false, render: () => '<button class="btn btn-sm btn-primary">Sửa</button>' }
+        ],
+        pageLength: 20,
+        autoWidth: true,
+        scrollCollapse: true,
+        language: { url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json" },
+        dom: '<"row"<"col-sm-6"l><"col-sm-6"f>>rt<"row"<"col-sm-5"i><"col-sm-7"p>>',
+        initComplete: function () {
+          // Kích hoạt search theo cột
+          this.api().columns().every(function () {
+            var that = this;
+            $("input", this.footer()).on("keyup change clear", function () {
+              if (that.search() !== this.value) {
+                that.search(this.value).draw();
+              }
+            });
+          });
+        }
+      });
+
+      $(window).on("resize", function () {
+        table.columns.adjust();
+      });
+    });
+    // new
+    //call server
+    
+    function AthleteInfoDetail(id){
+      //get eventId from localStoreage
+      const _id = id;
+      const _eventId =localStorage.getItem('currentEventId') 
+      // alert(_eventId+" ----- "+id);
+
+      //
+      // debugger
+      $.ajax({
+      url: `/admin/athlete/detail-athlete`,
+      method : "POST",
+      contentType: 'application/json',
+      data: JSON.stringify({event_id: _eventId, athlete_id: id}),
+      success: (res)=>{
+        // alert(res.data)
+        // console.log(res.data)
+        SetValueModal(res.data)
+        openModal(id)
+      },
+      error: (err)=>{
+        alert(err)
+      }
+    })
+    };
+    //formatDate
+    function formatDate(isoString) {
+  const date = new Date(isoString);
+  return date.toLocaleString('vi-VN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+}
+
+    //set value popup
+    function SetValueModal(ath){
+      // const 
+      console.log(ath)
+      console.log(typeof ath)
+      //
+      // if(ath.updateAt != null){
+      //   $("#ath-createAt").text(ath.updateAt)
+      // }else{
+      //   $("#ath-createAt").text(ath.createAt)
+      // }
+      // alert("aa: "+ath.updatedAt)
+      $("#ath-createAt").text("Ngày tạo: "+formatDate(ath.updatedAt))
+      $("#ath-distance").val(ath.distance)
+      $("#ath-chip").val(ath.chip)
+      $("#ath-ho").val(ath.name)
+      // $("#ath-gender").val(ath.gender)
+      // alert(ath.gender)
+      $("#ath-gender").val(String(ath.gender))
+      $("#ath-email").val(ath.email)
+      $("#ath-cccd").val(ath.cccd)
+      $("#ath-team").val(ath.team)
+      $("#ath-bibName").val(ath.bib_name)
+      $("#ath-patronName").val(ath.patron_name)
+      $("#ath-blood").val(ath.blood)
+      // 
+      $("#ath-bib").val(ath.bib)
+      $("#ath-epc").val(ath.epc)
+      $("#ath-name").val(ath.name)
+      $("#ath-dob").val(ath.dob)
+      $("#ath-phone").val(ath.phone)
+      $("#ath-nation").val(ath.nation)
+      $("#ath-size").val(ath.size)
+      $("#ath-patronPhone").val(ath.patron_phone)
+      $("#ath-medical").val(ath.medical)
+    }
+    $('#athletesTable tbody').on('click', 'td', function () {
+      let table = $('#athletesTable').DataTable();
+
+      // Lấy vị trí cell
+      let cellIndex = table.cell(this).index();
+      let rowData = table.row(this).data();
+
+      console.log("Bạn vừa click vào cột:", cellIndex.column, " dữ liệu:", rowData);
+
+      // Ví dụ: nếu click vào cột Name-CCCD-Email
+      if (cellIndex.column === 2) {
+        // alert("Tên VĐV: " + rowData.name);
+        let id = $(this).find('.athlete-info').data('id');
+        // await alert(id)
+        
+        AthleteInfoDetail(id);
+      }
+    });
+    //
+    //
+        setTimeout(() => {
+          MyInitTinymce();
+        }, 1000);
+  </script>
+</body>
+
+</html>

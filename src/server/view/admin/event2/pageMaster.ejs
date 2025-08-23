@@ -1,0 +1,261 @@
+<script src="/admin/assets/js/plugins/tinymce/tinymce.min.js"></script>
+
+<div class="progress-container">
+  <% const steps = [ { id: 1, label: "Khởi tạo" }, { id: 2, label: "AthleteData"
+  }, { id: 3, label: "Gửi Mail" }, { id: 4, label: "Checkin" }, { id: 5, label:
+  "Kết thúc" } ]; %>
+  <!-- breadcrumb -->
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col-md-12">
+          <div class="page-header-title">
+            <h5 class="m-b-10">Event</h5>
+          </div>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="/admin/event2/event-list">list</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="#!" onmouseover="this.style.color='red';">Race flow</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="step-action">
+      <button id="next-step-btn" onclick="completeStep()">
+        ✅ Xác nhận hoàn thành
+      </button>
+    </div>
+  </div>
+
+  <!-- progress bar -->
+  <div class="steps">
+    <% steps.forEach(step => { %>
+    <button
+      class="step"
+      data-id="<%= step.id %>"
+      onclick="loadStep(<%= step.id %>)"
+    >
+      <span class="dot"></span>
+      <span class="label"><%= step.label %></span>
+    </button>
+    <% }) %>
+  </div>
+</div>
+
+<!-- chỗ để nhét nội dung step -->
+<div id="step-content"></div>
+
+<!-- [tinyMCE] -->
+<!-- <script src="/admin/assets/js/plugins/tinymce/tinymce.min.js"></script> -->
+
+<script>
+  const eventId2 = "<%= eventId %>";
+  const eventId = localStorage.getItem('currentEventId')
+  // let statusCurent = Number("<%= status %>");
+  let statusCurent = Number("<%= status %>"); // lấy status ban đầu từ server
+
+  function MyInitialTinymce() {
+    // 🔥 Khởi tạo TinyMCE lại
+    if (typeof tinymce !== "undefined") {
+      tinymce.remove(); // xoá instance cũ để tránh lỗi
+      tinymce.init({
+        height: "300",
+        selector: "#event-tinymce-4",
+        content_style: 'body { font-family: "Inter", sans-serif; }',
+        menubar: false,
+        toolbar: [
+          "styleselect fontselect fontsizeselect",
+          "undo redo | cut copy paste | bold italic | link image | alignleft aligncenter alignright alignjustify",
+          "bullist numlist | outdent indent | blockquote subscript superscript | advlist | autolink | lists charmap | print preview |  code",
+        ],
+        plugins: "advlist autolink link image lists charmap print preview code",
+      });
+    }
+  }
+  // Hàm update progress bar dựa theo statusCurent
+  function updateProgressBar() {
+    // debugger;
+    document.querySelectorAll(".step").forEach((el) => {
+      const id = parseInt(el.getAttribute("data-id"));
+      el.classList.toggle("active", id === statusCurent);
+      el.classList.toggle("done", id < statusCurent);
+      el.classList.toggle("disabled", id > statusCurent);
+    });
+  }
+
+  // load partial theo step click
+  function loadStep(step) {
+    // debugger;
+    // alert("eventId "+eventId)
+    fetch(`/admin/event2/progress/step/${step}?id=${eventId}`)
+      .then((res) => res.text())
+      .then((html) => {
+        const container = document.querySelector("#step-content");
+        container.innerHTML = html;
+
+        // Tìm và thực thi các script trong HTML vừa gán
+        container.querySelectorAll("script").forEach((script) => {
+          const newScript = document.createElement("script");
+          if (script.src) {
+            // external script thì để browser tự load lại
+            newScript.src = script.src;
+          } else {
+            // inline script: copy text để nó chạy
+            newScript.textContent = script.textContent;
+          }
+          document.body.appendChild(newScript);
+          // tránh trùng lặp, remove đi nếu không muốn lưu lại
+          document.body.removeChild(newScript);
+        });
+
+        MyInitialTinymce();
+
+        // luôn vẽ lại progress bar theo statusCurent, ko theo step
+        updateProgressBar();
+      });
+  }
+
+  // khi ấn nút hoàn thành step
+  function completeStep() {
+    const nextStep = statusCurent + 1; // hoặc logic gì đó bạn muốn
+
+    fetch("/admin/event2/change-status", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: eventId, status: nextStep }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          statusCurent = nextStep; // ✅ update biến động
+          updateProgressBar();
+          loadStep(statusCurent);
+        }
+      })
+      .catch((err) => {
+        console.error("❌ Fetch error:", err);
+      });
+  }
+
+  // khi vào trang lần đầu
+  window.addEventListener("DOMContentLoaded", () => {
+    updateProgressBar();
+    loadStep(statusCurent);
+  });
+</script>
+
+<style>
+  .steps {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 40px 0;
+    padding: 0 20px;
+  }
+
+  .steps::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 40px;
+    right: 40px;
+    height: 4px;
+    background: #e5e7eb; /* xám nhạt */
+    transform: translateY(-50%);
+    z-index: 0;
+    border-radius: 2px;
+  }
+
+  .step {
+    position: relative;
+    background: none;
+    border: none;
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+    z-index: 1;
+  }
+
+  .step .dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 3px solid #d1d5db; /* viền xám */
+    background: #fff;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #9ca3af; /* chữ xám */
+    transition: all 0.3s ease;
+  }
+
+  .step .label {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #6b7280; /* xám */
+    transition: color 0.3s ease;
+  }
+
+  /* ---- DONE ---- */
+  .step.done .dot {
+    background: #4caf50; /* xanh */
+    border-color: #4caf50;
+    color: white;
+  }
+  .step.done .label {
+    color: #4caf50;
+  }
+
+  /* ---- ACTIVE ---- */
+  .step.active .dot {
+    background: #2196f3;
+    border-color: #2196f3;
+    color: white;
+    box-shadow: 0 0 12px rgba(33, 150, 243, 0.5);
+  }
+  .step.active .label {
+    color: #2196f3;
+    font-weight: 600;
+  }
+
+  /* ---- DISABLED ---- */
+  .step.disabled .dot {
+    border-color: #d1d5db;
+    background: #f3f4f6;
+    color: #9ca3af;
+  }
+  .step.disabled .label {
+    color: #9ca3af;
+  }
+  .step.disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  /* hiệu ứng hover cho bước đã hoàn thành */
+  .step.done:hover .dot,
+  .step.active:hover .dot {
+    transform: scale(1.1);
+  }
+
+  #next-step-btn {
+    padding: 10px 20px;
+    background: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+
+  #next-step-btn:hover {
+    background: #1976d2;
+  }
+</style>

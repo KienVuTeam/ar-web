@@ -27,6 +27,7 @@ function mapExcelRowToAthlete(row, eventId) {
     email: r["email"] || "",
     phone: r["số điện thoại"] || "",
     cccd: r["cmnd/cccd/passport"] || "",
+    dob: r["ngày sinh" ||""],
     nation: r["quốc tịch"] || "",
     city: r["tỉnh/tp"] || "",
     address: r["địa chỉ"] || "",

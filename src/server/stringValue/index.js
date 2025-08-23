@@ -1,4 +1,5 @@
 const path = require('path');
 module.exports={
-    BASEURLUPLOAD: path.join(__dirname, '../../public/uploads') 
+    BASEURLUPLOAD: path.join(__dirname, '../../public/uploads'),
+    LAYOUTADMIN: "layout/layoutAdmin"
 }

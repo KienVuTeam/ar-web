@@ -1,6 +1,10 @@
 const { name } = require("ejs");
+const crypto = require("crypto");
 const EventEntity = require("../model/Event");
 const { EventStatus } = require("../enums/event.enum");
+const AthleteEntity = require("../model/Athlete");
+const { generateAthleteQR } = require("./qr2.service");
+const QrCodeEntity = require("../model/QRCode");
 // const EventEntity = require('../model/Event')
 
 class EventService {
@@ -22,7 +26,7 @@ class EventService {
         imagePath: dataClient.imagePath,
         apiLink: dataClient.apiLink,
         isShow: dataClient.isShow,
-        status: Number(dataClient.eventStatus), //ep kieu
+        status: 1, //ep kieu
         place: dataClient.place,
         rankType: dataClient.rankType,
         startDate: dataClient.startDate,
@@ -66,13 +70,13 @@ class EventService {
       return { status: false, data: true };
     }
   }
-  async deleteEvent(id){
-      try {
-        await EventEntity.deleteOne({_id: id});
-        return {status: true}
+  async deleteEvent(id) {
+    try {
+      await EventEntity.deleteOne({ _id: id });
+      return { status: true };
     } catch (error) {
-        console.log(error)
-        return {status: false}
+      console.log(error);
+      return { status: false };
     }
   }
   // [Non action]
@@ -80,7 +84,15 @@ class EventService {
     if (!date) return "";
     return new Date(date).toISOString().split("T")[0];
   }
-
+  async getStatusOfEvent(_id) {
+    try {
+      var event = await EventEntity.findById(_id).lean(); //document
+      let statusEvent = event.status;
+      return { status: true, data: statusEvent };
+    } catch (error) {
+      return { status: false, data: "" };
+    }
+  }
   async findEventById(_id) {
     try {
       var result = await EventEntity.findById(_id); //mongoose document
@@ -96,6 +108,58 @@ class EventService {
       console.log(error);
       return { status: false, data: error };
     }
+  }
+  //
+  async changeStatus(id, status) {
+    try {
+      var update = await EventEntity.updateOne(
+        { _id: id }, // Điều kiện tìm document
+        { $set: { status: status } } // Field cần cập nhật
+      );
+      return { status: true, data: "" };
+    } catch (error) {
+      console.log(error);
+      return { status: false, data: "" };
+    }
+  }
+  async AthleteQrCode(eventId) {
+    const athletes = await AthleteEntity.find({ event_id: eventId });
+
+    let dateExpiry = "2025-08-20"; // hạn QR (có thể lấy từ event.endDate nếu muốn)
+
+    const bulkOps = await Promise.all(
+      athletes.map(async (athlete) => {
+        // generate QR cho từng VĐV
+        const { qr_string } = await generateAthleteQR(
+          athlete._id.toString(),
+          eventId.toString(),
+          dateExpiry
+        );
+
+        return {
+          updateOne: {
+            filter: { athlete_id: athlete._id, event_id: eventId },
+            update: {
+              $setOnInsert: {
+                athlete_id: athlete._id,
+                event_id: eventId,
+                qr_token: qr_string, // chỉ lưu string
+                is_used: false,
+                expired_at: new Date(dateExpiry),
+              },
+            },
+            upsert: true,
+          },
+        };
+      })
+    );
+
+    const result = await QrCodeEntity.bulkWrite(bulkOps);
+    return {
+      status: true,
+      inserted: result.upsertedCount,
+      matched: result.matchedCount,
+    };
   }
 }
 

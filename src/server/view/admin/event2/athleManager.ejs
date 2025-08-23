@@ -1,0 +1,79 @@
+<div class="card">
+  <div class="card-header">
+    <h2>Event List</h2>
+    <a class="btn btn-primary" href="/admin/event/form-add-event">New event</a>
+  </div>
+  <div class="card-body">
+    <table id="eventTbl" class="table .table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Place</th>
+          <th>Start date</th>
+          <th>End date</th>
+          <th>Status</th>
+          <th>Show</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (events && events.length > 0) { %> <% events.forEach((e, index) =>
+        { %>
+        <tr>
+          <td data-id="<%= e._id %>">
+            <a href="/admin/event/form-edit-event?id=<%=e._id%>"
+              ><%= e.name %></a
+            >
+          </td>
+          <td><%= e.place %></td>
+          <td><%= new Date(e.startDate).toLocaleDateString('vi-VN') %></td>
+          <td><%= new Date(e.endDate).toLocaleDateString('vi-VN') %></td>
+          <td><%= e.status %></td>
+          <td><%= e.isShow %></td>
+          <td>
+            <!-- <form action="/admin/event/delete-event/<%=e._id%>" method="POST">
+              <button class="btn btn-danger" type="submit">DeleteDelete</button>
+            </form> -->
+            <button
+              class="btn btn-danger btn-action-del-envent" data-id="<%=e._id%>">Delete
+            </button>
+          </td>
+        </tr>
+        <% }) %> <% } else { %>
+        <tr>
+          <td colspan="7" class="text-center">Không có sự kiện nào</td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  
+  // 
+  $(document).on("click", "#eventTbl .btn-action-del-envent", function () {
+    const id = $(this).data('id');
+    // alert(id)
+    const row = $(this).closest("tr"); // tìm dòng chứa nút
+
+
+    if (confirm("Bạn có chắc muốn xóa sự kiện này?")) {
+      $.ajax({
+        url: `/admin/event/delete-event/${id}`,
+        type: "DELETE",
+        success: function (res) {
+          if (res.status) {
+            row.remove();
+          } else {
+            alert(res.message || "Xóa thất bại");
+          }
+        },
+        error: function (err) {
+          console.error(err);
+          alert("Lỗi server");
+        },
+      });
+    }
+  });
+</script>

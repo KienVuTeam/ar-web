@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>QR Scanner with Overlay</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background: black;
+      }
+
+      #reader {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+      }
+
+      /* Overlay ảo */
+      .qr-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none; /* không cản camera */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .qr-focus {
+        width: 280px;
+        height: 280px;
+        border: 3px solid lime;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        position: relative;
+      }
+
+      .qr-scan-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: red;
+        animation: scan 2s linear infinite;
+      }
+
+      @keyframes scan {
+        0% {
+          top: 0;
+        }
+        100% {
+          top: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="reader"></div>
+    <div class="qr-overlay">
+      <div class="qr-focus">
+        <div class="qr-scan-line"></div>
+      </div>
+    </div>
+
+    <script>
+
+      //
+      function onScanSuccess(decodedText) {
+        console.log("QR Detected:", decodedText);
+
+        try {
+          const { token, signature } = JSON.parse(decodedText);
+
+          fetch("/test/send-qr", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token, signature }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              console.log("Server response:", data);
+              if (data.status) {
+                window.location.href = data.link;
+              } else {
+                alert("QR không hợp lệ");
+              }
+            })
+            .catch((err) => console.error("Fetch error:", err));
+        } catch (e) {
+          alert("Scanned: " + decodedText);
+        }
+      }
+
+      function onScanError(err) {
+        // bỏ trống
+      }
+
+      const html5QrCode = new Html5Qrcode("reader");
+      html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 40 }, // tốc độ cao
+        onScanSuccess,
+        onScanError
+      );
+    </script>
+  </body>
+</html>

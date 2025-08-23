@@ -1,0 +1,188 @@
+<div class="progress-container">
+  <% 
+    const steps = [
+      { id: 1, label: "Khởi tạo" },
+      { id: 2, label: "Gán BIB" },
+      { id: 3, label: "Gửi Mail" },
+      { id: 4, label: "Checkin" },
+      { id: 5, label: "Kết thúc" }
+    ]; 
+  %>
+
+  <div class="steps">
+    <% steps.forEach((step) => { 
+         const isActive = step.id === currentStatus;       // bước hiện tại
+         const isDone = step.id < currentStatus;           // đã qua
+         const isDisabled = step.id > currentStatus;       // chưa tới
+    %>
+      <button 
+        class="step <%= isActive ? 'active' : '' %> <%= isDone ? 'done' : '' %> <%= isDisabled ? 'disabled' : '' %>"
+        data-id="<%= step.id %>"
+        onclick="<%= isDisabled ? 'return false;' : `loadStep(${step.id})` %>">
+        <span class="dot"></span>
+        <span class="label"><%= step.label %></span>
+      </button>
+    <% }) %>
+  </div>
+</div>
+
+<!-- nơi load partial -->
+<div id="step-content">
+  <%- include(`../../partials/partial${currentStatus}`) %>
+</div>
+
+<!-- nút xác nhận hoàn thành -->
+<div class="step-action">
+  <% if (currentStatus < steps.length) { %>
+    <button id="next-step-btn" onclick="completeStep(<%= currentStatus %>)">
+      ✅ Xác nhận hoàn thành
+    </button>
+  <% } else { %>
+    <p>🎉 Đã hoàn thành toàn bộ tiến trình!</p>
+  <% } %>
+</div>
+
+<script>
+  function loadStep(step) {
+    fetch(`/progress/step/${step}`)
+      .then(res => res.text())
+      .then(html => {
+        document.querySelector('#step-content').innerHTML = html;
+        document.querySelectorAll('.step').forEach(el => {
+          const id = parseInt(el.getAttribute("data-id"));
+          el.classList.toggle('active', id === step);
+          el.classList.toggle('done', id < step);
+          el.classList.toggle('disabled', id > step);
+        });
+
+        // cập nhật nút "Xác nhận hoàn thành"
+        const nextBtn = document.querySelector('#next-step-btn');
+        if(nextBtn){
+          nextBtn.setAttribute("onclick", `completeStep(${step})`);
+        }
+      });
+  }
+
+  function completeStep(currentStep) {
+    fetch(`/progress/complete/${currentStep}`, { method: "POST" })
+      .then(res => res.json())
+      .then(data => {
+        if(data.nextStep){
+          loadStep(data.nextStep);
+        }
+      });
+  }
+</script>
+
+<style>
+  .steps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin: 40px 0;
+  padding: 0 20px;
+}
+
+.steps::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 40px;
+  right: 40px;
+  height: 4px;
+  background: #e5e7eb; /* xám nhạt */
+  transform: translateY(-50%);
+  z-index: 0;
+  border-radius: 2px;
+}
+
+.step {
+  position: relative;
+  background: none;
+  border: none;
+  flex: 1;
+  text-align: center;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.step .dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid #d1d5db; /* viền xám */
+  background: #fff;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: #9ca3af; /* chữ xám */
+  transition: all 0.3s ease;
+}
+
+.step .label {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #6b7280; /* xám */
+  transition: color 0.3s ease;
+}
+
+/* ---- DONE ---- */
+.step.done .dot {
+  background: #4caf50;   /* xanh */
+  border-color: #4caf50;
+  color: white;
+}
+.step.done .label {
+  color: #4caf50;
+}
+
+/* ---- ACTIVE ---- */
+.step.active .dot {
+  background: #2196f3;
+  border-color: #2196f3;
+  color: white;
+  box-shadow: 0 0 12px rgba(33,150,243,0.5);
+}
+.step.active .label {
+  color: #2196f3;
+  font-weight: 600;
+}
+
+/* ---- DISABLED ---- */
+.step.disabled .dot {
+  border-color: #d1d5db;
+  background: #f3f4f6;
+  color: #9ca3af;
+}
+.step.disabled .label {
+  color: #9ca3af;
+}
+.step.disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* hiệu ứng hover cho bước đã hoàn thành */
+.step.done:hover .dot,
+.step.active:hover .dot {
+  transform: scale(1.1);
+}
+
+  #next-step-btn {
+    padding: 10px 20px;
+    background: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+
+  #next-step-btn:hover {
+    background: #1976d2;
+  }
+</style>

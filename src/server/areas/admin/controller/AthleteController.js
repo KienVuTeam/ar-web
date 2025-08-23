@@ -12,7 +12,7 @@ class AthleteController {
     const idEvent ="689d3e161d99d1e9a91f9682";
     try {
       const _athleteService = new AthleteService();
-      var result = await _athleteService.EventList(idEvent);
+      var result = await _athleteService.AthleteList(idEvent);
       // FlagCheck(result.status, result.mess);
       // res.json(result.data)
       res.render('admin/athlete/managerAthlete', {layout:'layout/layoutAdmin', athletes: result.data}) 
@@ -37,6 +37,20 @@ class AthleteController {
     } catch (error) {
       console.log(error);
       res.json({ status: false, mess: error.message });
+    }
+  }
+  async AthleteDetail(req, res){
+    try {
+      const _eventId = req.body.event_id;
+      const _athleteId = req.body.athlete_id;
+  
+      const _athleteService = new AthleteService();
+      var result = await _athleteService.GetById(_eventId, _athleteId);
+      console.log(result)
+      res.json({sucess: true, mess: "",data: result.data});
+    } catch (error) {
+      console.log(error)
+      res.json({mess:"server"})
     }
   }
 }

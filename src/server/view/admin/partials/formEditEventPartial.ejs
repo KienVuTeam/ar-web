@@ -1,0 +1,224 @@
+<style>
+    .form-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 900px;
+      margin: auto;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 6px;
+    }
+    input[type="text"],
+    input[type="datetime-local"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .date-range {
+      display: flex;
+      gap: 10px;
+    }
+    .date-range input {
+      flex: 1;
+    }
+    .btn-media {
+      background: #6c63ff;
+      color: #fff;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-media:hover {
+      background: #5848d6;
+    }
+  </style>
+  
+  <!--  -->
+
+  
+  <div class="row">
+    <div class="col-8">
+      <div class="card">
+        <div class="card-body">
+          <!--  -->
+          <div class="form-group">
+            <label for="event-name" >Tên sự kiện <small>(*)</small></label>
+            <input type="text" id="title" name="title" placeholder="Nhập tên sự kiện" value="<%=event.name%>" />
+          </div>
+  
+          <div class="form-group">
+            <label for="event-link">Link <small>Tự động có theo tên sự kiện</small></label>
+            <input type="text" id="slug" name="slug" placeholder="Nhập link" value="<%=event.slug%>" />
+          </div>
+  
+          <div class="form-group">
+            <label>Thời gian sự kiện <small>(*)</small></label>
+            <div class="date-range">
+              <input class="form-control" type="date" name="startDate" id="startDate"   value="<%=event.startDate%>" />
+              <input class="form-control" type="date" name="endDate" id="endDate" value="<%=event.endDate%>"/>
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label>Thời gian đóng ủy quyền <small>(*)</small></label>
+            <input class="form-control" type="date" name="authorityDate" id="authorityDate" value="<%=event.authorityDate%>" />
+          </div>
+  
+          <br />
+          <!-- content 2 -->
+          <div class="form-group">
+            <label>Nội dung giới thiệu <small>(*)</small></label>
+            <!-- <button class="btn-media">Thêm media</button> <br /> <br> -->
+            <!-- <label for=""></label> -->
+            <textarea id="event-tinymce-4" name="event-tinymce-4" class="tox-target" placeholder="Write here"><%= event.content %></textarea>
+          </div>
+  
+          <div class="form-group">
+            <label for="api-chipt">API chiptime</label>
+            <input type="text" id="apiLink" name="apiLink" placeholder="Nhập API chiptime" value="<%=event.apiLink%>"/>
+          </div>
+  
+          <div class="form-group w-50">
+            <label for="rank-type">Lấy xếp hạng theo <small>(*)</small></label>
+            <select id="rankType">
+                <option value="1" <%= event.rankType ? 'selected="selected"' : '' %>>Gun time</option>
+                <option value="0" <%= !event.rankType ? 'selected="selected"' : '' %>>Net time</option>
+
+            </select>
+          </div>
+
+        </div>
+        <div class="card-footer">
+          <button id="eventSubmit" type="button" class="btn btn-primary">Update event 1</button>
+          <input type="hidden"  value="<%=event._id%>" id="idObject">
+        </div>
+      </div>
+    </div>
+    <!-- haft -->
+    <div class="col-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="form-group">
+            <!-- <label for="">hiện trên web</label> -->
+            <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="isShow" name="isActive" <%= event.isShow ? 'checked' : '' %>  />
+            <label class="form-check-label" for="isActive">Hiện trên web</label>
+          </div>
+          </div>
+          <div class="form-group">
+            <label for="" class="form-label" >Place <small>(*)</small></label>
+            <input type="text" id="event-place" value="<%=event.place%>">
+            <input type="hidden" id="eventStatus" value="<%=event.status%>">
+
+          </div>
+          <div class="form-group">
+            <label for="" class="form-label">Choose imge</label>
+            <input type="text" value="<%=event.imagePath%>" id="imgPath">
+          </div>
+          <div class="form-group">
+            <label for="" class="form-label">Hinh Banner:</label>
+            <div class="show-image" style="margin: 0 auto;" id="show-image">
+            <img src="/img/hero-banner.jpg" data-folder="image-1.png" alt="pre-img" style="display: inline-block; width: 100%; height: 250px; object-fit: cover; ">
+          </div> <br>
+          </div>
+          <!--  -->
+          <button id="secondEventSubmit" class="btn btn-primary" >Update Event</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- [Script start] -->
+   <script>
+
+    function eventSubmitHandle(){
+      // alert("hekl")
+      const idEvent =$('#idObject').val();
+      console.log('id '+idEvent)
+      const title = $('#title').val();
+      const slug = $("#slug").val();
+      // const content = tinymce.get('event-tinymce-4').getContent();
+      const editor = tinymce.get('event-tinymce-4');
+      const content = editor ? editor.getContent() : $('#event-tinymce-4').val();
+      
+      const startDate = $('#startDate').val();
+      const endDate = $('#endDate').val();
+      const authorityDate = $('#authorityDate').val();
+      const imagePath = $('#imgPath').val();
+      const rankType = $('#rankType').val();
+      const eventStatus = $('#eventStatus').val();
+      const apiLink = $('#apiLink').val();
+      const place = $('#event-place').val();
+      const isShow =$('#isShow').is(':checked');
+      const dataSend={
+        title,
+        slug,
+        content,
+        startDate,
+        endDate,
+        authorityDate,
+        imagePath,
+        rankType,
+        eventStatus,
+        apiLink,
+        place,
+        isShow
+      }
+      //test
+      console.log(title, slug, content, startDate, endDate, authorityDate, imagePath, rankType, apiLink, place, isShow, idEvent);
+      console.log(dataSend);
+      //ajax
+      $.ajax({
+        url: `/admin/event2/update-event/${idEvent}`, ///event/update-event
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(dataSend),
+        success: (res)=>{
+          if(res.status){
+            window.location.href = '/admin/event2/event-list';
+          }
+          console.log(res);
+        },
+        error: (err)=>{
+          console.log(err);
+        }
+      })
+    }
+
+    $('#eventSubmit').on('click', function(){
+      // alert("click")
+      eventSubmitHandle();
+      
+    });
+    $("#secondEventSubmit").on('click', function(){
+      // alert("update event 2")
+      eventSubmitHandle();
+    })
+
+</script>
+
