@@ -1,2 +1,73 @@
-<h2>Send mail with QRcode</h2>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script> -->
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" /> -->
+
+<h4>Send mail with QRcode</h2>
 <hr>
+<style>
+    .sendmail-container{
+        display: flex;
+        justify-content: center;
+        padding: 20px 50px;
+    }
+</style>
+<div class="">
+    <div class="row sendmail-container">
+        <div class="col-6">
+            <div class="form-group">
+                <label class="form-label" for="">Title</label>
+                <input class="form-control" id="mailTitle" type="text" id="mail-title">
+            </div>
+            <!-- <div class="input-group">
+                <input type="date" class="form-control" id="dob">
+                <span class="input-group-text"><i class="bi bi-calendar-date"></i></span>
+            </div> -->
+
+            <div class="form-group">
+                <label for="" class="form-label">Ngày hết hạn mã QRcode</label>
+                <input class="form-control w-50" type="date" id="dateExpiry" name="" id="">
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <label  class="form-label">content</label>
+                <textarea class="form-control" id="mailContent" name="" cols="20" rows="5"></textarea>
+            </div>
+        </div>
+    </div>
+    <button id="btn_mailSubmit" class="btn btn-danger">Gửi mail thông bao QR checkin</button>
+</div>
+
+<script>
+    // var btnMailSubmit = document.getElementById("btn_mailSubmit");
+
+// if (btnMailSubmit && !btnMailSubmit.dataset.bound) {
+  document.getElementById("btn_mailSubmit")?.addEventListener('click', function () {
+    let _eventId = localStorage.getItem('currentEventId');
+    let title = document.getElementById('mailTitle').value;
+    let dateExpiry = document.getElementById('dateExpiry').value;
+    let content = document.getElementById('mailContent').value;
+
+    console.log(_eventId, title, dateExpiry, content);
+
+    fetch('/admin/event2/mail/send-mail2', {
+      headers: { "Content-Type": "application/json" },
+      method: "POST",
+      body: JSON.stringify({
+        event_id: _eventId,
+        title,
+        date_expiry: dateExpiry,
+        content
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        alert("success");
+      });
+  });
+
+  // đánh dấu đã bind
+//   btnMailSubmit.dataset.bound = "true";
+// }
+
+    
+</script>

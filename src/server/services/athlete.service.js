@@ -1,11 +1,9 @@
 const mongoose = require("mongoose");
 const xlsx = require("xlsx");
+const { FormatDateOnly } = require("../utils/dateUtil");
 const Athlete = require("../model/Athlete");
-const {
-  chunkArray,
-  mapExcelRowToAthlete,
-} = require("../utils/mapExcelRowToAthlete");
-const { json } = require("body-parser");
+const {chunkArray,mapExcelRowToAthlete,} = require("../utils/mapExcelRowToAthlete");
+
 
 class AthleteService {
   async UploadExcelToDB(filePath, eventId) {
@@ -84,8 +82,11 @@ class AthleteService {
       const athletes = await Athlete.find({
         event_id: new mongoose.Types.ObjectId(eventId),
       }).lean(); // convert string sang ObjectId
-      // console.log(athletes.length);
-      return { status: true, data: athletes };
+      var dataFormatDate = athletes.map((item, index)=>({
+        ...item,
+        dob: FormatDateOnly(item.dob)
+      }))
+      return { status: true, data: dataFormatDate};
     } catch (error) {
       console.log(error);
       return { status: false, mess: "AthleteSetvice_List" };
@@ -120,7 +121,6 @@ class AthleteService {
       console.log(error);
       return { status: false, mess: "AthleteService_UpdateById" };
     }
-    const result = Athlete.findByIdAndUpdate(id);
   }
   //DeleteById
   async DeleteById(id, eventId) {

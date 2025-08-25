@@ -8,9 +8,10 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
 
   <style>
-    a{
+    a {
       text-decoration: none;
     }
+
     table.dataTable {
       width: 100% !important;
     }
@@ -78,15 +79,15 @@
           <th>Bib/Cự ly</th>
           <th>ChipId</th>
           <th>Name-CCCD-Email</th>
-          <th>Giới tính</th>
+          <!-- <th>Giới tính</th> -->
           <th>Size</th>
           <th>Checkin P</th>
           <th>Checkin G</th>
           <th>Mail QR</th>
           <th>Ủy quyền</th>
           <th>E-waiver</th>
-          <th>DOB</th>
-          <th>Action</th>
+          <!-- <th>DOB</th> -->
+          <!-- <th>Action</th> -->
         </tr>
       </thead>
       <tfoot>
@@ -94,15 +95,15 @@
           <th>Bib/Cự ly</th>
           <th>ChipId</th>
           <th>Name-CCCD-Email</th>
-          <th>Giới tính</th>
+          <!-- <th>Giới tính</th> -->
           <th>Size</th>
           <th>Checkin P</th>
           <th>Checkin G</th>
           <th>Mail QR</th>
           <th>Ủy quyền</th>
           <th>E-waiver</th>
-          <th>DOB</th>
-          <th>Action</th>
+          <!-- <th>DOB</th> -->
+          <!-- <th>Action</th> -->
         </tr>
       </tfoot>
       <tbody></tbody>
@@ -122,113 +123,137 @@
         </div>
         <div class="modal-body">
           <p>
-            <div class="row" style="padding: 0 50px;">
-              <div class="col-6">
-                <input type="checkbox" name="" id=""> <span>Đã checkin</span> <br> <br>
-                <div class="row">
-                  <div class="col-6">
-                    <div class="form-group">
-                  <label for="" class="form-label">Cự ly</label>
-                  <input type="text" id="ath-distance" class="form-control" id="ath_distance">
-                </div>
-                  </div>
-                  <div class="col-6">
-<div class="form-group">
-                  <label for="" class="form-label">ChipId</label>
-                  <input type="text" class="form-control" id="ath-chip">
-                </div>
+          <div class="row" style="padding: 0 50px;">
+            <div class="col-6">
+              <input type="checkbox" name="" id=""> <span>Đã checkin</span> <br> <br>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="" class="form-label">Cự ly</label>
+                    <input type="text" id="ath-distance" class="form-control" id="ath_distance">
                   </div>
                 </div>
-                
-                
-                <!-- <div class="form-group"><label for="" class="form-label">Họ</label><input type="text" class="form-control" id="ath-ho"></div> -->
-                <!-- <div class="form-group"><label for="" class="form-label">Giới tính</label><input type="text" class="form-control" id="ath-gender"></div> -->
-                <div class="row">
-                  <div class="col-6">
-                <div class="form-group"><label for="" class="form-label">Tên</label><input type="text" class="form-control" id="ath-name"></div>
-
-                  </div>
-                  <div class="col-6">
-                <div class="form-group"><label for="" class="form-label">SĐT</label><input type="text" class="form-control" id="ath-phone"></div>
-
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="" class="form-label">ChipId</label>
+                    <input type="text" class="form-control" id="ath-chip">
                   </div>
                 </div>
-                
-                
-                
-                <div class="form-group"><label for="" class="form-label">Email</label><input type="text" class="form-control" id="ath-email"></div>
-                <div class="form-group"><label for="" class="form-label">CMND/CCCD/Passport/</label><input type="text" class="form-control" id="ath-cccd"></div>
-                <div class="form-group"><label for="" class="form-label">CLB/Nhóm</label><input type="text" class="form-control" id="ath-team"></div>
-                <div class="form-group"><label for="" class="form-label">Tên trên BIB</label><input type="text" class="form-control" id="ath-bibName"></div>
-                
-                <input type="checkbox" name="" id=""> <span>Ủy quyền nhận BIB</span>
-
               </div>
-              <div class="col-6">
-                <input type="checkbox" name="" id=""> <span>checkin theo nhóm</span> <br><br>
-                <div class="row">
-                  <div class="col-6">
-                    <div class="form-group"><label for="" class="form-label">BIB</label><input type="text" class="form-control" id="ath-bib"></div>
-                  </div>
-                  <div class="col-6">
-                <div class="form-group"><label for="" class="form-label">EPC</label><input type="text" class="form-control" id="ath-epc"></div>
 
-                  </div>
+
+              <!-- <div class="form-group"><label for="" class="form-label">Họ</label><input type="text" class="form-control" id="ath-ho"></div> -->
+              <!-- <div class="form-group"><label for="" class="form-label">Giới tính</label><input type="text" class="form-control" id="ath-gender"></div> -->
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">Tên</label><input type="text"
+                      class="form-control" id="ath-name"></div>
+
                 </div>
-                <div class="row">
-                  <div class="col-6">
-                    <div class="form-group">
-                  <label for="" class="form-label">Giới tính</label>
-                  <select class="form-select w-75" name="" id="ath-gender" >
-                    <option value="true">Nam</option>
-                    <option value="false">Nữ</option>
-                  </select>
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">SĐT</label><input type="text"
+                      class="form-control" id="ath-phone"></div>
+
                 </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-group"><label for="" class="form-label">Nhóm máu</label><input type="text" class="form-control" id="ath-blood"></div>
-                    
-                  </div>
-                </div> 
-                <div class="row">
-                  <div class="col-6"><div class="form-group"><label for="" class="form-label">DOB <small>(mm/dd/yyyy)</small></label><input type="date" class="form-control" id="ath-dob"></div>
               </div>
-                  <div class="col-6">
-                <div class="form-group"><label for="" class="form-label">Thông tin y tế</label><input type="text" class="form-control" id="ath-medical"></div>
-
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-6">
-                <div class="form-group"><label for="" class="form-label">Quốc tịch</label><input type="text" class="form-control" id="ath-nation"></div>
-
-                  </div>
-                  <div class="col-6">
-                <div class="form-group w-50"><label for="" class="form-label">Size áo</label><input type="text" class="form-control" id="ath-size"></div>
-
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-6">
-                <div class="form-group"><label for="" class="form-label">Người liên hệ khẩn cấp</label><input type="text" class="form-control" id="ath-patronName"></div>
-
-                  </div>
-                  <div class="col-6">
-                <div class="form-group"><label for="" class="form-label">SĐT người liên hệ khẩn cấp</label><input type="text" class="form-control" id="ath-patronPhone"></div>
-
-                  </div>
-                </div>
 
 
-              </div>
+
+              <div class="form-group"><label for="" class="form-label">Email</label><input type="text"
+                  class="form-control" id="ath-email"></div>
+              <div class="form-group"><label for="" class="form-label">CMND/CCCD/Passport/</label><input type="text"
+                  class="form-control" id="ath-cccd"></div>
+              <div class="form-group"><label for="" class="form-label">CLB/Nhóm</label><input type="text"
+                  class="form-control" id="ath-team"></div>
+              <div class="form-group"><label for="" class="form-label">Tên trên BIB</label><input type="text"
+                  class="form-control" id="ath-bibName"></div>
+
+              <input type="checkbox" name="" id=""> <span>Ủy quyền nhận BIB</span>
+
             </div>
+            <div class="col-6">
+              <input type="checkbox" name="" id=""> <span>checkin theo nhóm</span> <br><br>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">BIB</label><input type="text"
+                      class="form-control" id="ath-bib"></div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">EPC</label><input type="text"
+                      class="form-control" id="ath-epc"></div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="" class="form-label">Giới tính</label>
+                    <select class="form-select w-75" name="" id="ath-gender">
+                      <option value="true">Nam</option>
+                      <option value="false">Nữ</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">Nhóm máu</label><input type="text"
+                      class="form-control" id="ath-blood"></div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">DOB <small>(mm/dd/yyyy)</small></label><input
+                      type="date" class="form-control" id="ath-dob"></div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">Thông tin y tế</label><input type="text"
+                      class="form-control" id="ath-medical"></div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">Quốc tịch</label><input type="text"
+                      class="form-control" id="ath-nation"></div>
+
+                </div>
+                <div class="col-6">
+                  <div class="form-group w-50"><label for="" class="form-label">Size áo</label><input type="text"
+                      class="form-control" id="ath-size"></div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">Người liên hệ khẩn cấp</label><input
+                      type="text" class="form-control" id="ath-patronName"></div>
+
+                </div>
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">SĐT người liên hệ khẩn cấp</label><input
+                      type="text" class="form-control" id="ath-patronPhone"></div>
+
+                </div>
+              </div>
+
+
+            </div>
+          </div>
           </p>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            Close
-          </button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+        <div class="modal-footer" style="justify-content: space-between !important;">
+          <!-- <div style="display: flex; justify-content: space-between;"> -->
+            <div class="col-left">
+              <button id="btn-cta-delete" type="button" class="btn btn-danger">Delete</button>
+            </div>
+            <div class="col-right">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Close
+              </button>
+              <button id="btn-cta-savechange" type="button" class="btn btn-primary">Save changes</button>
+              <input type="hidden" id="athlete_id" name="">
+            </div>
+          <!-- </div> -->
         </div>
       </div>
     </div>
@@ -240,7 +265,12 @@
       modal.show();
       // const ath_name = document.getElementById('ath-name');
       // ath_name.value =id;
-      
+
+    }
+    function closeModal(id){
+      const modalElement = document.getElementById("modalAthlete")
+      const modal = new bootstrap.Modal(modalElement);
+      modal.hide();
     }
   </script>
   <!-- [outdoor end] -->
@@ -269,18 +299,18 @@
                     <div class="athlete-info"
                     data-id ="${d._id}"
                     >
-                    ${d.name || ""}<br>${d.cccd || ""}<br>${d.email || ""}
+                    ${d.name || ""} - ${d.gender ? '<span class="text-primary">M</span>' : '<span class="text-danger">F</span>'}<br>${d.cccd || ""}<br>${d.email || ""}
                     </div>
                     ` },
-          { data: "gender", render: (g) => g ? '<span class="text-primary">M</span>' : '<span class="text-danger">F</span>' },
+
           { data: "shirtSize", defaultContent: "" },
           { data: "checkin", render: (c) => (c ? "✅" : "✖️") },
           { data: "groupCheckin", defaultContent: "" },
           { data: "mailQR", defaultContent: "" },
           { data: "proxy", defaultContent: "" },
           { data: "waiver", defaultContent: "" },
-          { data: "dob", defaultContent: "" },
-          { data: null, orderable: false, render: () => '<button class="btn btn-sm btn-primary">Sửa</button>' }
+          // { data: "dob", defaultContent: "" },
+          // { data: null, orderable: false, render: () => '<button class="btn btn-sm btn-primary">Sửa</button>' }
         ],
         pageLength: 20,
         autoWidth: true,
@@ -306,62 +336,53 @@
     });
     // new
     //call server
-    
-    function AthleteInfoDetail(id){
+
+    function AthleteInfoDetail(id) {
       //get eventId from localStoreage
       const _id = id;
-      const _eventId =localStorage.getItem('currentEventId') 
-      // alert(_eventId+" ----- "+id);
-
-      //
+      const _eventId = localStorage.getItem('currentEventId')
       // debugger
       $.ajax({
-      url: `/admin/athlete/detail-athlete`,
-      method : "POST",
-      contentType: 'application/json',
-      data: JSON.stringify({event_id: _eventId, athlete_id: id}),
-      success: (res)=>{
-        // alert(res.data)
-        // console.log(res.data)
-        SetValueModal(res.data)
-        openModal(id)
-      },
-      error: (err)=>{
-        alert(err)
-      }
-    })
+        url: `/admin/athlete/detail-athlete`,
+        method: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify({ event_id: _eventId, athlete_id: id }),
+        success: (res) => {
+          SetValueModal(res.data)
+          openModal(id)
+        },
+        error: (err) => {
+          alert(err)
+        }
+      })
     };
     //formatDate
     function formatDate(isoString) {
-  const date = new Date(isoString);
-  return date.toLocaleString('vi-VN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  });
-}
-
+      const date = new Date(isoString);
+      return date.toLocaleString('vi-VN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+    }
+    //format date
+    function formatDate2(date) {
+      return date.slice(date, 10);
+    }
     //set value popup
-    function SetValueModal(ath){
+    function SetValueModal(ath) {
       // const 
       console.log(ath)
       console.log(typeof ath)
       //
-      // if(ath.updateAt != null){
-      //   $("#ath-createAt").text(ath.updateAt)
-      // }else{
-      //   $("#ath-createAt").text(ath.createAt)
-      // }
-      // alert("aa: "+ath.updatedAt)
-      $("#ath-createAt").text("Ngày tạo: "+formatDate(ath.updatedAt))
+      $("#ath-createAt").text("Ngày tạo: " + formatDate(ath.updatedAt))
       $("#ath-distance").val(ath.distance)
       $("#ath-chip").val(ath.chip)
       $("#ath-ho").val(ath.name)
-      // $("#ath-gender").val(ath.gender)
-      // alert(ath.gender)
+      $("#athlete_id").val(ath._id)
       $("#ath-gender").val(String(ath.gender))
       $("#ath-email").val(ath.email)
       $("#ath-cccd").val(ath.cccd)
@@ -373,7 +394,8 @@
       $("#ath-bib").val(ath.bib)
       $("#ath-epc").val(ath.epc)
       $("#ath-name").val(ath.name)
-      $("#ath-dob").val(ath.dob)
+
+      $("#ath-dob").val(formatDate2(ath.dob))
       $("#ath-phone").val(ath.phone)
       $("#ath-nation").val(ath.nation)
       $("#ath-size").val(ath.size)
@@ -394,15 +416,103 @@
         // alert("Tên VĐV: " + rowData.name);
         let id = $(this).find('.athlete-info').data('id');
         // await alert(id)
-        
+
         AthleteInfoDetail(id);
       }
     });
     //
     //
-        setTimeout(() => {
-          MyInitTinymce();
-        }, 1000);
+    setTimeout(() => {
+      MyInitTinymce();
+    }, 1000);
+    //Update
+    function getDataModal() {
+      let ath = {
+        distance: $("#ath-distance").val(),
+        chip: $("#ath-chip").val(),
+        gender: $("#ath-gender").val(),
+        email: $("#ath-email").val(),
+        cccd: $("#ath-cccd").val(),
+        team: $("#ath-team").val(),
+        bib_name: $("#ath-bibName").val(),
+        patron_name: $("#ath-patronName").val(),
+        blood: $("#ath-blood").val(),
+        bib: $("#ath-bib").val(),
+        epc: $("#ath-epc").val(),
+        name: $("#ath-name").val(),   // nếu muốn giữ riêng với name ở trên
+        dob: $("#ath-dob").val(),
+        phone: $("#ath-phone").val(),
+        nation: $("#ath-nation").val(),
+        size: $("#ath-size").val(),
+        patron_phone: $("#ath-patronPhone").val(),
+        medical: $("#ath-medical").val()
+      };
+      return ath;
+    }
+    $("#btn-cta-savechange").on('click', function (el) {
+      // alert("hello");
+      let _event_id = localStorage.getItem('currentEventId');
+      let _ath_id = $("#athlete_id").val();
+      let ath = getDataModal();
+      ath.athlete_id = _ath_id;
+      ath.event_id = _event_id;
+      console.log(ath)
+      // ajax
+      $.ajax({
+        url: `/admin/athlete/update-athlete`,
+        method: "PUT",
+        contentType: 'application/json',
+        data: JSON.stringify(ath),
+        success: (res)=>{
+          alert('update success')
+          reloadAthletes(_event_id)
+        },
+        error: (err)=>{
+          alert('failed')
+          console.log(err)
+        }
+      })
+    })
+    //reload page
+    function reloadAthletes(eventId) {
+  $.ajax({
+    url: `/admin/athlete/athlete-list/${eventId}`,
+    method: "GET",
+    success: (res) => {
+      if (res.success) {
+        alert("colose modal")
+        closeModal();
+        let table = $("#athletesTable").DataTable();
+        table.clear();
+        table.rows.add(res.data);
+        table.draw(false);
+      } else {
+        alert("Không lấy được danh sách VĐV!");
+      }
+    },
+    error: (err) => {
+      console.error("Lỗi reloadAthletes:", err);
+      alert("Không thể load lại dữ liệu!");
+    }
+  });
+}
+//delete
+$("#btn-cta-delete").on("click", function(){
+  // alert("hello")
+  let _athlete_id = $("#athlete_id").val();
+  $.ajax({
+    url: `/admin/athlete/athlete-delete`,
+    method: "DELETE",
+    contentType: 'application/json',
+    data: JSON.stringify({event_id: localStorage.getItem('currentEventId'), athlete_id: _athlete_id}),
+    success: (res)=>{
+      alert('delete success')
+    },
+    error: (err)=>{
+      alert('delete failed')
+    }
+  })
+})
   </script>
 </body>
 

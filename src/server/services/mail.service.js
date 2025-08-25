@@ -5,11 +5,11 @@ const { buildMailTemplate } = require("../utils/mail.util");
 
 async function sendMail(email, qrCode) {
   // Nội dung bạn đưa
-  const qrContent =
-    "/LzQaXTZSBy79EqmuLUXQw==:cyFxpjJyVDDyYZKt8KdAruwMxoZZGxQ924isRmOkIUYIiNGlVASc1PJKlFMz/oZVSIPIIG0oBwnMIr1nBJNsCYOgfO5JB1ZVj+L6NRnjHGg=.20aee207ad285a74dcbf6dcaf63e4752b5c272c30dd9202cd840af8a91206c91";
+  // const qrContent =
+    // "/LzQaXTZSBy79EqmuLUXQw==:cyFxpjJyVDDyYZKt8KdAruwMxoZZGxQ924isRmOkIUYIiNGlVASc1PJKlFMz/oZVSIPIIG0oBwnMIr1nBJNsCYOgfO5JB1ZVj+L6NRnjHGg=.20aee207ad285a74dcbf6dcaf63e4752b5c272c30dd9202cd840af8a91206c91";
 
   // Tạo QR code dưới dạng buffer (PNG)
-  const qrBuffer = await QRCode.toBuffer(qrContent, { type: "png" });
+  const qrBuffer = await QRCode.toBuffer(qrCode, { type: "png" });
 
   const html = buildMailTemplate("cid:qrcode");
   // console.log(html);

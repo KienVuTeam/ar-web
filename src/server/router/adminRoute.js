@@ -20,6 +20,9 @@ router.use('/event', EventController.Index.bind(EventController)) //dat cuoi
 // ============ [update event] ====== 
 router.post('/event2/athlete/xlsx-upload',upload.single('file') ,EventV2Controller.UploadExcel.bind(EventV2Controller));
 //ảhke
+router.post('/event2/mail/send-mail', EventV2Controller.sendMailQRToAthlete.bind(EventV2Controller))
+router.post('/event2/mail/send-mail2', EventV2Controller.sendMailQRToAthlete2.bind(EventV2Controller));
+router.get('/event2/mail/send-mail-person', EventV2Controller.sendMailPersional.bind(EventV2Controller));
 router.put('/event2/update-event/:id', EventV2Controller.UpdateEvent.bind(EventV2Controller))
 router.post('/event2/new-event', EventV2Controller.AddEvent.bind(EventV2Controller))
 router.get('/event2/form-add-event', EventV2Controller.FormAddEvent.bind(EventV2Controller))
@@ -36,9 +39,12 @@ router.get('/event2', EventV2Controller.Index.bind(EventV2Controller))
 // 
 
 //Athlete
-router.post('/athlete/detail-athlete', AthleteController.AthleteDetail.bind(AthleteController));
+router.post('/athlete/detail-athlete', AthleteController.AthleteDetail.bind(AthleteController)); 
+router.put('/athlete/update-athlete', AthleteController.AthleteUpdate.bind(AthleteController));
+router.get('/athlete/athlete-list/:slug', AthleteController.AthleteList.bind(AthleteController))
+router.delete('/athlete/athlete-delete', AthleteController.AthleteDelete.bind(AthleteController))
 // router.get('/athlete/')
-router.get('/athlete/manage-list', AthleteController.ManageList.bind(AthleteController));
+router.get('/athlete/manage-list', AthleteController.ManageList.bind(AthleteController)); // nen bo dan di
 router.post('/athlete/xlsx-upload',upload.single('file') ,AthleteController.UploadExcel.bind(AthleteController));
 router.get('/athlete', AthleteController.Index.bind(AthleteController))
 //Gallery

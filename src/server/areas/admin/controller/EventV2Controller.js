@@ -1,32 +1,38 @@
 const crypto = require("crypto");
-const path = require("path")
+const path = require("path");
+
 const EventService = require("../../../services/event.service");
 const FlagCheck = require("../../../utils/flagCheck");
-const { generateAthleteQR, GiaiMa } = require("../../../services/qr2.service");
+const {
+  generateAthleteQR,
+  decodeAthleteQR,
+} = require("../../../services/qr2.service");
 const AthleteService = require("../../../services/athlete.service");
+const QRCodeEntity = require("../../../model/QRCode");
+const mailService = require("../../../services/mail.service");
+const mailService2 = require("../../../services/mail2.service")
 
 class EventV2Controller {
   Index(req, res) {
     res.send("EventContorller_Index");
   }
   //create event
-  async AddEvent(req, res){
-          try {
-              const dataSend = req.body;
-              const result = await EventService.addEvent(dataSend);
-              var FlagStatus = result.staus;
-              FlagCheck(FlagStatus)
-  
-              res.json({status: true, mess: ''});
-  
-          } catch (error) {
-              console.log(error);
-              res.json({
-                  status: false,
-                  message: "Add event failed"
-              })
-          }
-      }
+  async AddEvent(req, res) {
+    try {
+      const dataSend = req.body;
+      const result = await EventService.addEvent(dataSend);
+      var FlagStatus = result.staus;
+      FlagCheck(FlagStatus);
+
+      res.json({ status: true, mess: "" });
+    } catch (error) {
+      console.log(error);
+      res.json({
+        status: false,
+        message: "Add event failed",
+      });
+    }
+  }
   //R
   async EventList(req, res) {
     var result = await EventService.listEvent();
@@ -38,10 +44,13 @@ class EventV2Controller {
     });
   }
   // Form Add event
-  FormAddEvent(req, res){
-        res.render('admin/event2/formAddEvent', {layout: 'layout/layoutAdmin', title: 'Add New Event 2'});
-    }
-  // 
+  FormAddEvent(req, res) {
+    res.render("admin/event2/formAddEvent", {
+      layout: "layout/layoutAdmin",
+      title: "Add New Event 2",
+    });
+  }
+  //
   async LoadFormEditPartial(req, res) {
     try {
       // const _id = req.query.id;
@@ -65,38 +74,38 @@ class EventV2Controller {
   }
   // U
   //[ajax]
-      async UpdateEvent(req, res){
-        console.log('tests')
-          try {
-              const _id = req.params.id;
-              const dataClient = req.body;
-              var result = await EventService.updateEvent(_id, dataClient)
-              res.send({status: true, data:'Ajax'})
-          } catch (error) {
-              console.log(error)
-              
-          }
-      }
+  async UpdateEvent(req, res) {
+    console.log("tests");
+    try {
+      const _id = req.params.id;
+      const dataClient = req.body;
+      var result = await EventService.updateEvent(_id, dataClient);
+      res.send({ status: true, data: "Ajax" });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   //ajax
   async UploadExcel(req, res) {
-      try {
-        if (!req.file) {
-          return res.status(400).json({status: false, mess: "No file uploaded" });
-        }
-        const filePath = path.resolve(req.file.path);
-        const event_id = req.body.event_id;
-        console.log(event_id)
-  
-        const _athleteService = new AthleteService();
-        const result = await _athleteService.UploadExcelToDB(filePath, event_id);
-        // FlagCheck(result.status, result.mess)
-        res.json({staus:true, mess: result.data})
-  
-      } catch (error) {
-        console.log(error);
-        res.json({ status: false, mess: error.message });
+    try {
+      if (!req.file) {
+        return res
+          .status(400)
+          .json({ status: false, mess: "No file uploaded" });
       }
+      const filePath = path.resolve(req.file.path);
+      const event_id = req.body.event_id;
+      console.log(event_id);
+
+      const _athleteService = new AthleteService();
+      const result = await _athleteService.UploadExcelToDB(filePath, event_id);
+      // FlagCheck(result.status, result.mess)
+      res.json({ staus: true, mess: result.data });
+    } catch (error) {
+      console.log(error);
+      res.json({ status: false, mess: error.message });
     }
+  }
   //ajax
   async LoadPartialPage(req, res) {
     function handleReturnView(err, html) {
@@ -119,38 +128,41 @@ class EventV2Controller {
               layout: false,
               event: result.data,
             },
-            handleReturnView
+            handleReturnView,
           );
         case 2:
-          console.log(_eventId)
+          // console.log(_eventId);
           var result = await this.AthleteList(_eventId);
-          console.log(result.data.length)
+          // console.log(result.data.length);
           // var result = null;
-          if(result.data.length===0){
-            return res.render("admin/event2/athleteImport", {layout: false, title: 'import athlete'})
+          if (result.data.length === 0) {
+            return res.render("admin/event2/athleteImport", {
+              layout: false,
+              title: "import athlete",
+            });
           }
           return res.render(
             "admin/partials/bib",
             { layout: false, athletes: result.data },
-            handleReturnView
+            handleReturnView,
           );
         case 3:
           return res.render(
             "admin/partials/sendMail",
             { layout: false },
-            handleReturnView
+            handleReturnView,
           );
         case 4:
           return res.render(
             "admin/partials/checkin",
             { layout: false },
-            handleReturnView
+            handleReturnView,
           );
         case 5:
           return res.render(
             "admin/partials/finished",
             { layout: false },
-            handleReturnView
+            handleReturnView,
           );
         default:
           return res.send("⛔ Ko có nội dung cho bước này");
@@ -218,19 +230,176 @@ class EventV2Controller {
   async AthleteList(eventId) {
     // console.log("can thay eventid");
     // const idEvent = "689d3e161d99d1e9a91f9682";
-    const _eventId =eventId;
+    const _eventId = eventId;
     try {
       const _athleteService = new AthleteService();
       var result = await _athleteService.AthleteList(_eventId);
       return result;
-      // FlagCheck(result.status, result.mess);
-      // res.json(result.data)
-      //   res.render('admin/athlete/managerAthlete', {layout:'layout/layoutAdmin', athletes: result.data})
     } catch (error) {
       console.log(error);
-      // res.json({status: false, data:[]})
     }
   }
+  // send Mail To Athlete
+  async sendMailQRToAthlete(req, res) {
+    try {
+      //
+      console.log("running");
+      const _eventId = req.body.event_id;
+      const _dateExpiry = new Date(req.body.date_expiry);
+      const _title = req.body.title;
+      const _content = req.body.content;
+      console.log(_eventId + " " + _dateExpiry + " " + _title + " " + _content);
+      //
+
+      var _athleteService = new AthleteService();
+      var result = await _athleteService.AthleteList(_eventId);
+      var athletes = result.data;
+      // console.log(athletes);
+      const batchSize = 20;
+      for (let i = 0; i < athletes.length; i += batchSize) {
+        const batch = athletes.slice(i, i + batchSize);
+        console.log(i);
+        await Promise.allSettled(
+          // batch
+          batch.map(async (athlete) => {
+            try {
+              let _mail = athlete.email;
+              let _athlete_id = athlete._id;
+              // let _athlete_mail = athlete.email;
+              //tao qr codestring ma hoa
+              const qrGen = await generateAthleteQR(
+                _athlete_id,
+                _eventId,
+                _dateExpiry,
+              );
+              let _qr_string = qrGen.qr_string;
+              // luu vao db
+              // const _qrcode = new QRCodeEntity({
+              //   athlete_id: _athlete_id,
+              //   event_id: _eventId,
+              //   qr_token: _qr_string,
+              //   expired_at: _dateExpiry,
+              // });
+              // await _qrcode.save();
+              //
+              await QRCodeEntity.findOneAndUpdate(
+                { athlete_id: _athlete_id, event_id: _eventId }, // điều kiện tìm
+                {
+                  qr_token: _qr_string,
+                  expired_at: _dateExpiry,
+                },
+                { upsert: true, new: true }, // nếu chưa có thì tạo mới, có rồi thì update
+              );
+              //send mail
+              await mailService.sendMail(_mail, _qr_string);
+              console.log(`✅ Sent to ${athlete.email}`);
+            } catch (err) {
+              console.error(`❌ Failed to send ${athlete.email}`, err);
+            }
+          }),
+        );
+
+        // nhỏ giọt cho đỡ bị chặn
+        await new Promise((r) => setTimeout(r, 1000));
+      }
+      res.json({ success: true, mess: "Ok" });
+    } catch (error) {
+      console.log(error);
+      res.json({ success: false, mess: "Faild ...." });
+    }
+  }
+  // 2
+  // send Mail To Athlete
+  async sendMailQRToAthlete2(req, res) {
+    try {
+      //
+      console.log("running");
+      const _eventId = req.body.event_id;
+      const _dateExpiry = new Date(req.body.date_expiry);
+      const _title = req.body.title;
+      const _content = req.body.content;
+      console.log(_eventId + " " + _dateExpiry + " " + _title + " " + _content);
+      //
+
+      var _athleteService = new AthleteService();
+      var result = await _athleteService.AthleteList(_eventId);
+      var athletes = result.data;
+      // console.log(athletes);
+      const batchSize = 20;
+      for (let i = 0; i < athletes.length; i += batchSize) {
+        const batch = athletes.slice(i, i + batchSize);
+        console.log(i);
+        await Promise.allSettled(
+          // batch
+          batch.map(async (athlete) => {
+            try {
+              // let _mail = athlete.email;
+              let _athlete_id = athlete._id;
+              // let _athlete_mail = athlete.email;
+              //tao qr codestring ma hoa
+              const qrGen = await generateAthleteQR(
+                _athlete_id,
+                _eventId,
+                _dateExpiry,
+              );
+              let _qr_string = qrGen.qr_string;
+              //luu vao db bang qrcode
+              await QRCodeEntity.findOneAndUpdate(
+                { athlete_id: _athlete_id, event_id: _eventId }, // điều kiện tìm
+                {
+                  qr_token: _qr_string,
+                  expired_at: _dateExpiry,
+                },
+                { upsert: true, new: true }, // nếu chưa có thì tạo mới, có rồi thì update
+              );
+              //send mail
+              await mailService2.sendMail2(athlete, _qr_string);
+              console.log(`✅ Sent to ${athlete.email}`);
+            } catch (err) {
+              console.error(`❌ Failed to send ${athlete.email}`, err);
+            }
+          }),
+        );
+
+        // nhỏ giọt cho đỡ bị chặn
+        await new Promise((r) => setTimeout(r, 1000));
+      }
+      res.json({ success: true, mess: "Ok" });
+    } catch (error) {
+      console.log(error);
+      res.json({ success: false, mess: "Faild ...." });
+    }
+  }
+  //send mail person
+  async sendMailPersional(req, res){
+    try {
+      console.log("gui mail person thong tin cung")
+      // _email = req.query.mail;
+      var _eventId ="689d3e161d99d1e9a91f9682";
+      var _athleteId = "68abe27615f1b67a11b4c100";
+      var _dateExpiry = new Date("2025-08-30")
+      var _athleteService = new AthleteService();
+      var athleteObject =await _athleteService.GetById(_eventId, _athleteId)
+      var ath = athleteObject.data;
+      // console.log(ath)
+
+      //generate Qr code
+      var qrGen = await generateAthleteQR(_athleteId, _eventId, _dateExpiry);
+      var qrString = qrGen.qr_string;
+      //send mail
+      await mailService2.sendMail2(ath, qrString);
+      console.log("✅ Send to "+ath.email)
+      res.json({success: true, mess: ath.email})
+    } catch (error) {
+      console.log(error);
+      res.json({ success: false, mess: error });
+    }
+  }
+  //athlete ajax
+  // async AthleteListAjax(req, res){
+  //   var result = this.AthleteList()
+  //   return result;
+  // }
 }
 
 module.exports = new EventV2Controller();

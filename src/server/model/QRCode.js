@@ -9,7 +9,7 @@ const QrCodeSchema = new mongoose.Schema(
     expired_at: { type: Date },   // ngày hết hạn
     is_used:    { type: Boolean, default: false }, // đã checkin chưa?
 
-    qr_base64:  { type: String }, // optional: ảnh QR để cache
+    // qr_base64:  { type: String }, // optional: ảnh QR để cache
   },
   { timestamps: true }
 );

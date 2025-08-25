@@ -15,6 +15,16 @@ function normalizeKeys(row) {
   });
   return normalized;
 }
+//chuẩn hóa ngày sinh
+function normalizeDOB(data){
+  let dob =null;
+  const dateCell = new Date(data);
+  if(!isNaN(dateCell)){
+    dob =dateCell.setHours(0,0,0,0) //set time 00:00:00:00
+    return dob
+  }
+  return dob
+}
 //end
 function mapExcelRowToAthlete(row, eventId) {
   const r = normalizeKeys(row);
@@ -27,7 +37,7 @@ function mapExcelRowToAthlete(row, eventId) {
     email: r["email"] || "",
     phone: r["số điện thoại"] || "",
     cccd: r["cmnd/cccd/passport"] || "",
-    dob: r["ngày sinh" ||""],
+    dob:normalizeDOB(r["ngày sinh" ||""]),
     nation: r["quốc tịch"] || "",
     city: r["tỉnh/tp"] || "",
     address: r["địa chỉ"] || "",

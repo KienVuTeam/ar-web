@@ -115,7 +115,7 @@
     );
     if (userConfirmed) {
       // Người dùng chọn "Yes"
-      if (confirm("Bạn có chắc muốn xóa sự kiện này?")) {
+      // if (confirm("Bạn có chắc muốn xóa sự kiện này?")) {
         $.ajax({
           url: `/admin/event/delete-event/${id}`,
           type: "DELETE",
@@ -131,7 +131,7 @@
             alert("Lỗi server");
           },
         });
-      }
+      // }
     } else {
       // Người dùng chọn "No"
       console.log("Hủy bỏ hành động.");
