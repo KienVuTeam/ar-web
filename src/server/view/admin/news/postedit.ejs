@@ -1,0 +1,187 @@
+<div class="page-header">
+  <div class="page-block">
+    <div class="row align-items-center">
+      <div class="col-md-12">
+        <div class="page-header-title">
+          <h5 class="m-b-10">News</h5>
+        </div>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/admin/news/post/index">Post list</a></li>
+          <li class="breadcrumb-item" ><a href="#!" style="cursor: none; color: red;"><span >edit</span></a></li>
+          <!-- <li class="breadcrumb-item" aria-current="page">Home</li> -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- breack-crum -->
+
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header">
+        <h3>Create new Post</h3>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label for="tile" class="form-label">Title <span style="color: red;">(*)</span></label>
+          <input type="text" id="title" class="form-control" value="<%=post.title%>" required placeholder="Enter title here" />
+        </div>
+        <div class="form-group">
+          <label for="desc" class="form-label">Desc</label>
+          <textarea id="desc" type="text" class="form-control" placeholder="Enter desc" rows="4" ><%=post.desc%></textarea>
+        </div>
+      </div>
+      <div class="card-header">
+        <h5>Content post <span style="color: red;">(*)</span></h5>
+      </div>
+      <div class="card-body">
+        <textarea id="pc-tinymce-4" name="pc-tinymce-4" class="tox-target" placeholder="Write here">
+            <%= post.content %>
+        </textarea>
+      </div>
+      <br />
+      <div class="card-body">
+        <div class="form-group">
+          <div class="form-label">SEO keyword</div>
+          <textarea class="form-control" id="keyMeta" rows="1" ><%=post.keyMeta%></textarea>
+        </div>
+        <div class="form-group">
+          <div class="form-label">SEO Description</div>
+          <textarea class="form-control" id="descMeta" rows="1" style=""><%=post.descMeta%></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  -->
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-body">
+        <h5>Category <span style="color: red;">(*)</span></h5>
+        <br />
+        <div class="form-group">
+           <select id="formSelectCategory" class="form-select">
+             <option value="default">Chọn danh mục</option>
+             <% categories.forEach(cat=>{ %>
+              <option value="<%=cat._id%>"><%= cat.name %></option>
+              <%})%>
+            </select>
+        </div>
+           
+        <div class="form-group">
+          <label for="" class="form-label">Alias Link</label>
+          <input type="text" class="form-control" id="slug" value="<%=post.slug? post.slug: ''%>" />
+        </div>
+        <div class="show-image" style="margin: 0 auto;" id="show-image">
+          <img  src="/img/hero-banner.jpg" data-folder="image-1.png" alt="pre-img" style="border-radius: 5px; display: inline-block; width: 100%; height: 250px; object-fit: cover; ">
+        </div> <br>
+        <div class="form-group mb-3">
+          <label class="form-label">Choose image</label>
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Choose image</button>
+
+        </div>
+        <!-- action -->
+        <div class="form-group">
+          <button id="submitMaster" type="submit" class="btn btn-primary" data-category="<%=post.category_id._id%>" data-id="<%=post._id%>">Update</button>
+          <button type="reset" class="btn btn-secondary">Reset</button>
+          <!-- <button type="button" class="btn btn-danger">Delete</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- our ========================================================================================================================================================-->
+<!-- [Page Specific JS] start -->
+<!-- <script src="../assets/js/plugins/tinymce/tinymce.min.js"></script> -->
+<script src="/admin/assets/js/plugins/tinymce/tinymce.min.js"></script>
+<!-- tagify -->
+<script>
+
+  tinymce.init({
+    height: "250",
+    selector: "#pc-tinymce-4",
+    content_style: 'body { font-family: "Inter", sans-serif; }',
+    menubar: false,
+    toolbar: [
+      "styleselect fontselect fontsizeselect",
+      "undo redo | cut copy paste | bold italic | link image | alignleft aligncenter alignright alignjustify",
+      "bullist numlist | outdent indent | blockquote subscript superscript | advlist | autolink | lists charmap | print preview |  code",
+    ],
+    plugins: "advlist autolink link image lists charmap print preview code",
+  });
+</script>
+
+<!-- My JQuery start-->
+
+<!-- new -->
+ <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    //code here
+    //check slected
+    function checkSelect(){
+      const _yourchoose =document.getElementById("formSelectCategory").value;
+      if(_yourchoose ==="default"){
+        // alert("van nhu cu ko sao :v")
+        return false
+      }else{
+        // alert("co lua chon moi nha :v")
+        return _yourchoose;
+      }
+
+    }
+    //submit form
+    document.getElementById('submitMaster').addEventListener('click', function(el){
+      const dataId = el.currentTarget.dataset.id;
+      const dataCategoryId = el.currentTarget.dataset.category;
+      // document.getElementById("formSelectCategory").value;
+      let category = "";
+      
+      const selected = checkSelect();
+      if(selected ===false ){
+        category = dataCategoryId 
+      }else{
+        category  = selected;
+      }
+      // alert("your chooose: "+category)
+      el.preventDefault(); //tranh readload trang
+      const title = document.getElementById('title').value;
+      const desc = document.getElementById('desc').value;
+      const content = tinymce.get('pc-tinymce-4').getContent();
+      const keyMeta = document.getElementById("keyMeta").value;
+      const descMeta = document.getElementById("descMeta").value;
+      const imagePath = "image1.jpg";
+      const slug = document.getElementById("slug").value;
+      const data={
+        title,
+        desc,
+        content,
+        keyMeta,
+        descMeta,
+        category,
+        imagePath,
+        slug
+      }
+      // alert("A")
+      console.log(data)
+      //ajax
+      $.ajax({
+        url: `/admin/news/post/update/${dataId}`,
+        method: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        success: (res)=>{
+          if(res.success){
+            // alert("update post success")
+            window.location='/admin/news/post/index'
+          }
+        },
+        error: (err)=>{
+          alert("udpate post failed")
+          console.log(err)
+        }
+      })
+    })
+
+  })
+ </script>

@@ -1,0 +1,109 @@
+<div class="page-header">
+  <div class="page-block">
+    <div class="row align-items-center">
+      <div class="col-md-12">
+        <div class="page-header-title">
+          <h5 class="m-b-10">News</h5>
+        </div>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#!">Post</a></li>
+          <li class="breadcrumb-item"><span style="color: red"; href="#!">list</span></li>
+          <!-- <li class="breadcrumb-item" aria-current="page">Home</li> -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- breack-crum -->
+<div class="card">
+  <div class="card-header">
+    <div class="my-container" style="display: flex; justify-content: space-between;">
+      <div class="col-left">
+        <h4>Post list</h4>
+      </div>
+      <div class="col-right">
+        <a href="/admin/news/post/form-create" class="btn btn-primary">Thêm bài viết mới</a>
+      </div>
+    </div>
+    <!--  -->
+    <div class="my-control" style="margin-top: 40px;">
+        <div class="row">
+            <div class="col-6">
+                <input type="search" name="" class="form-control  w-50" placeholder="Tim kiem" id="">
+            </div>
+            <div class="col-6 ">
+                <select name="" id="" class="form-select w-50" style="float: right;">
+                    <option value="">choose option</option>
+                </select>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <table id="post_tbl" class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>category</th>
+          <th>Actions</th>
+          <th>updated at</th>
+        </tr>
+      </thead>
+      <tbody>
+          <% posts.forEach((p, index)=>{ %>
+              <tr>
+                  <td><a href="/admin/news/post/form-edit/<%=p._id%>"><%=p.title%></a></td>
+                  <td><%= p.category_id.name %></td> 
+                  <td><button class="btn btn-danger btn-cta-delete" data-id="<%=p._id%>">Delete</button></td>
+                  <td><%=p.updatedAt? p.updatedAt.toLocaleDateString('vi-VN'): ""%></td>
+              </tr>
+          <%})%>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(){
+    //code
+    function handleReloadDataTable(data){
+      let html=``;
+      data.forEach((post, index)=>{
+        html+=`
+          <tr>
+              <td><a href="/admin/news/post/form-edit/${post._id}">${post.title}</a></td>
+              <td>${post.name}</td> 
+              <td><button class="btn btn-danger btn-cta-delete" data-id="${post._id}">Delete</button></td>
+              <td>${post.updatedAt? new Date(post.updatedAt).toLocaleDateString('vi-VN'): ""}</td>
+          </tr>
+        `
+      })
+      return html;
+    }
+    //
+    document.querySelectorAll("table#post_tbl tbody tr .btn-cta-delete")
+    .forEach(btn =>{
+      btn.addEventListener("click", function(el){
+        // const el = event.currentTarget; // element mà listener được gắn
+        const post_id = this.getAttribute("data-id");
+        if(confirm("Bạn có chắc muốn xóa?")){
+          $.ajax({
+            url: `/admin/news/post/delete/${post_id}`,
+            method: "DELETE",
+            success: (res)=>{
+              if(res.success){
+                let tbody = document.querySelector('table#post_tbl tbody')
+                tbody.innerHTML ="";
+                tbody.innerHTML= handleReloadDataTable(res.posts)
+                // alert('post delete success')
+              }
+            },
+            error: (err)=>{
+              alert("post delete failed")
+            }
+          })
+        }
+      })
+    })
+  })
+</script>

@@ -43,109 +43,125 @@ app.use('/hehe', (req, res)=>{
 });
 //test area start
 // Tạo thư mục uploads nếu chưa tồn tại
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
-// Route upload ảnh
+// const uploadDir = path.join(__dirname, 'uploads');
+// if (!fs.existsSync(uploadDir)) {
+//   fs.mkdirSync(uploadDir);
+// }
+// // Route upload ảnh
 
-app.use("/test/upload", multerUpload.single("image"), (req, res) => {
+// app.use("/test/upload", multerUpload.single("image"), (req, res) => {
     
-  try {
-    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-//     // Kiểm tra xem file đã được lưu thành công
-//     console.log('File uploaded successfully:', req.file);
-//     console.log('File name:', req.file.filename);
-//     console.log('File path:', req.file.path);
-// console.log('File exists:', fs.existsSync(req.file.path));
-//
-    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${
-      req.file.filename
-    }`;
-    res.json({ message: "Upload successful", imageUrl });
-  } catch (error) {
-    console.error("Upload error:", error);
-    res.status(500).json({ error: "An error occurred during upload" });
-  }
-});
+//   try {
+//     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+// //     // Kiểm tra xem file đã được lưu thành công
+// //     console.log('File uploaded successfully:', req.file);
+// //     console.log('File name:', req.file.filename);
+// //     console.log('File path:', req.file.path);
+// // console.log('File exists:', fs.existsSync(req.file.path));
+// //
+//     const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${
+//       req.file.filename
+//     }`;
+//     res.json({ message: "Upload successful", imageUrl });
+//   } catch (error) {
+//     console.error("Upload error:", error);
+//     res.status(500).json({ error: "An error occurred during upload" });
+//   }
+// });
 
-//handle img
-const baseUploadPath = path.join(__dirname, '../public/uploads');
-const router = express.Router();
-// Hiển thị danh sách thư mục
-app.get('/img', (req, res) => {
-  const folders = fs.readdirSync(baseUploadPath, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => dirent.name);
+// //handle img
+// const baseUploadPath = path.join(__dirname, '../public/uploads');
+// const router = express.Router();
+// // Hiển thị danh sách thư mục
+// app.get('/img', (req, res) => {
+//   const folders = fs.readdirSync(baseUploadPath, { withFileTypes: true })
+//     .filter(dirent => dirent.isDirectory())
+//     .map(dirent => dirent.name);
 
-  res.render('img/index', { folders, layout: false, title: 'Image Upload' });
-});
+//   res.render('img/index', { folders, layout: false, title: 'Image Upload' });
+// });
 
-// Hiển thị ảnh trong thư mục
-app.get('/folder/:name', (req, res) => {
-  const folderName = req.params.name;
-  const folderPath = path.join(baseUploadPath, folderName);
+// // Hiển thị ảnh trong thư mục
+// app.get('/folder/:name', (req, res) => {
+//   const folderName = req.params.name;
+//   const folderPath = path.join(baseUploadPath, folderName);
 
-  if (!fs.existsSync(folderPath)) return res.status(404).send('Thư mục không tồn tại');
+//   if (!fs.existsSync(folderPath)) return res.status(404).send('Thư mục không tồn tại');
 
-  const images = fs.readdirSync(folderPath).filter(file => /\.(jpg|jpeg|png|gif)$/i.test(file));
-  res.render('img/folder', { folderName, images, layout: false });
-});
+//   const images = fs.readdirSync(folderPath).filter(file => /\.(jpg|jpeg|png|gif)$/i.test(file));
+//   res.render('img/folder', { folderName, images, layout: false });
+// });
 
-// Tạo thư mục mới
-const slugify = require('slugify');
-const handleNameFolder = (nameFolder)=>{
-    // const rawFolder = "Hình ảnh nổi bật"; // từ form
-    const safeFolder = slugify(nameFolder, { lower: true, strict: true }); // -> "hinh-anh-noi-bat"
-    return safeFolder;
-}
-//
-app.post('/create-folder', (req, res) => {
-  const folderName = req.body.folderName;
-  const safeFolderName = handleNameFolder(folderName);
-  const folderPath = path.join(baseUploadPath, safeFolderName);
+// // Tạo thư mục mới
+// const slugify = require('slugify');
+// const handleNameFolder = (nameFolder)=>{
+//     // const rawFolder = "Hình ảnh nổi bật"; // từ form
+//     const safeFolder = slugify(nameFolder, { lower: true, strict: true }); // -> "hinh-anh-noi-bat"
+//     return safeFolder;
+// }
+// //
+// app.post('/create-folder', (req, res) => {
+//   const folderName = req.body.folderName;
+//   const safeFolderName = handleNameFolder(folderName);
+//   const folderPath = path.join(baseUploadPath, safeFolderName);
 
-  if (!fs.existsSync(folderPath)) {
-    fs.mkdirSync(folderPath);
-  }
+//   if (!fs.existsSync(folderPath)) {
+//     fs.mkdirSync(folderPath);
+//   }
 
-  res.redirect('/');
-});
+//   res.redirect('/');
+// });
 
-// Xóa thư mục
-app.post('/delete-folder', (req, res) => {
-  const folderName = req.body.folderName;
-  const folderPath = path.join(baseUploadPath, folderName);
+// // Xóa thư mục
+// app.post('/delete-folder', (req, res) => {
+//   const folderName = req.body.folderName;
+//   const folderPath = path.join(baseUploadPath, folderName);
 
-  if (fs.existsSync(folderPath)) {
-    fs.rmSync(folderPath, { recursive: true, force: true });
-  }
+//   if (fs.existsSync(folderPath)) {
+//     fs.rmSync(folderPath, { recursive: true, force: true });
+//   }
 
-  res.redirect('/');
-});
-const multer = require('multer');
-// Upload ảnh vào thư mục
-app.post('/upload/:folderName', (req, res) => {
-  const folderName = req.params.folderName;
-  const folderPath = path.join(baseUploadPath, folderName);
+//   res.redirect('/');
+// });
+// const multer = require('multer');
+// // Upload ảnh vào thư mục
+// app.post('/upload/:folderName', (req, res) => {
+//   const folderName = req.params.folderName;
+//   const folderPath = path.join(baseUploadPath, folderName);
 
-  const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, folderPath),
-    filename: (req, file, cb) => {
-      const uniqueName = Date.now() + '-' + file.originalname;
-      cb(null, uniqueName);
-    }
-  });
+//   const storage = multer.diskStorage({
+//     destination: (req, file, cb) => cb(null, folderPath),
+//     filename: (req, file, cb) => {
+//       const uniqueName = Date.now() + '-' + file.originalname;
+//       cb(null, uniqueName);
+//     }
+//   });
 
-  const upload = multer({ storage }).single('image');
+//   const upload = multer({ storage }).single('image');
 
-  upload(req, res, (err) => {
-    if (err) return res.status(500).send('Upload lỗi');
-    res.redirect(`/folder/${folderName}`);
-  });
-});
+//   upload(req, res, (err) => {
+//     if (err) return res.status(500).send('Upload lỗi');
+//     res.redirect(`/folder/${folderName}`);
+//   });
+// });
 
 //test area end
+// , {
+//     setHeaders: (res) => {
+//       res.setHeader("X-Content-Type-Options", "nosniff");
+//     },
+//new
+const uploadDir = path.join(__dirname, "../uploads");
+// ✅ Serve thư mục uploads như static
+app.use("/uploads", express.static(uploadDir));
+
+//dam bao ton tai thu muc upload
+if(!fs.existsSync(uploadDir)){
+  fs.mkdirSync(uploadDir);
+}
+console.log("path: "+uploadDir)
+
+//
 route(app);
 
 //connect DB

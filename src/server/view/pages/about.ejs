@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%title%></title>
+  <meta name="description" content="Giới thiệu dịch vụ chip time và tổ chức giải chạy – chính xác, chống gian lận, quy trình trơn tru từ check-in đến thành tích." />
+  <link rel="icon" href="/img/favicon-ar.png" type="image/x-icon">
+  <style>
+    :root{
+      /* --bg:#0b0f19;
+      --bg-soft:#121726;
+      --card:#0f1524;
+      --text:#e6ecff;
+      --muted:#a9b3c7;
+      --brand:#6dd3ff;
+      --brand-2:#77f2c9;
+      --accent:#ffd166;
+      --danger:#ff6b6b;
+      --radius:18px;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --shadow-soft:0 8px 20px rgba(0,0,0,.25); */
+      /* new */
+        --bg:#f8faff;
+  --bg-soft:#eef3fb;
+  --card:#ffffff;
+  --text:#1a2238;
+  --muted:#5c6f91;
+  --brand:#ff6b6b;
+  --brand-2:#f7b733;
+  --accent:#4ecdc4;
+  --danger:#ff4d6d;
+  --radius:18px;
+  --shadow:0 10px 25px rgba(0,0,0,.1);
+  --shadow-soft:0 6px 15px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; color:var(--text); background:linear-gradient(180deg,var(--bg) 0%, #0a1122 100%);
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    a{color:inherit; text-decoration:none}
+    img{max-width:100%; display:block}
+    .container{width:min(1160px, 92vw); margin-inline:auto}
+    /* Header */
+    header{
+      position:sticky; top:0; z-index:50; backdrop-filter:saturate(160%) blur(10px);
+      background:rgba(11,15,25,.72); border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .nav{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:14px 0}
+    .brand{display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.3px}
+    .logo{
+      width:40px; aspect-ratio:1; display:grid; place-items:center; border-radius:12px;
+      background:radial-gradient(100% 100% at 30% 20%, var(--brand) 0%, var(--brand-2) 60%, transparent 61%),
+                 linear-gradient(135deg, #1f3058 0%, #16213a 100%);
+      box-shadow:var(--shadow-soft); font-weight:800; color:#08131b
+    }
+    .nav a{opacity:.9}
+    .menu{display:flex; gap:20px}
+    .menu a{font-size:.96rem; color:var(--muted)}
+    .menu a:hover{color:var(--text)}
+    .cta-btn{padding:10px 16px; border-radius:999px; background:linear-gradient(135deg,var(--brand) 0%, var(--brand-2) 100%);
+      color:#08131b; font-weight:700; box-shadow:var(--shadow); border:0}
+    .burger{display:none; background:none; border:0; color:var(--text); font-size:24px}
+
+    /* Hero */
+    .hero{position:relative; padding:72px 0 36px; overflow:hidden}
+    .hero .grid{display:grid; grid-template-columns:1.2fr .8fr; gap:32px; align-items:center}
+    .badge{display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.06); color:var(--muted); font-size:.9rem}
+    .badge b{color:var(--text)}
+    h1{font-size: clamp(32px, 5vw, 54px); line-height:1.05; margin:14px 0 12px}
+    .lead{color:var(--muted); font-size: clamp(16px, 2vw, 18px)}
+    .hero-actions{display:flex; gap:14px; margin-top:22px; flex-wrap:wrap}
+    .ghost{padding:10px 16px; border-radius:999px; border:1px solid rgba(255,255,255,.16); color:var(--text); background:transparent}
+    .statbar{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:28px}
+    .stat{
+      background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:16px; text-align:center
+    }
+    .stat .n{font-size:24px; font-weight:800}
+    .visual{
+      background:radial-gradient(1200px 600px at 20% -20%, rgba(109,211,255,.25), transparent),
+                 radial-gradient(900px 400px at 100% 0%, rgba(119,242,201,.18), transparent);
+      border:1px solid rgba(255,255,255,.08); border-radius:28px; box-shadow:var(--shadow);
+      padding:16px; transform:rotate(-1deg)
+    }
+    .visual-inner{aspect-ratio:4/3; border-radius:20px; overflow:hidden; 
+      /* background:linear-gradient(135deg,#0d1426,#070b16 60%), url('') center/cover no-repeat; display:grid; place-items:center; border:1px solid rgba(255,255,255,.06) */
+      background: url("https://accessrace.com/uploads/f_65dbf8aac26f782ac4075d3b/chiptime-d%C6%B0%E1%BB%9Dng-dua-20253142318.jpg") center/cover no-repeat; display:grid; place-items:center;
+    }
+    .viz-text{font-weight:700; font-size:clamp(18px,2.2vw,24px); color:#08131b; padding:16px 20px; border-radius:12px;
+      background:linear-gradient(135deg,var(--brand), var(--brand-2)); box-shadow:var(--shadow)}
+
+    /* Section */
+    section{padding:56px 0}
+    .section-h{
+      margin-bottom:22px; display:flex; align-items:flex-end; justify-content:space-between; gap:16px
+    }
+    .section-h h2{margin:0; font-size:clamp(22px,3.2vw,36px)}
+    .section-h p{margin:0; color:var(--muted)}
+
+    /* Why */
+    .why{display:grid; grid-template-columns:repeat(4,1fr); gap:16px}
+    .why .item{background:var(--card); border-radius:var(--radius); padding:18px; border:1px solid rgba(255,255,255,.08)}
+    .why .icon{width:40px; height:40px; border-radius:10px; display:grid; place-items:center; background:rgba(109,211,255,.15); margin-bottom:10px}
+    .why h3{margin:8px 0 6px; font-size:1.05rem}
+    .why p{margin:0; color:var(--muted); font-size:.95rem}
+
+    /* Services */
+    .services{display:grid; grid-template-columns:repeat(4,1fr); gap:16px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.02)); border-radius:var(--radius); padding:18px; border:1px solid rgba(255,255,255,.08)}
+    .card h3{margin:10px 0 8px; font-size:1.08rem}
+    .card p{margin:0; color:var(--muted)}
+    .pill{display:inline-block; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.14); font-size:.8rem; color:var(--muted)}
+
+    /* Story */
+    .story{display:grid; grid-template-columns:1.1fr .9fr; gap:24px; align-items:center}
+    .story .panel{background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:20px}
+    /* aspect-ratio:4/3; */
+    .kv{ border-radius:16px; background:conic-gradient(from 120deg, rgba(109,211,255,.28), rgba(119,242,201,.18), transparent 60%);
+      border:1px dashed rgba(255,255,255,.14); display:grid; place-items:center; color:var(--muted)}
+    .kv img{
+      border-radius: 10px;
+    }
+    /* Testimonials */
+    .testi-wrap{position:relative}
+    .testi{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+    .quote{background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:18px}
+    .quote p{margin:0 0 10px; color:var(--muted)}
+    .quote .who{display:flex; align-items:center; gap:10px}
+    .avatar{width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--brand), var(--brand-2))}
+
+    /* CTA */
+    .cta{
+      background:radial-gradient(1200px 500px at 10% -40%, rgba(109,211,255,.25), transparent),
+                 radial-gradient(900px 400px at 90% 140%, rgba(119,242,201,.22), transparent);
+      border:1px solid rgba(255,255,255,.08); border-radius:24px; padding:26px; text-align:center
+    }
+    .cta h3{margin:0 0 8px; font-size:clamp(20px,3vw,28px)}
+    .cta p{margin:0 0 14px; color:var(--muted)}
+
+    /* Contact */
+    .contact{display:grid; grid-template-columns:1.1fr .9fr; gap:20px}
+    form{display:grid; gap:12px}
+    input, textarea{width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04); color:var(--text); outline:none}
+    textarea{min-height:120px; resize:vertical}
+    label{font-size:.9rem; color:var(--muted)}
+    .btn-primary{padding:12px 16px; border-radius:12px; background:linear-gradient(135deg,var(--brand), var(--brand-2)); color:#08131b; border:0; font-weight:800}
+
+    /* Footer */
+    footer{padding:40px 0; color:var(--muted)}
+    .foot{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap}
+
+    /* Utilities */
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
+    .chip{padding:6px 10px; border-radius:999px; font-size:.8rem; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); color:var(--muted)}
+    .hide{display:none}
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero .grid, .story, .contact{grid-template-columns:1fr}
+      .why, .services{grid-template-columns:repeat(2,1fr)}
+      .testi{grid-template-columns:1fr 1fr}
+      .menu{display:none}
+      .burger{display:block}
+      .mobile{position:absolute; left:0; right:0; top:60px; background:rgba(11,15,25,.95); border-bottom:1px solid rgba(255,255,255,.06)}
+      .mobile a{display:block; padding:14px 20px; border-top:1px solid rgba(255,255,255,.06); color:var(--muted)}
+    }
+    @media (max-width: 620px){
+      .why, .services{grid-template-columns:1fr}
+      .testi{grid-template-columns:1fr}
+    }
+    /* new */
+    /* Header */
+header{
+  background:rgba(255,255,255,.9);
+  border-bottom:1px solid rgba(0,0,0,.06);
+}
+.logo{
+  background:radial-gradient(100% 100% at 30% 20%, var(--brand) 0%, var(--brand-2) 70%);
+  color:#fff;
+}
+.menu a{color:var(--text); opacity:.75}
+.menu a:hover{color:var(--brand)}
+
+/* Buttons */
+.cta-btn{
+  background:linear-gradient(135deg,var(--brand),var(--brand-2));
+  color:#fff;
+}
+.ghost{
+  border:1px solid rgba(0,0,0,.1);
+  color:var(--text);
+}
+
+/* Hero */
+.hero{
+  background:linear-gradient(135deg,#fff 0%, #f1f5ff 100%);
+}
+.stat{
+  background:#fff;
+  border:1px solid rgba(0,0,0,.06);
+}
+.visual{
+  background:linear-gradient(135deg,#fff,#fef6e4);
+}
+
+/* Why / Services / Cards */
+.why .item,
+.card,
+.story .panel,
+.quote{
+  background:#fff;
+  border:1px solid rgba(0,0,0,.08);
+  box-shadow:var(--shadow-soft);
+}
+
+/* CTA */
+.cta{
+  background:linear-gradient(135deg,#ffecd2,#fcb69f);
+  color:#1a2238;
+}
+
+/* Footer */
+footer{
+  background:#f1f5ff;
+  color:var(--muted);
+}
+/* ========================NEW */
+:root {
+  --bg: #fafafa;
+  --card: #ffffff;
+  --text: #1a1a1a;
+  --muted: #666;
+  --brand: #ff6b6b;
+  --accent: #4ecdc4;
+  --radius: 14px;
+  --shadow: 0 4px 12px rgba(0,0,0,.08);
+  --shadow-soft: 0 2px 6px rgba(0,0,0,.05);
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container {
+  width: min(1100px, 92%);
+  margin-inline: auto;
+}
+
+/* Header */
+header {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  z-index: 50;
+}
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+}
+.logo {
+  width: 40px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 700;
+}
+.menu {
+  display: flex;
+  gap: 20px;
+}
+.menu a {
+  font-size: .95rem;
+  color: var(--muted);
+}
+.menu a:hover {
+  color: var(--brand);
+}
+
+/* Buttons */
+.cta-btn {
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: none;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: var(--shadow-soft);
+}
+.ghost {
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  background: transparent;
+  color: var(--text);
+}
+
+/* Hero */
+.hero {
+  padding: 72px 0 36px;
+}
+h1 {
+  font-size: clamp(32px, 5vw, 48px);
+  margin: 12px 0;
+}
+.lead {
+  color: var(--muted);
+  font-size: 1rem;
+}
+.statbar {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 16px;
+  margin-top: 28px;
+}
+.stat {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  box-shadow: var(--shadow-soft);
+}
+.stat .n {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+/* Cards */
+.why .item,
+.card,
+.quote,
+.story .panel {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow-soft);
+}
+.why h3, .card h3 {
+  margin: 8px 0;
+  font-size: 1.05rem;
+}
+
+/* CTA */
+.cta {
+  background: linear-gradient(135deg, var(--brand), var(--accent));
+  color: #fff;
+  padding: 32px;
+  border-radius: var(--radius);
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.cta h3 {
+  margin: 0 0 8px;
+  font-size: 1.4rem;
+}
+
+/* Footer */
+footer {
+  background: #fff;
+  border-top: 1px solid #eee;
+  color: var(--muted);
+  padding: 30px 0;
+  font-size: .9rem;
+}
+/*  */
+#contact .contact form{
+  border: 1px solid #000;
+  background-color: #ddd;
+}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a href="/" class="brand" aria-label="Trang chủ">
+        <div class="" style="width: 130px; height: 44px;">
+          <img src="/img/logo-ar.png" alt="logo" class="" />
+        </div>
+
+      </a>
+      <nav class="menu" aria-label="Chính">
+        <a href="#why">Vì sao chọn</a>
+        <a href="#services">Dịch vụ</a>
+        <a href="#story">Câu chuyện</a>
+        <a href="#testi">Khách hàng</a>
+        <a href="#contact">Liên hệ</a>
+      </nav>
+      <button class="cta-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Yêu cầu báo giá</button>
+      <button class="burger" aria-label="Menu" onclick="toggleMenu()">☰</button>
+    </div>
+    <div id="mobileMenu" class="mobile hide container">
+      <a href="#why" onclick="toggleMenu()">Vì sao chọn</a>
+      <a href="#services" onclick="toggleMenu()">Dịch vụ</a>
+      <a href="#story" onclick="toggleMenu()">Câu chuyện</a>
+      <a href="#testi" onclick="toggleMenu()">Khách hàng</a>
+      <a href="#contact" onclick="toggleMenu()">Liên hệ</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container grid">
+        <div>
+          <span class="badge">Giải pháp toàn diện • <b>Chip time chính xác</b></span>
+          <h1><%=data.sections.hero.title%> <span style="background:linear-gradient(135deg,var(--brand),var(--brand-2)); -webkit-background-clip:text; background-clip:text; color:transparent"><%=data.sections.hero.highline%></span>.</h1>
+          <p class="lead"><%=data.sections.hero.description%></p>
+          <div class="hero-actions">
+            <button class="cta-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Tư vấn miễn phí</button>
+            <button class="ghost" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">Xem dịch vụ</button>
+          </div>
+          <div class="statbar">
+            <div class="stat"><div class="n" id="stat-acc"><%=data.sections.hero.stat_chip%></div><div><%=data.sections.hero.desc_chip%></div></div>
+            <div class="stat"><div class="n" id="stat-events"><%=data.sections.hero.stat_event%></div><div><%=data.sections.hero.desc_event%></div></div>
+            <div class="stat"><div class="n" id="stat-runners"><%=data.sections.hero.stat_athlete%></div><div><%=data.sections.hero.desc_athlete%></div></div>
+          </div>
+        </div>
+        <div class="visual">
+          <%-data.sections.hero.vid_embed%>
+          <!-- <div class="visual-inner"> -->
+            <!-- <div class="viz-text">Demo Dashboard • Realtime Results</div> -->
+             <!-- <button class="btn btn-primary">Explore</button> -->
+              <!-- <iframe class="visual-inner" width="560" height="315" src="https://www.youtube.com/embed/Yl-a-iDy6zo?si=bcQbaaYxqwOGmhrs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
+          <!-- </div> -->
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY -->
+    <section id="why">
+      <div class="container">
+        <div class="section-h">
+          <h2>Vì sao chọn chúng tôi</h2>
+          <p>4 trụ cột giúp giải chạy của bạn diễn ra trơn tru.</p>
+        </div>
+        <div class="why">
+          <!-- <div class="item">
+            <div class="icon" aria-hidden="true">⏱️</div>
+            <h3>Chính xác hàng đầu</h3>
+            <p>Chip time tỉ lệ đọc cao, đồng bộ đám mây, cập nhật realtime.</p>
+          </div> -->
+          <% data.sections.why.why_item.forEach((item, index)=>{ %>
+          <div class="item">
+            <div class="icon" aria-hidden="true"><%= item.icon %></div>
+            <h3><%= item.title %></h3>
+            <p><%= item.desc %></p>
+          </div>
+
+          <%})%>
+          <!-- <div class="item">
+            <div class="icon" aria-hidden="true">🛡️</div>
+            <h3>Chống gian lận</h3>
+            <p>Ghi nhận qua chốt, minh bạch và công bằng cho mọi VĐV.</p>
+          </div>
+          <div class="item">
+            <div class="icon" aria-hidden="true">👨‍💼</div>
+            <h3>Đội ngũ giàu kinh nghiệm</h3>
+            <p>Setup nhanh, hỗ trợ hiện trường và vận hành linh hoạt.</p>
+          </div>
+          <div class="item">
+            <div class="icon" aria-hidden="true">🔗</div>
+            <h3>Quy trình tối ưu</h3>
+            <p>Check‑in, in bib, áo, huy chương – một điểm đến dịch vụ.</p>
+          </div> -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services">
+      <div class="container">
+        <div class="section-h">
+          <h2>Dịch vụ đồng hành</h2>
+          <p>Module hoá – chọn theo nhu cầu hoặc trọn gói.</p>
+        </div>
+        <div class="services">
+          <% data.sections.service.service_item.forEach((item, index)=>{ %>
+          <article class="card">
+            <span class="pill"><%=item.pill%></span>
+            <h3><%=item.title%></h3>
+            <p><%=item.desc%></p>
+            <div class="chips">
+              <% if (item.tag) { 
+                  (item.tag.match(/#([^#]+)/g) || []).forEach((tag) => { %>
+                <span class="chip"><%= tag.replace(/^#/, '').trim() %></span>
+              <% }) 
+                } %>
+            </div>
+          </article>
+          <%})%>
+        </div>
+      </div>
+    </section>
+
+    <!-- STORY -->
+    <section id="story">
+      <div class="container">
+        <div class="section-h">
+          <h2>Câu chuyện & Sứ mệnh</h2>
+          <p>Từ nỗi lo vận hành đến trải nghiệm bứt phá của VĐV.</p>
+        </div>
+        <div class="story">
+          <div class="panel">
+            <h3>Chúng tôi làm gì?</h3>
+            <p>Chúng tôi cung cấp giải pháp đo thời gian và vận hành giải chạy trọn gói, giúp BTC loại bỏ thủ công rối rắm, tăng độ chính xác và minh bạch, đồng thời tối ưu chi phí.</p>
+            <h3>Tầm nhìn</h3>
+            <p>Xây dựng nền tảng dữ liệu sự kiện chạy bộ tin cậy, kết nối cộng đồng và nâng chuẩn tổ chức giải chuyên nghiệp.</p>
+          </div>
+          <!-- Hình minh hoạ / Video demo -->
+          <div class="kv">
+            <img src="<%=data.sections.story.image%>" alt="" style="background: center/cover no-repeat; display:grid; place-items:center" >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="testi">
+      <div class="container">
+        <div class="section-h">
+          <h2>Khách hàng nói gì</h2>
+          <p>Chọn vài phản hồi súc tích, có tên & đơn vị.</p>
+        </div>
+        <div class="testi-wrap">
+          <div class="testi" id="testiList">
+            <div class="quote">
+              <p>“Hệ thống chip time hoạt động ổn định, kết quả realtime giúp BTC minh bạch và VĐV hào hứng.”</p>
+              <div class="who"><div class="avatar"></div><div><b>Nam Phát</b><div class="muted">Vĩnh Long Running Club</div></div></div>
+            </div>
+            <div class="quote">
+              <p>“Đội ngũ rất nhiệt tình, hỗ trợ hiện trường chi tiết, quy trình check‑in nhanh gọn.”</p>
+              <div class="who"><div class="avatar"></div><div><b>Đinh Mão</b><div class="muted">Biển Hồ Runner</div></div></div>
+            </div>
+            <div class="quote">
+              <p>“Dịch vụ trọn gói giúp chúng tôi tiết kiệm thời gian đáng kể, đặc biệt phần in bib & huy chương.”</p>
+              <div class="who"><div class="avatar"></div><div><b>Minh Châu</b><div class="muted">BTC Giải địa phương</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section>
+      <div class="container">
+        <div class="cta">
+          <h3>Sẵn sàng nâng chuẩn giải chạy của bạn?</h3>
+          <p>Nhận tư vấn miễn phí và demo hệ thống trong 15 phút.</p>
+          <div class="hero-actions" style="justify-content:center">
+            <button class="cta-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Nhận báo giá</button>
+            <button class="ghost" onclick="alert('Đặt lịch demo: vui lòng cập nhật liên kết lịch của bạn!')">Đặt lịch demo</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <div class="container">
+        <div class="section-h">
+          <h2>Liên hệ</h2>
+          <p>Gửi yêu cầu – chúng tôi phản hồi trong vòng 24h.</p>
+        </div>
+        <div class="contact">
+          <form onsubmit="submitForm(event)">
+            <div>
+              <label for="name">Họ và tên</label>
+              <input id="name" name="name" placeholder="VD: Nguyễn Văn A" required />
+            </div>
+            <div>
+              <label for="email">Email</label>
+              <input id="email" type="email" name="email" placeholder="email@congty.com" required />
+            </div>
+            <div>
+              <label for="phone">Số điện thoại</label>
+              <input id="phone" name="phone" placeholder="VD: 09xx xxx xxx" />
+            </div>
+            <div>
+              <label for="message">Nội dung</label>
+              <textarea id="message" name="message" placeholder="Mô tả nhu cầu sự kiện, số lượng VĐV, địa điểm, thời gian…" required></textarea>
+            </div>
+            <button class="btn-primary" type="submit">Gửi yêu cầu</button>
+          </form>
+          <div class="panel">
+            <h3>Thông tin liên hệ</h3>
+            <p class="lead">[Tên công ty] • Dịch vụ giải chạy & chip time</p>
+            <p>Địa chỉ: Cập nhật địa chỉ công ty của bạn.</p>
+            <p>Hotline/Zalo: 0xxx xxx xxx</p>
+            <p>Email: contact@yourcompany.vn</p>
+            <div class="chips" style="margin-top:12px">
+              <span class="chip">Facebook</span>
+              <span class="chip">Zalo</span>
+              <span class="chip">YouTube</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container foot">
+      <div class="brand"><div class="logo">AR</div><span>Race Services</span></div>
+      <div>© <span id="year"></span> AccessRace. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <button id="toTop" aria-label="Lên đầu trang" style="position:fixed; right:16px; bottom:16px; border:0; border-radius:999px; padding:12px 14px; background:linear-gradient(135deg,var(--brand),var(--brand-2)); color:#08131b; font-weight:800; box-shadow:var(--shadow); display:none">↑</button>
+
+  <script>
+    // Mobile menu
+    function toggleMenu(){
+      const m = document.getElementById('mobileMenu');
+      m.classList.toggle('hide');
+    }
+
+    // Back to top visibility
+    const toTop = document.getElementById('toTop');
+    window.addEventListener('scroll',()=>{
+      toTop.style.display = window.scrollY > 600 ? 'block' : 'none'
+    });
+    toTop.addEventListener('click',()=>window.scrollTo({top:0, behavior:'smooth'}));
+
+    // Testimonial auto-scroll (simple carousel feel)
+    const list = document.getElementById('testiList');
+    let offset = 0; let itemsPerView = () => (window.innerWidth<=620?1: window.innerWidth<=980?2:3);
+    setInterval(()=>{
+      const total = list.children.length;
+      offset = (offset+1) % Math.max(1, total - itemsPerView() + 1);
+      list.style.transform = `translateX(-${offset * (100 / itemsPerView())}%)`;
+      list.style.transition = 'transform 600ms ease';
+    }, 3800);
+
+    // Set year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Fake submit
+    function submitForm(e){
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target).entries());
+      alert('Đã nhận yêu cầu!\n\n' + JSON.stringify(data, null, 2) + '\n\n→ Tích hợp API/email theo hệ thống của bạn.');
+      e.target.reset();
+    }
+
+    // Intersection reveal
+    const reveal = new IntersectionObserver((entries)=>{
+      entries.forEach(el=>{
+        if(el.isIntersecting){
+          el.target.animate([
+            {opacity:0, transform:'translateY(10px)'},
+            {opacity:1, transform:'translateY(0)'}
+          ], {duration:500, easing:'ease', fill:'forwards'});
+          reveal.unobserve(el.target);
+        }
+      })
+    }, {threshold:.08});
+    document.querySelectorAll('section .container > *').forEach(el=>reveal.observe(el));
+  </script>
+</body>
+</html>

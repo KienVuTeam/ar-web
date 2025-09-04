@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router();
-const upload = require('../config/multerUpload')
+const {uploadExcel, uploadImage} = require('../config/multerUpload')
 
 const HomeController = require('../areas/admin/controller/HomeController');
 const NewsController = require('../areas/admin/controller/NewsController');
@@ -8,7 +8,36 @@ const GalleryController = require('../areas/admin/controller/GalleryController')
 const EventController = require('../areas/admin/controller/EventController');
 const AthleteController = require('../areas/admin/controller/AthleteController');
 const EventV2Controller = require('../areas/admin/controller/EventV2Controller');
+//======== start new way
+//services 
+const _PostService = require('../services/post.service') // server nap ngoai nay de de test
+const _CategoryService = require('../services/category.service'); //
+//controllers
+// const categoryController= require('../areas/admin/controller/category.controller')(_CategoryService)
+const news2Controller = require('../areas/admin/controller/new2.controller')(_CategoryService, _PostService)
+const imageController = require('../areas/admin/controller/image.controller')() //fx
 
+//router 
+router.get('/news/post/index', news2Controller.ListPostAndCategory); //PostIndex
+router.get('/news/post/form-create', news2Controller.FormCreatePost)
+router.get('/news/post/form-edit/:id', news2Controller.FormEditPost)
+router.post('/news/post/create', news2Controller.CreatePost)
+router.put('/news/post/update/:id', news2Controller.UpdatePost)
+router.delete('/news/post/delete/:id', news2Controller.DeletePost)
+
+//
+router.get('/news/category/index', news2Controller.Index)
+// router.get('/ctegory/category-detail')
+router.get('/news/category/form-create',news2Controller.FormCreate)
+router.post('/news/category/create', news2Controller.CreateCategory)
+// router.get('/category/form-edit') //modal lo
+router.put('/news/category/update/:id', news2Controller.UpdateCategory)
+router.delete('/news/category/delete', news2Controller.DeleteCategory)
+// test upload anh
+router.post('/img/upload',uploadImage.single("file") ,imageController.Upload)
+router.get('/img', imageController.Index)
+
+//======== end
 
 //EventController
 router.put('/event/update-event/:id', EventController.UpdateEvent.bind(EventController)) //admin/event/delete-event
@@ -18,7 +47,7 @@ router.get('/event/form-add-event', EventController.FormAddEvent.bind(EventContr
 router.get('/event/form-edit-event', EventController.FormEditEvent.bind(EventController))
 router.use('/event', EventController.Index.bind(EventController)) //dat cuoi 
 // ============ [update event] ====== 
-router.post('/event2/athlete/xlsx-upload',upload.single('file') ,EventV2Controller.UploadExcel.bind(EventV2Controller));
+router.post('/event2/athlete/xlsx-upload',uploadExcel.single('file') ,EventV2Controller.UploadExcel.bind(EventV2Controller));
 //ảhke
 router.post('/event2/mail/send-mail', EventV2Controller.sendMailQRToAthlete.bind(EventV2Controller))
 router.post('/event2/mail/send-mail2', EventV2Controller.sendMailQRToAthlete2.bind(EventV2Controller));
@@ -45,24 +74,26 @@ router.get('/athlete/athlete-list/:slug', AthleteController.AthleteList.bind(Ath
 router.delete('/athlete/athlete-delete', AthleteController.AthleteDelete.bind(AthleteController))
 // router.get('/athlete/')
 router.get('/athlete/manage-list', AthleteController.ManageList.bind(AthleteController)); // nen bo dan di
-router.post('/athlete/xlsx-upload',upload.single('file') ,AthleteController.UploadExcel.bind(AthleteController));
+router.post('/athlete/xlsx-upload',uploadExcel.single('file') ,AthleteController.UploadExcel.bind(AthleteController));
 router.get('/athlete', AthleteController.Index.bind(AthleteController))
 //Gallery
 router.use('/gallery', GalleryController.Index.bind(GalleryController))
 //NewsController
-router.post('/mews/handle-image/:name', NewsController.ShowImagePartial)
+// router.post('/mews/handle-image/:name', NewsController.ShowImagePartial)
 
-router.get('/news/form-create-category', NewsController.FormCreateCategory)
-router.post('/news/add-new-category', NewsController.AddCategory.bind(NewsController))
-router.put('/news/update-category/:id', NewsController.UpdateCategory.bind(NewsController))
-// 
-router.get('/news/form-create-post', NewsController.FormCreatePost.bind(NewsController))
-router.post('/news/form-create-post', NewsController.CreatePost.bind(NewsController))
-router.get('/news/post-list', NewsController.PostList.bind(NewsController))
-// 
-router.use('/news', NewsController.Index)
+// router.get('/news/form-create-category', NewsController.FormCreateCategory)
+// router.post('/news/add-new-category', NewsController.AddCategory.bind(NewsController))
+// router.put('/news/update-category/:id', NewsController.UpdateCategory.bind(NewsController))
+// // 
+// router.get('/news/form-create-post', NewsController.FormCreatePost.bind(NewsController))
+// router.post('/news/form-create-post', NewsController.CreatePost.bind(NewsController))
+// router.get('/news/post-list', NewsController.PostList.bind(NewsController))
+// // 
+// router.use('/news', NewsController.Index)
 
 //dashboard
-// router.use('/', HomeController.Index)
+router.use('/', (req, res)=>{
+    res.render('admin/index', {layout: "layout/layoutAdmin", title: "Admin Dashboard"})
+})
 
 module.exports = router;

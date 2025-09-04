@@ -155,6 +155,10 @@ class TestController {
     var result =await MailService.sendMail(to);
     res.json(result)
   }
+  //test page trang chu
+  HomePage(req, res){
+    res.render("pages/test-home-page", {layout: false})
+  }
 }
 
 module.exports = new TestController();

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Image Explorer</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    #gallery { display: grid; grid-template-columns: repeat(auto-fill, 150px); gap: 10px; }
+    .item { border: 1px solid #ccc; padding: 5px; text-align: center; }
+    .item img { max-width: 100%; height: 100px; object-fit: cover; }
+  </style>
+</head>
+<body>
+  <h2>📂 Image Explorer</h2>
+  <input type="file" id="fileInput">
+  <button onclick="upload()">Upload</button>
+  <div id="gallery"></div>
+
+  <script>
+    async function loadImages() {
+      const res = await fetch("/api/images");
+      const images = await res.json();
+      const gallery = document.getElementById("gallery");
+      gallery.innerHTML = images.map(img => `
+        <div class="item">
+          <img src="${img.url}" alt="${img.name}">
+          <p>${img.name}</p>
+          <button onclick="del('${img.name}')">❌ Delete</button>
+        </div>
+      `).join("");
+    }
+
+    async function upload() {
+      const file = document.getElementById("fileInput").files[0];
+      if (!file) return alert("Chọn file!");
+      const form = new FormData();
+      form.append("file", file);
+      await fetch("/admin/img/upload", { method: "POST", body: form });
+      loadImages();
+    }
+
+    async function del(name) {
+      await fetch("/api/images/" + name, { method: "DELETE" });
+      loadImages();
+    }
+
+    loadImages();
+  </script>
+</body>
+</html>

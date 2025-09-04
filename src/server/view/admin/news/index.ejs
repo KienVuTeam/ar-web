@@ -1,0 +1,311 @@
+<div class="page-header">
+  <div class="page-block">
+    <div class="row align-items-center">
+      <div class="col-md-12">
+        <div class="page-header-title">
+          <h5 class="m-b-10">News 2</h5>
+        </div>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/admin/news/category/index">category</a></li>
+          <li class="breadcrumb-item"><a aria-disabled="true" href="#!">list</a></li>
+          <!-- <li class="breadcrumb-item" aria-current="page">Home</li> -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- breack-crum -->
+<!-- <h1>form create category</h1> -->
+<!-- <hr /> -->
+<!-- Button trigger modal -->
+<br> <br>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  New category
+</button>
+
+<table id="category_tbl" class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Alias</th>
+      <th scope="col">Status</th>
+      <th scope="col">Update at</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!--  -->
+    <% categories.forEach((cat, index)=> { %>
+      <tr class="clickable-row" data-id="<%=cat._id%>" data-name="<%=cat.name%>" data-slug="<%=cat.slug%>"
+        data-status="<%=cat.status%>">
+        <td>
+          <%= index+1 %>
+        </td>
+        <td>
+          <%= cat.name %>
+        </td>
+        <td>
+          <%= cat.slug %>
+        </td>
+        <td><%- cat.status==true ? '<button class="btn btn-success">Show</button>'
+            : '<button class="btn btn-secondary">Hide_ </button>' %></td>
+        <td>
+          <%= cat.updatedAt? cat.updatedAt.toLocaleDateString('vi-VN') : '' %>
+        </td>
+      </tr>
+      <%})%>
+  </tbody>
+</table>
+
+<!-- outdoor -->
+
+<!-- Modal create -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New category</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="category-form">
+      <div class="modal-body">
+        <div class="form-group">
+          <!-- <label for="" class="form-label"></label> -->
+          <input type="text" class="form-control" required name="name" placeholder="name (*)" />
+        </div>
+        <div class="form-group">
+          <!-- <label for="" class="form-label"></label> -->
+          <input type="text" class="form-control" name="slug" placeholder="Slug" />
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="mc-isActive" name="isActive" />
+          <label class="form-check-label" for="isActive">Hiện trên web</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="submit" id="mc-createCategory" class="btn btn-primary">
+          Save changes
+        </button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Modal edit -->
+<div class="modal fade" id="categoryEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit category</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <!-- <form action="/admin/news/add-new-category" method="post"> -->
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="" class="form-label">Name:</label>
+          <input type="text" class="form-control" id="me-name" name="name" placeholder="name" />
+        </div>
+        <div class="form-group">
+          <label for="" class="form-label">Slug:</label>
+          <input type="text" class="form-control" id="me-slug" name="slug" placeholder="Slug(default)" />
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="me-isActive" name="isActive" />
+          <label class="form-check-label" for="isActive">Hiện trên web</label>
+        </div>
+      </div>
+      <div class="modal-footer" style=" justify-content: space-between !important;">
+        <input type="text" class="form-control" id="me-id" name="id" placeholder="Id" hidden />
+        <div class="col-left">
+          <button class="btn btn-danger" id="btn-cta-delete">Delete</button>
+        </div>
+        <div class="col-right">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+          <button type="submit" id="me-updateCategory" class="btn btn-primary">
+            Update
+          </button>
+        </div>
+      </div>
+      <!-- </form> -->
+    </div>
+  </div>
+</div>
+<!-- modal edit end-->
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+  //create category
+  $("#mc-createCategory").on("click", function (e) {
+    this.blur(); // Remove focus from the button to prevent accidental double clicks
+    e.preventDefault();
+    const name = $('input[name="name"]').val();
+    const slug = $('input[name="slug"]').val();
+    const isActive = $("#mc-isActive").is(":checked");
+    console.log(typeof isActive);
+    //validate
+    const data ={
+      name: name,
+      slug: slug,
+      isActive: isActive,
+    }
+    $.ajax({
+      url: `/admin/news/category/create`,
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(data),
+      success: (resp) => {
+        //hide by api modal
+        console.log(resp);
+        const modalEl = document.getElementById("exampleModal");
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal.hide();
+        //
+        var html_string = "";
+        if (resp.success) {
+          console.log(resp.data)
+          const tbody = document.querySelector("#category_tbl tbody");
+          tbody.innerHTML = ""; //clear
+          resp.data.forEach((cat, index) => {
+            tbody.innerHTML += renderCategoryRow(cat, index)
+          });
+          // tbody=html_string;
+          // alert("add success")
+          document.getElementById("category-form").reset();
+        }
+      },
+      error: (err) => {
+        console.error("Error creating category:", err);
+        alert("add failed")
+      },
+    });
+  });
+  //function render html
+  function renderCategoryRow(cat, index) {
+    const statusBtn = cat.status
+      ? '<button class="btn btn-success">Show</button>'
+      : '<button class="btn btn-secondary">Hide_</button>';
+
+    const updatedAt = cat.updatedAt
+      ? new Date(cat.updatedAt).toLocaleDateString('vi-VN')
+      : '';
+
+    return `
+    <tr class="clickable-row" data-id="${cat._id}" data-name="${cat.name}" data-slug="${cat.slug}" data-status="${cat.status}">
+      <td>${index + 1}</td>
+      <td>${cat.name}</td>
+      <td>${cat.slug}</td>
+      <td>${statusBtn}</td>
+      <td>${updatedAt}</td>
+    </tr>
+  `;
+  }
+  // delete
+  document.getElementById("btn-cta-delete").addEventListener('click', function (el) {
+    const id = $("#me-id").val();
+    console.log(el)
+    // alert(id)
+    // this === tr hiện tại
+    // e.currentTarget === tr hiện tại
+    const row = document.querySelector(`tr[data-id="${id}"]`);
+    console.log(row)
+    
+    if (confirm("Bạn có chắc muốn xóa row này không?")) {
+
+      //ajax
+      $.ajax({
+        url: `/admin/news/category/delete`,
+        method: "DELETE",
+        contentType: "application/json",
+        data: JSON.stringify({ id: id }),
+        success: (res) => {
+          if (res.success) {
+            if (row) row.remove();
+            //hide by api modal
+            const modalEl = document.getElementById("categoryEditModal");
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal.hide();
+            // alert("delete success")
+          }
+        },
+        error: (err) => {
+          alert("delete failed")
+        }
+
+      })
+    }
+
+  })
+  //listen lick row for edit
+  $("#category_tbl tbody").on("click", "tr.clickable-row", function () {
+    const id = $(this).data("id");
+    const name = $(this).data("name");
+    const slug = $(this).data("slug");
+    // const description = $(this).data("description");
+    const status = $(this).data("status");
+    if (!status) {
+      $("#me-isActive").prop("checked", false);
+    } else {
+      $("#me-isActive").prop("checked", true);
+    }
+    // Hiển thị modal
+    const modal = new bootstrap.Modal(
+      document.getElementById("categoryEditModal")
+    );
+    // Cập nhật nội dung modal
+    $("#me-id").val(id);
+    $("#me-name").val(name);
+    $("#me-slug").val(slug);
+
+    // Hiển thị modal
+    modal.show();
+  });
+  //update
+  $("#me-updateCategory").on("click", function (el) {
+    this.blur(); // Remove focus from the button to prevent accidental double clicks
+    el.preventDefault();
+    const id = $("#me-id").val();
+    const name = $("#me-name").val();
+    const slug = $("#me-slug").val();
+    const isActive = $("#me-isActive").is(":checked");
+    console.log(name, slug, isActive, id);
+    //
+    $.ajax({
+      url: `/admin/news/category/update/${id}`,
+      type: "PUT",
+      contentType: "application/json",
+      data: JSON.stringify({
+        name: name,
+        slug: slug,
+        isActive: isActive,
+      }),
+      success: (res) => {
+        console.log(res);
+        if (res.success) {
+          // const tbody = document.querySelector("#category_tbl tbody");
+          //   tbody.innerHTML=""; //clear
+          const tbody = document.querySelector("#category_tbl tbody");
+          tbody.innerHTML = "";
+          res.data.forEach((cat, index) => {
+            tbody.innerHTML += renderCategoryRow(cat, index)
+          })
+          // alert("update success")
+        }
+        //hide by api modal
+        const modalEl = document.getElementById("categoryEditModal");
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal.hide();
+      },
+      error: (err) => {
+        console.error("Error updating category:", err);
+        alert('update failed')
+      },
+    });
+  });
+  })
+</script>
+<!-- outdoor -->

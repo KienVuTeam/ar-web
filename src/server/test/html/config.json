@@ -1,0 +1,16 @@
+{
+    "title": "About - Race Timing",
+    "sections" :{
+        "hero":{
+            "title": "Biến từng khoảnh khắc về đích thành dữ liệu chính xác.",
+            "description": "Từ check‑in đến thành tích về đích, chúng tôi tự động hoá quy trình – chống gian lận, realtime, minh bạch – để bạn tập trung vào điều quan trọng nhất: trải nghiệm người chạy.",
+            "doc_chip": "99.9%",
+            "event_count": "250",
+            "vdv": "120K"
+        },
+        "why_choose_me":{
+            "title": "Vì sao chọn chúng tôi"
+        }
+    }
+
+}

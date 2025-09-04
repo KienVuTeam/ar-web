@@ -71,6 +71,7 @@ header {
 .nav-menu a.active {
   color: #c00000;
   font-weight: bold;
+  border-bottom: 2px solid #c00000; /* gạch chân */
 }
 
 .header-icons {
@@ -90,11 +91,4 @@ header {
   font-size: 14px;
   color: #333;
 }
-/* img banner */
-.hero{
-    margin-top: 70px;
-    object-fit: cover;
-    height: calc(100vh - 70px);
-    width: 100%;
-    background-image: url("/img/hero-banner.jpg");
-}
+

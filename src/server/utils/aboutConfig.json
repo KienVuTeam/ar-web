@@ -1,0 +1,107 @@
+{
+    "title": "About - Race Timing",
+    "sections" :{
+        "hero":{
+            "title": "Biến từng khoảnh khắc về đích thành dữ liệu",
+            "highline": "chính xác",
+            "description": "Từ check‑in đến thành tích về đích, chúng tôi tự động hoá quy trình – chống gian lận, realtime, minh bạch – để bạn tập trung vào điều quan trọng nhất: trải nghiệm người chạy.",
+            "stat_chip": "99.9%",
+            "desc_chip": "Độ đọc chip",
+            "stat_event": "250+",
+            "desc_event":"Sự kiện hỗ trợ",
+            "stat_athlete": "120K",
+            "desc_athlete":"VĐV đã phục vụ",
+            "vid_embed":"<iframe class=\"visual-inner\" width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Yl-a-iDy6zo?si=bcQbaaYxqwOGmhrs\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+        },
+        "why":{
+            "title": "Vì sao chọn chúng tôi",
+            "slug": "4 trụ cột giúp giải chạy của bạn diễn ra trơn tru.",
+            "why_item":[
+                {
+                    "icon": "⏱️",
+                    "title": "Chính xác hàng đầu",
+                    "desc": "Chip time tỉ lệ đọc cao, đồng bộ đám mây, cập nhật realtime."
+                },
+                {
+                    "icon": "🛡️",
+                    "title":"Chống gian lận",
+                    "desc": "Ghi nhận qua chốt, minh bạch và công bằng cho mọi VĐV."
+                },
+                {
+                    "icon": "🧑‍💻",
+                    "title": "Đội ngũ giàu kinh nghiệm",
+                    "desc": "Setup nhanh, hỗ trợ hiện trường và vận hành linh hoạt."
+                },
+                {
+                    "icon": "🔗",
+                    "title": "Quy trình tối ưu",
+                    "desc": "Check‑in, in bib, áo, huy chương – một điểm đến dịch vụ."
+                }
+            ]
+        },
+        "service":{
+            "title": "",
+            "slug": "Module hoá – chọn theo nhu cầu hoặc trọn gói.",
+            "service_item":[
+                {
+                    "pill": "Core",
+                    "title": "Chip Time & Kết quả trực tuyến",
+                    "desc": "Hệ thống đọc chip đa điểm, xuất kết quả realtime, bảng thành tích công khai.",
+                    "tag": "#Realtime #Cloud #API"
+                },
+                {
+                    "pill": "Ops",
+                    "title": "Check‑in & Quản lý bib",
+                    "desc": "Giảm tải hàng chờ, tra cứu nhanh, phân luồng mượt mà.",
+                    "tag": "#Kiosk #QR #Offline-safe"
+                },
+                {
+                    "pill": "Branding",
+                    "title":"Thiết kế tuỳ biến, chất liệu bền đẹp, giao đúng hẹn.",
+                    "desc": "Giảm tải hàng chờ, tra cứu nhanh, phân luồng mượt mà.",
+                    "tag": "#DPI cao #Màu chuẩn #Template"
+                },
+                {
+                    "pill" :"Finish",
+                    "title": "Huy chương tuỳ biến",
+                    "desc": "Thiết kế độc đáo theo concept giải, đóng gói & giao nhận linh hoạt.",
+                    "tag": "#Đúc khuôn #Khắc Laser #Dây in"
+                }
+            ]
+        },
+        "story": {
+            "title": "Câu chuyện & Sứ mệnh",
+            "slug": "Từ nỗi lo vận hành đến trải nghiệm bứt phá của VĐV.",
+            "story_card":{
+               "title": "Chúng tôi làm gì?",
+               "desc": "Chúng tôi cung cấp giải pháp đo thời gian và vận hành giải chạy trọn gói, giúp BTC loại bỏ thủ công rối rắm, tăng độ chính xác và minh bạch, đồng thời tối ưu chi phí." 
+            },
+            "image" :"https://accessrace.com/uploads/f_65dbf8aac26f782ac4075d3b/chiptime-d%C6%B0%E1%BB%9Dng-dua-20253142318.jpg"
+        },
+        "testi":{
+            "title":"",
+            "slug": "",
+            "testi_card":[
+                {
+                    "quote": "Hệ thống chip time hoạt động ổn định, kết quả realtime giúp BTC minh bạch và VĐV hào hứng.",
+                    "avatar": "link",
+                    "name": "Name Phat",
+                    "club":"Vinh Long Running Club"
+                },
+                {
+                    "quote": "Hệ thống chip time hoạt động ổn định, kết quả realtime giúp BTC minh bạch và VĐV hào hứng.",
+                    "avatar": "link",
+                    "name": "Name Phat",
+                    "club":"Vinh Long Running Club"
+                },
+                {
+                    "quote": "Hệ thống chip time hoạt động ổn định, kết quả realtime giúp BTC minh bạch và VĐV hào hứng.",
+                    "avatar": "link",
+                    "name": "Name Phat",
+                    "club":"Vinh Long Running Club"
+                }
+            ]
+        }
+    }
+
+}

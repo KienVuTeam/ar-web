@@ -3,7 +3,7 @@
 <!-- [Head] start -->
 
 <head>
-  <title>Admin |</title>
+  <title><%= typeof title !== "undefined" ? title : "Admin" %></title>
   <!-- [Meta] -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -57,7 +57,7 @@
 <nav class="pc-sidebar">
   <div class="navbar-wrapper">
     <div class="m-header" style="justify-content: center; margin: 5px;">
-      <a href="../dashboard/index.html" class="b-brand text-primary">
+      <a href="/admin/#" class="b-brand text-primary">
         <!-- ========   Change your logo from here   ============ -->
         <img src="/img/logo-ar.png" class="" alt="logo" style="display: inline-block; height: 50px; width: 100%; padding: 0px auto; object-fit: cover; ">
       </a>
@@ -65,7 +65,7 @@
     <div class="navbar-content">
       <ul class="pc-navbar">
         <li class="pc-item">
-          <a href="../dashboard/index.html" class="pc-link">
+          <a href="/admin" class="pc-link">
             <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
             <span class="pc-mtext">Dashboard</span>
           </a>
@@ -78,32 +78,32 @@
         <li class="pc-item pc-hasmenu">
           <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-news"></i></span><span class="pc-mtext">News</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
           <ul class="pc-submenu">
-            <li class="pc-item"><a class="pc-link" href="/admin/news/form-create-category">Categories</a></li>
-            <li class="pc-item"><a class="pc-link" href="/admin/news/form-create-post">Create Post</a></li>
-            <li class="pc-item"><a class="pc-link" href="/admin/news/post-list">Posts List</a></li>
+            <li class="pc-item"><a class="pc-link" href="/admin/news/category/index">Categories</a></li>
+            <li class="pc-item"><a class="pc-link" href="/admin/news/post/form-create">Create Post</a></li>
+            <li class="pc-item"><a class="pc-link" href="/admin/news/post/index">Posts List</a></li>
           </ul>
         </li>
         <!-- c2 -->
-         <li class="pc-item pc-hasmenu">
+         <!-- <li class="pc-item pc-hasmenu">
           <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-news"></i></span><span class="pc-mtext">Gallery</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
           <ul class="pc-submenu">
             <li class="pc-item"><a class="pc-link" href="/admin/gallery">Categories</a></li>
-            <!-- <li class="pc-item"><a class="pc-link" href="/admin/news/form-create-post">Create Post</a></li> -->
-            <!-- <li class="pc-item"><a class="pc-link" href="/admin/news/post-list">Posts List</a></li> -->
+            <li class="pc-item"><a class="pc-link" href="/admin/news/form-create-post">Create Post</a></li>
+            <li class="pc-item"><a class="pc-link" href="/admin/news/post-list">Posts List</a></li>
           </ul>
-        </li>
+        </li> -->
         <!-- c3 -->
-         <li class="pc-item pc-hasmenu">
+         <!-- <li class="pc-item pc-hasmenu">
           <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-news"></i></span><span class="pc-mtext">Event</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
           <ul class="pc-submenu">
             <li class="pc-item"><a class="pc-link" href="/admin/event">List</a></li>
             <li class="pc-item"><a class="pc-link" href="/admin/event/form-add-event">New Event</a></li>
-            <!-- <li class="pc-item"><a class="pc-link" href="/admin/event/form-create">List</a></li> -->
+            <li class="pc-item"><a class="pc-link" href="/admin/event/form-create">List</a></li>
 
-            <!-- <li class="pc-item"><a class="pc-link" href="/admin/news/form-create-post">Create Post</a></li> -->
-            <!-- <li class="pc-item"><a class="pc-link" href="/admin/news/post-list">Posts List</a></li> -->
+            <li class="pc-item"><a class="pc-link" href="/admin/news/form-create-post">Create Post</a></li>
+            <li class="pc-item"><a class="pc-link" href="/admin/news/post-list">Posts List</a></li>
           </ul>
-        </li>
+        </li> -->
         <!-- c4 -->
          <li class="pc-item pc-hasmenu">
           <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-news"></i></span><span class="pc-mtext">Event 2</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
@@ -116,6 +116,15 @@
             <!-- <li class="pc-item"><a class="pc-link" href="/admin/news/post-list">Posts List</a></li> -->
           </ul>
         </li>
+        <!--  -->
+        <li class="pc-item pc-hasmenu">
+          <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-news"></i></span><span class="pc-mtext">Image</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+          <ul class="pc-submenu">
+            <li class="pc-item"><a class="pc-link" href="/admin/img">upload</a></li>
+            
+          </ul>
+        </li>
+
 
         
       </ul>
@@ -402,6 +411,7 @@
   <script src="/admin/assets/js/fonts/custom-font.js"></script>
   <script src="/admin/assets/js/pcoded.js"></script>
   <script src="/admin/assets/js/plugins/feather.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/yup@1.7.0/index.min.js"></script>
 
   
   
