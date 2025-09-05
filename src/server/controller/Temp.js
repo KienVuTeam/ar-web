@@ -1,7 +1,11 @@
 const Info = require("../model/info");
+const PageSettingEntity = require('../model/PageSetting')
 
-exports.Index = (req, res, next) => {
-//   res.send("hello");
+exports.Index =async (req, res, next) => {
+//   res.send("hello");\
+// console.log("A")
+    var config = await PageSettingEntity.find({type: "home_page"})
+    // await console.log(config)
     res.render('pages/home', {title: "Trang chu"})
 };
 exports.Action2 = async (req, res, next) => {

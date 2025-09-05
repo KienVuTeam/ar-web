@@ -6,45 +6,173 @@
   <style>
     body { font-family: sans-serif; margin: 20px; }
     #gallery { display: grid; grid-template-columns: repeat(auto-fill, 150px); gap: 10px; }
-    .item { border: 1px solid #ccc; padding: 5px; text-align: center; }
-    .item img { max-width: 100%; height: 100px; object-fit: cover; }
+    .item { border: 1px solid #ccc; padding: 5px; text-align: center; border-radius: 5px; position: relative; }
+    .item img { max-width: 100%; height: 100px; object-fit: cover; border-radius: 5px; }
+    .delete-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: red;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      width: 22px;
+      height: 22px;
+      line-height: 18px;
+      font-size: 14px;
+    }
+    .gallery-container{ display: flex; gap: 20px; flex-wrap: wrap; }
+    .gallery-container .col-left{ flex: 3; }
+    .gallery-container .col-right{ border: 1px solid #ccc; padding: 20px; flex: 7; }
+    .scroll-wrapper{ text-align: center; height: 500px; overflow-y: auto; border: 1px solid #ccc; padding: 5px; border-radius: 5px; }
+    .active-folder { font-weight: bold; color: blue; }
+    /*  */
+    #imageGallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* khoảng cách giữa các ảnh */
+  justify-content: space-between;
+}
+
+#imageGallery .item {
+  width: 150px;   /* fix kích thước mỗi ô */
+  height: 150px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#imageGallery .item img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
   </style>
 </head>
 <body>
-  <h2>📂 Image Explorer</h2>
-  <input type="file" id="fileInput">
-  <button onclick="upload()">Upload</button>
-  <div id="gallery"></div>
+  <h2>Image Explorer</h2>
+  <hr>
+   <div class="gallery-container">
+    <div class="col-left">
+      <h2>📂 Thư mục</h2>
+      <ul id="folderList"></ul>
+    </div>
+    <div class="col-right">
+      <div>
+        <span style="font-size: 20px; font-weight: bold;">Gallery</span>
+        <button onclick="upload()">Upload</button>
+      </div>
+
+      <input type="file" id="fileInput" style="border: 1px dashed #000; padding: 40px 30%; border-radius: 10px; margin: 20px 0px; width: 100%;">
+      <img id="previewImage" src="#" alt="Preview" style="display:none; max-width:300px; margin-top:10px;" />
+
+      <div class="scroll-wrapper">
+        <div id="imageGallery"></div>
+      </div>
+    </div>
+   </div>
 
   <script>
-    async function loadImages() {
-      const res = await fetch("/api/images");
-      const images = await res.json();
-      const gallery = document.getElementById("gallery");
-      gallery.innerHTML = images.map(img => `
-        <div class="item">
-          <img src="${img.url}" alt="${img.name}">
-          <p>${img.name}</p>
-          <button onclick="del('${img.name}')">❌ Delete</button>
-        </div>
-      `).join("");
+    let currentFolder = null;
+
+    // Preview ảnh trước khi upload
+    document.getElementById("fileInput").addEventListener("change", function (event) {
+      const file = event.target.files[0];
+      const preview = document.getElementById("previewImage");
+
+      if (file && file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          preview.src = e.target.result;
+          preview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      } else {
+        preview.src = "#";
+        preview.style.display = "none";
+      }
+    });
+
+    // Load danh sách thư mục
+    function autoLoadFolder(){
+      fetch("/admin/img/list-folder")
+        .then(res => res.json())
+        .then(data => {
+          const folderList = document.getElementById("folderList");
+          folderList.innerHTML = "";
+          data.folders.forEach(folder => {
+            const li = document.createElement("li");
+            li.textContent = folder;
+            li.style.cursor = "pointer";
+            li.onclick = () => {
+              currentFolder = folder;
+              [...folderList.children].forEach(el => el.classList.remove("active-folder"));
+              li.classList.add("active-folder");
+              loadImages(folder);
+            };
+            folderList.appendChild(li);
+          });
+        });
     }
 
+    // Load ảnh trong folder
+    function loadImages(folder) {
+      fetch(`/admin/img/list-image/${folder}`)
+        .then(res => res.json())
+        .then(data => {
+          const gallery = document.getElementById("imageGallery");
+          gallery.innerHTML="";
+          data.images.forEach(img => {
+            const item = document.createElement("div");
+            item.className = "item";
+
+            const imgTag = document.createElement("img");
+            imgTag.src = img.url;
+            imgTag.alt = img.name;
+
+            const delBtn = document.createElement("button");
+            delBtn.className = "delete-btn";
+            delBtn.innerHTML = "×";
+            delBtn.onclick = () => del(img.name, folder);
+
+            item.appendChild(imgTag);
+            item.appendChild(delBtn);
+            gallery.appendChild(item);
+          });
+        });
+    }
+
+    // Upload ảnh vào folder đang chọn
     async function upload() {
+      if (!currentFolder) return alert("Vui lòng chọn thư mục trước khi upload!");
       const file = document.getElementById("fileInput").files[0];
       if (!file) return alert("Chọn file!");
+
       const form = new FormData();
       form.append("file", file);
+      form.append("folder", currentFolder);
+
       await fetch("/admin/img/upload", { method: "POST", body: form });
-      loadImages();
+      loadImages(currentFolder);
+      document.getElementById("fileInput").value = "";
+      document.getElementById("previewImage").style.display = "none";
     }
 
-    async function del(name) {
-      await fetch("/api/images/" + name, { method: "DELETE" });
-      loadImages();
+    // Xoá ảnh
+    async function del(name, folder) {
+      if (!confirm("Bạn có chắc muốn xoá ảnh này?")) return;
+      await fetch(`/admin/img/delete/${folder}/${name}`, { method: "DELETE" });
+      loadImages(folder);
     }
 
-    loadImages();
+    autoLoadFolder();
   </script>
 </body>
 </html>

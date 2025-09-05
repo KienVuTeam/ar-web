@@ -4,9 +4,10 @@ const router = express.Router();
 const NewsController = require('../controller/NewsController');
 const TestController = require('../controller/TestController');
 const QrController = require('../controller/QrController');
-const pageAboutJson = require('../utils/aboutConfig.json');
-const { json } = require('body-parser');
 
+//new pattern
+const HomeController = require('../controller/home.controller')();
+//end new pattern
 //
 router.use('/news', NewsController.Index.bind(NewsController));
 //test
@@ -31,10 +32,10 @@ router.post("/qr/decode", QrController.decodeQr.bind(QrController) )
 // 
 router.get('/mail/send-mail', TestController.SendMail.bind(TestController))
 // 5page
-router.get('/about',(req, res)=>{
-    var json = pageAboutJson;
+router.get('/about',HomeController.About)
 
-    res.render("pages/about", {layout: false, title: "AccessRace - About", data:json})
-})
+//--------------------------
+router.get('/event', HomeController.Event)
+router.get('/', HomeController.Index)
 
 module.exports = router;

@@ -12,6 +12,7 @@
   <meta name="keywords" content="Mantis, Dashboard UI Kit, Bootstrap 5, Admin Template, Admin Dashboard, CRM, CMS, Bootstrap Admin Template">
   <meta name="author" content="CodedThemes">
 
+
   <!-- [Favicon] icon -->
   <!-- <link rel="icon" href="admin/assets/images/favicon.svg" type="image/x-icon">  -->
    <link rel="icon" href="/img/favicon-ar.png" type="image/x-icon">
@@ -39,6 +40,11 @@
    body{
     font-family: 'Poppins', sans-serif;
     /* font-size: 40px !important; */
+   }
+   @media (min-width: 1024px) and (max-width: 3000px){
+    header.pc-header{
+      /* margin-top: -18px !important; */
+    }
    }
 </style>
 </head>
@@ -121,6 +127,14 @@
           <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-news"></i></span><span class="pc-mtext">Image</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
           <ul class="pc-submenu">
             <li class="pc-item"><a class="pc-link" href="/admin/img">upload</a></li>
+            
+          </ul>
+        </li>
+        <!-- page setting -->
+        <li class="pc-item pc-hasmenu">
+          <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-news"></i></span><span class="pc-mtext">Page setting</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+          <ul class="pc-submenu">
+            <li class="pc-item"><a class="pc-link" href="/admin/setting/home-page">home page</a></li>
             
           </ul>
         </li>

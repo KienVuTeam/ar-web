@@ -83,25 +83,27 @@
   }
   
 </style>
-
+<% locals.f_data = hp.f_desc %>
 <div class="banner">
   <div class="banner-content">
-    <h2>🚀 New Revolution for Running Event Solutions</h2>
+    <h2><%=hp.hero_title%></h2>
     <p>
-      Optimizing every race – from management, timing, to athlete experience.
+      <%-hp.hero_desc%>
     </p>
+    <!-- Optimizing every race – from management, timing, to athlete experience. -->
     <button onclick="scrollToSection('about')">Explore now</button>
   </div>
 </div> 
 
 
 <section id="about">
-  <h3>About Event</h3>
+  <h3><%=hp.about_title%></h3>
   <p>
-    We bring comprehensive solutions for running events, combining
+    <%-hp.about_desc%>
+    <!-- We bring comprehensive solutions for running events, combining
     high-precision timing technology with an intelligent management platform.
     From organization to race day, every detail is optimized to deliver a smooth
-    and professional experience for both organizers and participants.
+    and professional experience for both organizers and participants. -->
   </p>
 </section>
 

@@ -1,19 +1,46 @@
 <!-- Header -->
 <header id="mainHeader">
   <div class="logo">
-    <img src="/img/logo-ar.png" alt="logo" class="logo" />
+    <a href="/">
+      <img src="/img/logo-ar.png" alt="logo" class="logo" />
+    </a>
   </div>
   <nav class="nav-menu">
-    <a href="#">Systems</a>
-    <a href="#">Software</a>
-    <a href="#">Solutions</a>
+    <!-- <a href="#">Systems</a> -->
+    <a href="/" class="">Home</a>
+    <a href="/event">Events</a>
     <a href="/about">About</a>
     <!-- <a href="#">Support</a> -->
-    <a href="#" class="">Company</a>
-    <a href="#">Shop</a>
+    <!-- <a href="#" class="">Company</a> -->
+    <!-- <a href="#">Shop</a> -->
   </nav>
   <div class="header-icons">
     <i class="icon user"></i>
     <i class="icon globe"></i><span class="lang">EN</span>
   </div>
 </header>
+
+<script>
+  //
+  // const navLinks = document.querySelectorAll(".nav-menu a");
+
+  // navLinks.forEach((link) => {
+  //   link.addEventListener("click", function (el) {
+  //     //
+  //     navLinks.forEach((item) => item.classList.remove("active"));
+  //     //
+  //     this.classList.add("active");
+  //   });
+  // });
+  // 
+  const navLinks = document.querySelectorAll(".nav-menu a");
+  const currentPath = window.location.pathname;
+
+  navLinks.forEach((link) => {
+    if (link.getAttribute("href") === currentPath) {
+      link.classList.add("active");
+    } else {
+      link.classList.remove("active");
+    }
+  });
+</script>

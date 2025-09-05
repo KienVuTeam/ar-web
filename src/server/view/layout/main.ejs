@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= title %></title>
+    <title>AccessRace - <%= title %></title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -27,8 +27,6 @@
     <link rel="stylesheet" href="/css/my-style.css" />
     <style>
       main {
-        /* padding-top: 80px; */
-        /* padding: 80px; */
         margin: 80px auto;
       }
       .main-content {
@@ -39,7 +37,7 @@
     <%- include('../partials/header') %>
     <main><%- body %></main>
 
-    <%- include('../partials/footer') %>
+    <%- include('../partials/footer', { f_data: typeof f_data !== 'undefined'? f_data:'© 2023 AccessRace Timing' }) %>
     <script src="/js/app.js"></script>
   </body>
 </html>

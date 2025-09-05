@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router();
 const {uploadExcel, uploadImage} = require('../config/multerUpload')
 
-const HomeController = require('../areas/admin/controller/HomeController');
+// const HomeController = require('../areas/admin/controller/HomeController');
 const NewsController = require('../areas/admin/controller/NewsController');
 const GalleryController = require('../areas/admin/controller/GalleryController');
 const EventController = require('../areas/admin/controller/EventController');
@@ -16,6 +16,7 @@ const _CategoryService = require('../services/category.service'); //
 // const categoryController= require('../areas/admin/controller/category.controller')(_CategoryService)
 const news2Controller = require('../areas/admin/controller/new2.controller')(_CategoryService, _PostService)
 const imageController = require('../areas/admin/controller/image.controller')() //fx
+const pageSetting = require('../areas/admin/controller/PageSetting.controller')();
 
 //router 
 router.get('/news/post/index', news2Controller.ListPostAndCategory); //PostIndex
@@ -34,9 +35,13 @@ router.post('/news/category/create', news2Controller.CreateCategory)
 router.put('/news/category/update/:id', news2Controller.UpdateCategory)
 router.delete('/news/category/delete', news2Controller.DeleteCategory)
 // test upload anh
+router.get('/img/list-folder', imageController.ListFolders) //ajax
+router.get('/img/list-image/:folder', imageController.ListImagesInFolder)
 router.post('/img/upload',uploadImage.single("file") ,imageController.Upload)
 router.get('/img', imageController.Index)
-
+//page setting
+router.get('/setting/home-page', pageSetting.HomePage);
+router.post('/page-setting/home-page/config', pageSetting.ConfigHomePage)
 //======== end
 
 //EventController
