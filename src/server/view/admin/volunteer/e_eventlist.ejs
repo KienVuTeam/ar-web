@@ -1,0 +1,25 @@
+<section class="event-list">
+  <h3>Event list for config certificate</h3>
+  <hr />
+  <br />
+  <table id="events-tbl" class="table table-striped">
+    <thead>
+      <th>#</th>
+      <th>Name</th>
+      <th>Date</th>
+    <td>Certificate</td>
+
+    </thead>
+    <tbody>
+      <% el.forEach((e,i)=>{ %>
+      <tr>
+        <td><%=i+1%></td>
+        <td><%=e.name%></td>
+        <td><%=e.startDate? e.startDate.toLocaleDateString('vi-VN') : '' %></td>
+        <!-- <td><button class="btn btn-outline-primary" id="btn-cert">Config</button></td> -->
+        <td><a class="btn btn-outline-primary" id="btn-cert" href="/admin/volunteer/vol-list/<%=e._id%>">Config</a></td>
+      </tr>
+      <%})%>
+    </tbody>
+  </table>
+</section>

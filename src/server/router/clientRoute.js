@@ -36,6 +36,9 @@ router.get('/about',HomeController.About)
 
 //--------------------------
 router.get('/event', HomeController.Event)
+// 
+router.get('/volunteer/volunteer-involved/:id', HomeController.VolunteerInvolved)
+router.post('/volunteer/certificate', HomeController.VolunteerCertificate)
+router.get('/volunteer', HomeController.Volunteer);
 router.get('/', HomeController.Index)
-
 module.exports = router;

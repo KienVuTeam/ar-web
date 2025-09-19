@@ -1,0 +1,41 @@
+<section class="volunteer">
+    <h2>Volunteer</h2>
+    <hr />
+    <div id="result"></div>
+    <div class="form-group">
+        <label for="" class="form-label"></label>
+        <input type="file"  name="fileExcel" class="form-control fileExcel" id="" />
+    </div>
+    <input id="btn-submit" type="submit" class="btn btn-outline-primary btn-submit" />
+</section>
+
+<script>
+    document
+        .getElementById("btn-submit")
+        .addEventListener("click", function (el) {
+            el.preventDefault();
+            //   alert("A");
+            const inputFile = document.querySelector('.fileExcel');
+            const file =inputFile.files[0];
+            // debugger
+            const formData = new FormData();
+            formData.append("excelFile", file);
+            fetch("/admin/volunteer/upload-excel", {
+                method: "POST",
+                // headers: { "Content-Type": "application/json" },
+                body: formData,
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.success) {
+                        alert("success");
+                    }
+                    document.getElementById('result').innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+                })
+                .catch((err) => console.log(err));
+        });
+
+    function A() {
+
+    }
+</script>

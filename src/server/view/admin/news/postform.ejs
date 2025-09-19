@@ -1,3 +1,16 @@
+<style>
+  .img_preview{
+        margin: 20px 0;
+        display: none;
+  }
+  .img_preview img{
+    display: inline-block;
+    width: 100%;       /* phủ hết chiều ngang khung */
+    height: 250px;     /* chiều cao khung (có thể thay đổi tùy ý) */
+    object-fit: cover;
+  }
+</style>
+<link rel="stylesheet" href="/css/my_gallery.css">
 <div class="page-header">
   <div class="page-block">
     <div class="row align-items-center">
@@ -68,19 +81,21 @@
             </select>
         </div>
            
-        <div class="show-image" style="margin: 0 auto;" id="show-image">
-          <img src="/img/hero-banner.jpg" data-folder="image-1.png" alt="pre-img" style="display: inline-block; width: 100%; height: 250px; object-fit: cover; ">
-        </div> <br>
+        <!-- <div class="show-image" style="margin: 0 auto;" id="show-image">
+          <img src="" data-folder="image-1.png" alt="" style="display: inline-block; width: 100%; height: 250px; object-fit: cover; ">
+        </div> <br> -->
+        <label for="" class="form-label">Hình đại diện: <small style="color: red;">(*)</small></label>
+        <div class="img_preview" id="img_preview">
+          <img src="" alt="" loading="lazy">
+          <input id="img_path" value=""  type="hidden">
+        </div>
         <div class="form-group mb-3">
-          <label class="form-label">Choose image</label>
-          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Choose image</button>
-
+          <button  class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#exampleModal">Choose image</button>
         </div>
         <!-- action -->
         <div class="form-group">
           <button id="submitMaster" type="submit" class="btn btn-primary">Save</button>
-          <button type="reset" class="btn btn-secondary">Reset</button>
-          <!-- <button type="button" class="btn btn-danger">Delete</button> -->
+          <!-- <button type="reset" class="btn btn-secondary">Reset</button> -->
         </div>
       </div>
     </div>
@@ -124,7 +139,9 @@
       const keyMeta = document.getElementById("keyMeta").value;
       const descMeta = document.getElementById("descMeta").value;
       const category = document.getElementById("formSelectCategory").value;
-      const imagePath = "image1.jpg"
+
+      const imagePath = document.getElementById("img_path").value //"image1.jpg"
+      
       const data={
         title,
         desc,
@@ -156,106 +173,57 @@
 
   })
  </script>
-<!-- old -->
-<!-- <script>
-  $(document).ready(function () {
-    $("#myListFolder").on("click", "li", function () {
-      // "this" chính là thẻ <li> được click
-      // alert('Bạn đã click vào: ' + $(this).text() +$(this).data('id-folder'));
-      const name = $(this).data("id-folder");
-      // alert("Bạn đã click vào: " + name);
-      $.ajax({
-        url: `/admin/mews/handle-image/${name}`,
-        method: "POST",
-        contentType: "application/json",
-        // data: JSON.stringify({
 
-        // }),
-        // dataType: 'json',
-        success: (res) => {
-          console.log(res);
-          document.getElementById("image-content").innerHTML = res;
-        },
-        error: (err) => {
-          alert("Lỗi khi gửi yêu cầu AJAX");
-        },
-      });
-    });
+<!--gallery  -->
+<script src="/js/my_gallery.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const modalEl = document.getElementById("exampleModal");
 
-    //
-    // $('#test_jquery').on('click', ()=>{
-    // alert('JQuery is working!');
+  if (modalEl) {
+    modalEl.addEventListener("shown.bs.modal", function () {
+      const galleryRoot = document.getElementById("galleryRoot");
+      galleryRoot.innerHTML = ""; // clear cũ
 
-    // })
-    $('#submitMaster').on('click', (e)=>{
-      e.preventDefault(); //tranh readload trang
-      const title  = $('#title').val();
-      const desc = $('#desc').val();
-      const content = tinymce.get("pc-tinymce-4").getContent();
-      const category = $('#formSelectCategory').val();
-      const keyMeta =$('#keyMeta').val();
-      const descMeta =$('#descMeta').val();
-      const dataFolder = $('#show-image img').data('folder');
-      // console.log(title, desc, content, category, keyMeta, descMeta, dataFolder);  //check data
-      //ajax
-      $.ajax({
-        url: '/admin/news/form-create-post',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-          title,
-          desc,
-          content,
-          category,
-          keyMeta,
-          descMeta,
-          dataFolder
-        }),
-        success: (resp)=>{
-          // alert("Tạo bài viết thành công!");
-          alert("server resp: " + resp);
-        },
-        error: (err)=>{
-          alert("Lỗi khi gửi yêu cầu AJAX"+ err);
-        }
+      MediaGallery.init(galleryRoot, {
+        onSelect: (img) => {
+          document.getElementById("img_preview").style.display = "block";
+          document.querySelector("#img_preview img").src = img.url;
+          document.getElementById("img_path").value = img.url;
 
-      });
-      // ===
-
-
-
-    })
-
-    $("#saveBtn").on("click", function (e) {
-      e.preventDefault(); // tránh reload
-
-
-      // Lấy dữ liệu từ input
-      const title = $("#title").val();
-      const slug = $("#slug").val();
-
-      // Lấy dữ liệu từ thuộc tính data
-      const type = $(this).data("type");
-      const user = $(this).data("user");
-
-      // Gửi dữ liệu bằng jQuery AJAX
-      $.ajax({
-        url: "/api/save-data", // route bạn định nghĩa trong Express
-        method: "POST",
-        contentType: "application/json",
-        data: JSON.stringify({
-          title,
-          slug,
-          type,
-          user,
-        }),
-        success: function (response) {
-          alert("Thành công: " + response.message);
-        },
-        error: function (xhr, status, error) {
-          alert("Lỗi: " + error);
+          // Đóng modal
+          // đóng modal an toàn
+          const closeBtn = modalEl.querySelector("[data-bs-dismiss='modal']");
+          if (closeBtn) closeBtn.click();
         },
       });
     });
-  });
-</script> -->
+  }
+});
+</script>
+
+<!-- [Modal area] -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen" style="max-height: 95%; max-width: 95%; margin: 20px auto;">
+    <div class="modal-content">
+      <!-- <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title A</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div> -->
+      <div class="modal-body">
+        <!-- start -->
+        <div id="galleryRoot"></div>
+         <!-- end -->
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" hidden data-bs-dismiss="modal">Close</button> -->
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+ <!-- [End modal area] -->

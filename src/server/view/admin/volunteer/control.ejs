@@ -1,0 +1,486 @@
+<style>
+  #canvasWrapper {
+      border: 1px solid #ccc;
+      width: 1000px;
+      height: 850px;
+      position: relative;
+      margin-right: 20px;
+    }
+    canvas {
+      border: 1px solid #aaa;
+    }
+    #sidebar {
+      margin-top: 20px;
+      width: 280px;
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+    #sidebar h3, #sidebar h4 {
+      margin-top: 0;
+    }
+    .control {
+      margin-bottom: 12px;
+    }
+    .control label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .control input, .control select, .control button {
+      width: 100%;
+      padding: 4px;
+    }
+    #fieldList li {
+      margin-bottom: 4px;
+    }
+    #fieldList span {
+      cursor: pointer;
+      color: blue;
+    }
+    #fieldList button {
+      margin-left: 8px;
+      color: red;
+      cursor: pointer;
+    }
+    #saveBtn {
+      margin-top: 20px;
+      padding: 6px 12px;
+    }
+    pre {
+      max-height: 300px;
+      overflow: auto;
+      background: #f7f7f7;
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+    .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    right: -320px; /* ẩn mặc định */
+    width: 300px;
+    height: 100%;
+    background: #fff;
+    border-left: 1px solid #ccc;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.2);
+    overflow-y: auto;
+    transition: right 0.3s ease;
+    z-index: 1056; /* trên modal */
+  }
+  .sidebar-overlay.open {
+    right: 0;
+  }
+</style>
+<!-- Nút mở modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editorModal">
+  Mở Certificate Editor
+</button>
+
+<!-- Section thay cho body -->
+<section style="font-family: Arial, sans-serif;">
+
+
+
+<!-- Modal Fullscreen -->
+<div class="modal fade" id="editorModal" tabindex="-1">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+      </div>
+      <div class="modal-body position-relative p-0">
+
+        <!-- Nút toggle sidebar -->
+        <button id="toggleSidebar" 
+                class="btn btn-secondary position-absolute top-0 end-0 m-3 z-3">
+          ⚙️ Tuỳ chỉnh
+        </button>
+        
+        <!-- Canvas -->
+        <div id="canvasWrapper" class="p-3">
+          <canvas id="c" width="1200" height="850"></canvas>
+        </div>
+
+        <!-- Sidebar overlay -->
+        <div id="sidebar" class="sidebar-overlay">
+          <!-- Nút đóng -->
+          <button id="closeSidebar" 
+                  class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2">
+            ✖
+          </button>
+          <div class="p-3">
+            <h3>Thuộc tính</h3>
+            <div class="control">
+              <label for="fontSize">Cỡ chữ</label>
+              <input type="number" id="fontSize" value="28" class="form-control"/>
+            </div>
+            <div class="control">
+              <label for="color">Màu chữ</label>
+              <input type="color" id="color" value="#000000" class="form-control"/>
+            </div>
+            <div class="control">
+              <label for="fontFamily">Font chữ</label>
+              <select id="fontFamily" class="form-select">
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Verdana">Verdana</option>
+              </select>
+            </div>
+            <div class="control">
+              <label for="textAlign">Căn ngang</label>
+              <select id="textAlign" class="form-select">
+                <option value="left">Trái</option>
+                <option value="center" selected>Giữa</option>
+                <option value="right">Phải</option>
+              </select>
+            </div>
+            <div class="control">
+              <label for="valign">Căn dọc</label>
+              <select id="valign" class="form-select">
+                <option value="top">Trên</option>
+                <option value="middle" selected>Giữa</option>
+                <option value="bottom">Dưới</option>
+              </select>
+            </div>
+
+            <hr/>
+            <h4>Quản lý Field</h4>
+            <div class="d-flex gap-2 mb-2">
+              <input type="text" id="newField" placeholder="Tên field (VD: ClubName)" class="form-control"/>
+              <button id="addFieldBtn" class="btn btn-success">Thêm</button>
+            </div>
+            <ul id="fieldList" class="list-unstyled"></ul>
+
+            <button id="saveBtn" class="btn btn-primary mt-3">Save vị trí</button>
+            <pre id="output" class="mt-2"></pre>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</section>
+
+<!-- Script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  const canvas = new fabric.Canvas('c', { selection: true });
+  let naturalW = 0, naturalH = 0;
+  let activeTextbox = null;
+  let fields = {}; // field động
+
+  // Vẽ grid
+  function drawGrid(step = 100) {
+    for (let i = 0; i < (canvas.width / step); i++) {
+      const distance = i * step;
+      canvas.add(new fabric.Line([distance, 0, distance, canvas.height], {
+        stroke: '#eee', selectable: false, evented: false
+      }));
+    }
+    for (let j = 0; j < (canvas.height / step); j++) {
+      const distance = j * step;
+      canvas.add(new fabric.Line([0, distance, canvas.width, distance], {
+        stroke: '#eee', selectable: false, evented: false
+      }));
+    }
+  }
+
+  // Load background
+  const bgUrl = "/uploads/certificate/cer1.jpg"; // đổi link ảnh tại đây
+  fabric.Image.fromURL(bgUrl, function(img) {
+    naturalW = img.width;
+    naturalH = img.height;
+    img.set({
+      selectable: false,
+      evented: false,
+      scaleX: canvas.width / img.width,
+      scaleY: canvas.height / img.height,
+    });
+    canvas.setBackgroundImage(img, () => {
+      drawGrid(100);
+      initDefaultFields(); // thêm 5 field mặc định
+      canvas.renderAll();
+    });
+  });
+
+  // ====== Field Management ======
+  function createTextbox(key, options={}) {
+    const textbox = new fabric.Textbox(key, {
+      left: 100, top: 100, width: 200, fontSize: 28,
+      fontFamily: "Arial", fill: "black", textAlign: "center",
+      customValign: "middle",
+      ...options
+    });
+    fields[key] = textbox;
+    canvas.add(textbox);
+    renderFieldList();
+    return textbox;
+  }
+
+  function initDefaultFields() {
+    createTextbox("Name", { left: 50, top: 50, fill: "black" });
+    createTextbox("Bib", { left: 50, top: 120, fill: "black" });
+    createTextbox("FinishTime", { left: 50, top: 190 });
+    createTextbox("OverallRank", { left: 50, top: 260, fill: "black" });
+    createTextbox("ClubName", { left: 50, top: 330, fill: "black" });
+  }
+
+  function renderFieldList() {
+    const list = document.getElementById("fieldList");
+    list.innerHTML = "";
+    Object.keys(fields).forEach(key => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <span data-key="${key}">${key}</span>
+        <button data-del="${key}">X</button>
+      `;
+      list.appendChild(li);
+    });
+  }
+
+  document.getElementById("addFieldBtn").addEventListener("click", () => {
+    const key = document.getElementById("newField").value.trim();
+    if (!key || fields[key]) {
+      alert("Tên field trống hoặc đã tồn tại!");
+      return;
+    }
+    createTextbox(key);
+    document.getElementById("newField").value = "";
+  });
+
+  document.getElementById("fieldList").addEventListener("click", e => {
+    if (e.target.dataset.key) {
+      const key = e.target.dataset.key;
+      const obj = fields[key];
+      canvas.setActiveObject(obj);
+      canvas.renderAll();
+      syncSidebar(obj);
+    }
+    if (e.target.dataset.del) {
+      const key = e.target.dataset.del;
+      canvas.remove(fields[key]);
+      delete fields[key];
+      renderFieldList();
+    }
+  });
+
+  // ====== Vertical Align Handler ======
+  function applyVerticalAlign(obj) {
+    const textHeight = obj.height * obj.scaleY;
+    const boxHeight = obj.height;
+    if (obj.customValign === "middle") {
+      obj.top = obj.top - textHeight / 2 + boxHeight / 2;
+    } else if (obj.customValign === "bottom") {
+      obj.top = obj.top - textHeight + boxHeight;
+    }
+    canvas.renderAll();
+  }
+
+  // ====== Sidebar sync ======
+  function syncSidebar(obj) {
+    if (!obj) return;
+    document.getElementById("fontSize").value = obj.fontSize;
+    document.getElementById("color").value = obj.fill;
+    document.getElementById("fontFamily").value = obj.fontFamily;
+    document.getElementById("textAlign").value = obj.textAlign;
+    document.getElementById("valign").value = obj.customValign || "middle";
+  }
+
+  function updateTextbox(prop, value) {
+    if (activeTextbox) {
+      activeTextbox.set(prop, value);
+      canvas.renderAll();
+      for (const key in fields) {
+        if (fields[key] === activeTextbox) {
+          fields[key] = activeTextbox;
+        }
+      }
+    }
+  }
+
+  canvas.on('selection:created', e => {
+    activeTextbox = e.selected[0];
+    syncSidebar(activeTextbox);
+  });
+  canvas.on('selection:updated', e => {
+    activeTextbox = e.selected[0];
+    syncSidebar(activeTextbox);
+  });
+  canvas.on('selection:cleared', () => {
+    activeTextbox = null;
+  });
+
+  document.getElementById("fontSize").addEventListener("input", e => {
+    updateTextbox("fontSize", parseInt(e.target.value));
+  });
+
+  document.getElementById("color").addEventListener("input", e => {
+    updateTextbox("fill", e.target.value);
+  });
+
+  document.getElementById("fontFamily").addEventListener("change", e => {
+    updateTextbox("fontFamily", e.target.value);
+  });
+
+  document.getElementById("textAlign").addEventListener("change", e => {
+    updateTextbox("textAlign", e.target.value);
+  });
+
+  document.getElementById("valign").addEventListener("change", e => {
+    if (activeTextbox) {
+      activeTextbox.customValign = e.target.value;
+      applyVerticalAlign(activeTextbox);
+    }
+  });
+
+  // Save vị trí + style
+  document.getElementById("saveBtn").addEventListener("click", () => {
+    if (!naturalW || !naturalH) {
+      alert("Ảnh chưa load xong!");
+      return;
+    }
+    const scaleX = naturalW / canvas.width;
+    const scaleY = naturalH / canvas.height;
+    const config = {};
+    for (const key in fields) {
+      const obj = fields[key];
+      config[key] = {
+        x: Math.round(obj.left * scaleX),
+        y: Math.round(obj.top * scaleY),
+        w: Math.round(obj.width * scaleX),
+        h: Math.round(obj.height * scaleY),
+        fontSize: Math.round(obj.fontSize * scaleX),
+        fontFamily: obj.fontFamily,
+        color: obj.fill,
+        align: obj.textAlign,
+        valign: obj.customValign || "middle"
+      };
+    }
+    document.getElementById("output").textContent = JSON.stringify(config, null, 2);
+    submitForm(config);
+  });
+  //Ajax guiwr len server
+  function submitForm(config){
+    $.ajax({
+    url: `/admin/volunteer/certificate-config`,
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify(config),
+    success: (res)=>{
+      alert("config save")
+    },
+    error: (err)=>{
+      alert("config failed")
+    }
+  })
+  }
+
+  // ====== SNAP ALIGNMENT GUIDES ======
+  (function() {
+    const ctx = canvas.getSelectionContext();
+    const aligningLineMargin = 4;
+    const aligningLineWidth = 1;
+    const aligningLineColor = 'rgba(0,0,255,0.6)';
+    let viewportTransform, zoom = 1;
+
+    function drawLine(coords) {
+      ctx.save();
+      ctx.lineWidth = aligningLineWidth;
+      ctx.strokeStyle = aligningLineColor;
+      ctx.beginPath();
+      ctx.moveTo((coords.x1 + viewportTransform[4]) * zoom,
+                 (coords.y1 + viewportTransform[5]) * zoom);
+      ctx.lineTo((coords.x2 + viewportTransform[4]) * zoom,
+                 (coords.y2 + viewportTransform[5]) * zoom);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function isInRange(v1, v2) {
+      v1 = Math.round(v1);
+      v2 = Math.round(v2);
+      return Math.abs(v1 - v2) <= aligningLineMargin;
+    }
+
+    canvas.on('before:render', function() {
+      canvas.clearContext(canvas.contextTop);
+    });
+
+    canvas.on('after:render', function() {
+      canvas.contextTop.stroke();
+    });
+
+    canvas.on('object:moving', function(e) {
+      let activeObject = e.target;
+      let aCenter = activeObject.getCenterPoint();
+      let aLeft = activeObject.left;
+      let aTop = activeObject.top;
+      let aRight = aLeft + activeObject.width * activeObject.scaleX;
+      let aBottom = aTop + activeObject.height * activeObject.scaleY;
+      let aCenterX = aCenter.x;
+      let aCenterY = aCenter.y;
+
+      let snap = {x: false, y: false};
+      viewportTransform = canvas.viewportTransform;
+      zoom = canvas.getZoom();
+
+      canvas.getObjects().forEach(function(obj) {
+        if (obj === activeObject) return;
+        let oCenter = obj.getCenterPoint();
+        let oLeft = obj.left;
+        let oTop = obj.top;
+        let oRight = oLeft + obj.width * obj.scaleX;
+        let oBottom = oTop + obj.height * obj.scaleY;
+        let oCenterX = oCenter.x;
+        let oCenterY = oCenter.y;
+
+        if (isInRange(oCenterX, aCenterX)) {
+          snap.x = oCenterX;
+          drawLine({x1: oCenterX, y1: -5000, x2: oCenterX, y2: 5000});
+        }
+        if (isInRange(oCenterY, aCenterY)) {
+          snap.y = oCenterY;
+          drawLine({x1: -5000, y1: oCenterY, x2: 5000, y2: oCenterY});
+        }
+        if (isInRange(oLeft, aLeft)) {
+          snap.x = oLeft + activeObject.width * activeObject.scaleX / 2;
+          drawLine({x1: oLeft, y1: -5000, x2: oLeft, y2: 5000});
+        }
+        if (isInRange(oRight, aRight)) {
+          snap.x = oRight - activeObject.width * activeObject.scaleX / 2;
+          drawLine({x1: oRight, y1: -5000, x2: oRight, y2: 5000});
+        }
+        if (isInRange(oTop, aTop)) {
+          snap.y = oTop + activeObject.height * activeObject.scaleY / 2;
+          drawLine({x1: -5000, y1: oTop, x2: 5000, y2: oTop});
+        }
+        if (isInRange(oBottom, aBottom)) {
+          snap.y = oBottom - activeObject.height * activeObject.scaleY / 2;
+          drawLine({x1: -5000, y1: oBottom, x2: 5000, y2: oBottom});
+        }
+      });
+
+      if (snap.x !== false) {
+        activeObject.setPositionByOrigin(new fabric.Point(snap.x, aCenterY), 'center', 'center');
+      }
+      if (snap.y !== false) {
+        activeObject.setPositionByOrigin(new fabric.Point(aCenterX, snap.y), 'center', 'center');
+      }
+    });
+  })();
+
+  // Toggle sidebar
+  document.getElementById("toggleSidebar").addEventListener("click", () => {
+    document.getElementById("sidebar").classList.add("open");
+  });
+  document.getElementById("closeSidebar").addEventListener("click", () => {
+    document.getElementById("sidebar").classList.remove("open");
+  });
+</script>
+

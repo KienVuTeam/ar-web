@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fabric.js Certificate Editor + Snap Guides</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+  <style>
+    body {
+      display: flex;
+      font-family: Arial, sans-serif;
+    }
+    #canvasWrapper {
+      border: 1px solid #ccc;
+      width: 1000px;
+      height: 850px;
+      position: relative;
+      margin-right: 20px;
+    }
+    canvas {
+      border: 1px solid #aaa;
+    }
+    #sidebar {
+      margin-top: 50px;
+      width: 250px;
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+    #sidebar h3 {
+      margin-top: 0;
+    }
+    .control {
+      margin-bottom: 12px;
+    }
+    .control label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .control input, .control select {
+      width: 100%;
+      padding: 4px;
+    }
+    #saveBtn {
+      margin-top: 20px;
+      padding: 6px 12px;
+    }
+    pre {
+      max-height: 300px;
+      overflow: auto;
+      background: #f7f7f7;
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div id="canvasWrapper">
+    <canvas id="c" width="1200" height="850"></canvas>
+  </div>
+
+  <div id="sidebar">
+    <h3>Thuộc tính</h3>
+    <div class="control">
+      <label for="fontSize">Cỡ chữ</label>
+      <input type="number" id="fontSize" value="28" />
+    </div>
+    <div class="control">
+      <label for="color">Màu chữ</label>
+      <input type="color" id="color" value="#000000" />
+    </div>
+    <div class="control">
+      <label for="fontFamily">Font chữ</label>
+      <select id="fontFamily">
+        <option value="Arial">Arial</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Courier New">Courier New</option>
+        <option value="Verdana">Verdana</option>
+      </select>
+    </div>
+    <div class="control">
+      <label for="textAlign">Căn ngang</label>
+      <select id="textAlign">
+        <option value="left">Trái</option>
+        <option value="center" selected>Giữa</option>
+        <option value="right">Phải</option>
+      </select>
+    </div>
+    <div class="control">
+      <label for="valign">Căn dọc</label>
+      <select id="valign">
+        <option value="top">Trên</option>
+        <option value="middle" selected>Giữa</option>
+        <option value="bottom">Dưới</option>
+      </select>
+    </div>
+
+    <button id="saveBtn">Save vị trí</button>
+    <pre id="output"></pre>
+  </div>
+
+  <script>
+    const canvas = new fabric.Canvas('c', { selection: true });
+
+    let naturalW = 0, naturalH = 0;
+    let activeTextbox = null;
+
+    // === Vẽ grid (100px) ===
+    function drawGrid(step = 100) {
+      for (let i = 0; i < (canvas.width / step); i++) {
+        const distance = i * step;
+        canvas.add(new fabric.Line([distance, 0, distance, canvas.height], {
+          stroke: '#eee', selectable: false, evented: false
+        }));
+      }
+      for (let j = 0; j < (canvas.height / step); j++) {
+        const distance = j * step;
+        canvas.add(new fabric.Line([0, distance, canvas.width, distance], {
+          stroke: '#eee', selectable: false, evented: false
+        }));
+      }
+    }
+
+    // Load background
+    const bgUrl = "/uploads/certificate/cer1.jpg";
+    fabric.Image.fromURL(bgUrl, function(img) {
+      naturalW = img.width;
+      naturalH = img.height;
+
+      img.set({
+        selectable: false,
+        evented: false,
+        scaleX: canvas.width / img.width,
+        scaleY: canvas.height / img.height,
+      });
+      canvas.setBackgroundImage(img, () => {
+        drawGrid(100);
+        canvas.renderAll();
+      });
+    });
+
+    // === Tạo text-box mặc định ===
+    const fields = {
+      name: new fabric.Textbox("Name", {
+        left: 50, top: 50, width: 200, fontSize: 28,
+        fontFamily: "Arial", fill: "blue", textAlign: "center",
+        customValign: "middle"
+      }),
+      bibNumber: new fabric.Textbox("Bib", {
+        left: 50, top: 120, width: 150, fontSize: 28,
+        fontFamily: "Arial", fill: "red", textAlign: "center",
+        customValign: "middle"
+      }),
+      finishTime: new fabric.Textbox("Finish Time", {
+        left: 50, top: 190, width: 200, fontSize: 28,
+        fontFamily: "Arial", fill: "black", textAlign: "center",
+        customValign: "middle"
+      }),
+      overallRank: new fabric.Textbox("Overall Rank", {
+        left: 50, top: 260, width: 200, fontSize: 28,
+        fontFamily: "Arial", fill: "green", textAlign: "center",
+        customValign: "middle"
+      })
+    };
+
+    Object.values(fields).forEach(f => canvas.add(f));
+
+    // === Chọn textbox để chỉnh thuộc tính ===
+    canvas.on('selection:created', e => {
+      activeTextbox = e.selected[0];
+      syncSidebar(activeTextbox);
+    });
+    canvas.on('selection:updated', e => {
+      activeTextbox = e.selected[0];
+      syncSidebar(activeTextbox);
+    });
+    canvas.on('selection:cleared', () => {
+      activeTextbox = null;
+    });
+
+    function syncSidebar(obj) {
+      if (!obj) return;
+      document.getElementById("fontSize").value = obj.fontSize;
+      document.getElementById("color").value = obj.fill;
+      document.getElementById("fontFamily").value = obj.fontFamily;
+      document.getElementById("textAlign").value = obj.textAlign;
+      document.getElementById("valign").value = obj.customValign || "middle";
+    }
+
+    // === Cập nhật từ sidebar vào textbox ===
+    document.getElementById("fontSize").addEventListener("input", e => {
+      if (activeTextbox) {
+        activeTextbox.set("fontSize", parseInt(e.target.value));
+        canvas.renderAll();
+      }
+    });
+
+    document.getElementById("color").addEventListener("input", e => {
+      if (activeTextbox) {
+        activeTextbox.set("fill", e.target.value);
+        canvas.renderAll();
+      }
+    });
+
+    document.getElementById("fontFamily").addEventListener("change", e => {
+      if (activeTextbox) {
+        activeTextbox.set("fontFamily", e.target.value);
+        canvas.renderAll();
+      }
+    });
+
+    document.getElementById("textAlign").addEventListener("change", e => {
+      if (activeTextbox) {
+        activeTextbox.set("textAlign", e.target.value);
+        canvas.renderAll();
+      }
+    });
+
+    document.getElementById("valign").addEventListener("change", e => {
+      if (activeTextbox) {
+        activeTextbox.customValign = e.target.value;
+        canvas.renderAll();
+      }
+    });
+
+    // === Save vị trí (scale theo kích thước thật của ảnh) ===
+    document.getElementById("saveBtn").addEventListener("click", () => {
+      if (!naturalW || !naturalH) {
+        alert("Ảnh chưa load xong!");
+        return;
+      }
+
+      const scaleX = naturalW / canvas.width;
+      const scaleY = naturalH / canvas.height;
+
+      const config = {};
+      for (const key in fields) {
+        const obj = fields[key];
+        config[key] = {
+          x: Math.round(obj.left * scaleX),
+          y: Math.round(obj.top * scaleY),
+          w: Math.round(obj.width * scaleX),
+          h: Math.round(obj.height * scaleY),
+          fontSize: Math.round(obj.fontSize * scaleX),
+          fontFamily: obj.fontFamily,
+          color: obj.fill,
+          align: obj.textAlign,
+          valign: obj.customValign || "middle"
+        };
+      }
+
+      document.getElementById("output").textContent = JSON.stringify(config, null, 2);
+    });
+
+    // =====================================================
+    // === SNAP ALIGNMENT GUIDES (Căn giữa / trái / phải / trên / dưới)
+    // =====================================================
+    (function() {
+      const ctx = canvas.getSelectionContext();
+      const aligningLineOffset = 5;
+      const aligningLineMargin = 4;
+      const aligningLineWidth = 1;
+      const aligningLineColor = 'rgba(0,0,255,0.6)';
+      let viewportTransform, zoom = 1;
+
+      function drawLine(coords) {
+        ctx.save();
+        ctx.lineWidth = aligningLineWidth;
+        ctx.strokeStyle = aligningLineColor;
+        ctx.beginPath();
+        ctx.moveTo((coords.x1 + viewportTransform[4]) * zoom,
+                   (coords.y1 + viewportTransform[5]) * zoom);
+        ctx.lineTo((coords.x2 + viewportTransform[4]) * zoom,
+                   (coords.y2 + viewportTransform[5]) * zoom);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function isInRange(v1, v2) {
+        v1 = Math.round(v1);
+        v2 = Math.round(v2);
+        return Math.abs(v1 - v2) <= aligningLineMargin;
+      }
+
+      canvas.on('before:render', function() {
+        canvas.clearContext(canvas.contextTop);
+      });
+
+      canvas.on('after:render', function() {
+        canvas.contextTop.stroke();
+      });
+
+      canvas.on('object:moving', function(e) {
+        let activeObject = e.target;
+        let aCenter = activeObject.getCenterPoint();
+        let aLeft = activeObject.left;
+        let aTop = activeObject.top;
+        let aRight = aLeft + activeObject.width * activeObject.scaleX;
+        let aBottom = aTop + activeObject.height * activeObject.scaleY;
+        let aCenterX = aCenter.x;
+        let aCenterY = aCenter.y;
+
+        let snap = {x: false, y: false};
+
+        viewportTransform = canvas.viewportTransform;
+        zoom = canvas.getZoom();
+
+        canvas.getObjects().forEach(function(obj) {
+          if (obj === activeObject) return;
+
+          let oCenter = obj.getCenterPoint();
+          let oLeft = obj.left;
+          let oTop = obj.top;
+          let oRight = oLeft + obj.width * obj.scaleX;
+          let oBottom = oTop + obj.height * obj.scaleY;
+          let oCenterX = oCenter.x;
+          let oCenterY = oCenter.y;
+
+          // Căn giữa dọc
+          if (isInRange(oCenterX, aCenterX)) {
+            snap.x = oCenterX;
+            drawLine({x1: oCenterX, y1: -5000, x2: oCenterX, y2: 5000});
+          }
+          // Căn giữa ngang
+          if (isInRange(oCenterY, aCenterY)) {
+            snap.y = oCenterY;
+            drawLine({x1: -5000, y1: oCenterY, x2: 5000, y2: oCenterY});
+          }
+          // Căn lề trái
+          if (isInRange(oLeft, aLeft)) {
+            snap.x = oLeft + activeObject.width * activeObject.scaleX / 2;
+            drawLine({x1: oLeft, y1: -5000, x2: oLeft, y2: 5000});
+          }
+          // Căn lề phải
+          if (isInRange(oRight, aRight)) {
+            snap.x = oRight - activeObject.width * activeObject.scaleX / 2;
+            drawLine({x1: oRight, y1: -5000, x2: oRight, y2: 5000});
+          }
+          // Căn top
+          if (isInRange(oTop, aTop)) {
+            snap.y = oTop + activeObject.height * activeObject.scaleY / 2;
+            drawLine({x1: -5000, y1: oTop, x2: 5000, y2: oTop});
+          }
+          // Căn bottom
+          if (isInRange(oBottom, aBottom)) {
+            snap.y = oBottom - activeObject.height * activeObject.scaleY / 2;
+            drawLine({x1: -5000, y1: oBottom, x2: 5000, y2: oBottom});
+          }
+        });
+
+        if (snap.x !== false) {
+          activeObject.setPositionByOrigin(new fabric.Point(snap.x, aCenterY), 'center', 'center');
+        }
+        if (snap.y !== false) {
+          activeObject.setPositionByOrigin(new fabric.Point(aCenterX, snap.y), 'center', 'center');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

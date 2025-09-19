@@ -9,7 +9,7 @@ module.exports = ()=>{
         HomePage: async(req, res)=>{
             var hp_cf =await PageSettingEntity.findOne({type: "home_page"})
 
-            res.render("admin/page_setting/homepage", {layout: "layout/layoutAdmin", cf: hp_cf})
+            res.render("admin/page_setting/homepage", {layout: "layout/layoutAdmin", cf: hp_cf || {}})
         },
         ConfigHomePage:async (req, res)=>{
             try {

@@ -183,23 +183,24 @@
         </div>
         <div class="form-group">
           <label for="" class="form-label" >Place <small>(*)</small></label>
-          <input class="form-control" type="email" name="" placeholder="Enter place"  id="event-place">
-          <!-- <select name="" id="event-place" class="form-select">
-            <option value="default">choose option</option>
-            <option value="HCM">HoChiMinh</option>
-            <option value="HCM">HaNoi</option>
-          </select> -->
+          <input class="form-control" type="input" name="" placeholder="Enter place"  id="event-place">
+
         </div>
-        <div class="form-group">
+        <label for="" class="form-label">Hình đại diện: <small style="color: red;">(*)</small></label>
+        <div class="img_preview" id="img_preview">
+          <img src="" alt="" loading="lazy">
+          <input id="img_path" value=""  type="hidden">
+        </div>
+        <!-- <div class="form-group">
           <label for="" class="form-label">Choose imge</label>
           <input type="text" value="image1.png" id="imgPath">
-        </div>
-        <div class="form-group">
+        </div> -->
+        <!-- <div class="form-group">
           <label for="" class="form-label">Hinh Banner:</label>
           <div class="show-image" style="margin: 0 auto;" id="show-image">
           <img src="/img/hero-banner.jpg" data-folder="image-1.png" alt="pre-img" style="display: inline-block; width: 100%; height: 250px; object-fit: cover; ">
         </div> <br>
-        </div>
+        </div> -->
         <!--  -->
         <button class="btn btn-primary" id="secondSubmitAddEvent">Add Event</button>
       </div>
@@ -286,3 +287,56 @@
 </script>
 <!-- [Page Specific JS] end -->
 <!-- [Ourdoor end] -->
+ <!--gallery  -->
+<script src="/js/my_gallery.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const modalEl = document.getElementById("exampleModal");
+
+  if (modalEl) {
+    modalEl.addEventListener("shown.bs.modal", function () {
+      const galleryRoot = document.getElementById("galleryRoot");
+      galleryRoot.innerHTML = ""; // clear cũ
+
+      MediaGallery.init(galleryRoot, {
+        onSelect: (img) => {
+          document.getElementById("img_preview").style.display = "block";
+          document.querySelector("#img_preview img").src = img.url;
+          document.getElementById("img_path").value = img.url;
+
+          // Đóng modal
+          // đóng modal an toàn
+          const closeBtn = modalEl.querySelector("[data-bs-dismiss='modal']");
+          if (closeBtn) closeBtn.click();
+        },
+      });
+    });
+  }
+});
+</script>
+
+<!-- [Modal area] -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen" style="max-height: 95%; max-width: 95%; margin: 20px auto;">
+    <div class="modal-content">
+      <!-- <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title A</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div> -->
+      <div class="modal-body">
+        <!-- start -->
+        <div id="galleryRoot"></div>
+         <!-- end -->
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" hidden data-bs-dismiss="modal">Close</button> -->
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+ <!-- [End modal area] -->

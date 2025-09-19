@@ -1,0 +1,132 @@
+<style>
+  .volunteer-list {
+    padding-top: 50px;
+    min-height: 500px;
+  }
+  table {
+    text-align: center;
+  }
+  section.event {
+    padding-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .event .event-info {
+    text-align: center;
+  }
+</style>
+<section class="event">
+  <div class="event-info">
+    <h4><%=event.name%></h4>
+    <% let d = new Date(event.startDate); %>
+    <p>
+      <%= d.getDate().toString().padStart(2, '0') %>/<%= (d.getMonth() +
+      1).toString().padStart(2, '0') %>/<%= d.getFullYear() %>
+    </p>
+    <small
+      >Ban Tổ Chức xin gửi lời cảm ơn chân thành đến tất cả các tình nguyện
+      viên</small
+    >
+  </div>
+</section>
+
+<section class="volunteer-list">
+  <div class="main-container">
+    <table class="table table-striped" id="volunteer_tbl">
+      <thead>
+        <th>#</th>
+        <th>Name</th>
+        <th>Role</th>
+        <th>T-Shirt Size</th>
+        <th>Certificate</th>
+      </thead>
+      <tbody>
+        <% volunteers.forEach((v, index)=>{ %>
+        <tr
+          data-id="<%=v._id%>"
+          data-name="<%=v.fullname%>"
+          data-role="<%=v.role%>"
+        >
+          <td><%=index+1%></td>
+          <td><%= v.fullname %></td>
+          <td><%=v.role%></td>
+          <td>XL</td>
+          <td><button class="btn btn-secondary btn-cert">Cert</button></td>
+        </tr>
+        <%})%>
+      </tbody>
+    </table>
+  </div>
+  <input type="hidden" id="ei_hidden" name="" value="<%=event_id%>" />
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // write down
+    const navLinks = document.querySelectorAll(".nav-menu a");
+  var currentPath = '/volunteer';
+
+  navLinks.forEach((link) => {
+    if (link.getAttribute("href") === currentPath) {
+      link.classList.add("active");
+    } else {
+      link.classList.remove("active");
+    }
+  });
+    document
+      .querySelectorAll("#volunteer_tbl tbody .btn-cert")
+      .forEach((el, i) => {
+        el.addEventListener("click", function (ev) {
+          const vi = this.closest("tr").getAttribute("data-id");
+          const ei = document.getElementById("ei_hidden").value;
+          console.log(vi + " | " + ei);
+          GetVolunteerCertificate(vi, ei);
+        });
+      });
+
+    function GetVolunteerCertificate(vol_id, event_id) {
+      $.ajax({
+        url: `/volunteer/certificate`,
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+          event_id: event_id,
+          volunteer_id: vol_id,
+        }),
+        success: (res) => {
+          $("#certificateModal img").attr("src", res.image);
+          $("#certificateModal").modal("show");
+          $("#btn-download").attr("href", res.image)
+
+        //   alert("success");
+        },
+        error: (err) => {
+          alert("failed");
+        },
+      });
+    }
+  });
+</script>
+
+
+<!-- NEW -->
+ <!-- Modal -->
+<div class="modal fade" id="certificateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog 	modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Volunteer Certificate</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <img src="" alt="Certificate Preview" class="img-fluid" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <!-- <button type="button" id="btn-download" download class="btn btn-primary">Download Certificate</button> -->
+         <a href="" id="btn-download" download class="btn btn-outline-success">Download certificate</a>
+      </div>
+    </div>
+  </div>
+</div>

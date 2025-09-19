@@ -1,0 +1,101 @@
+/* gallery.css */
+body {
+  font-family: sans-serif;
+  margin: 20px;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: red;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  line-height: 18px;
+  font-size: 14px;
+}
+
+.gallery-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.gallery-container .col-left {
+    border: 1px solid #ccc;
+    padding: 20px;
+  flex: 2.5;
+}
+
+.gallery-container .col-right {
+  border: 1px solid #ccc;
+  padding: 20px;
+  flex: 7.5;
+}
+
+.scroll-wrapper {
+  text-align: center;
+  height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.active-folder {
+  font-weight: bold;
+  color: blue;
+}
+
+/* gallery images grid */
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* khoảng cách giữa các ảnh */
+  justify-content: center;
+}
+
+.image-gallery .item {
+  min-width: calc(100% / 3 - 20px); /* Kích thước tối thiểu */
+  flex: 1 1 180px;                  /* Cho phép co giãn nhưng không nhỏ hơn 180px */
+  height: 150px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-gallery .item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+/* hiện nút xóa khi hover */
+.item .delete-btn {
+  display: none;
+}
+
+.item:hover .delete-btn {
+  display: block;
+}
+
+
+.img_preview{
+        margin: 20px 0;
+        display: none;
+  }
+  .img_preview img{
+    display: inline-block;
+    width: 100%;       /* phủ hết chiều ngang khung */
+    height: 250px;     /* chiều cao khung (có thể thay đổi tùy ý) */
+    object-fit: cover;
+  }

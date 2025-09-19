@@ -152,8 +152,9 @@ app.use('/hehe', (req, res)=>{
 //     },
 //new
 const uploadDir = path.join(__dirname, "../uploads");
-// ✅ Serve thư mục uploads như static
 app.use("/uploads", express.static(uploadDir));
+
+
 
 //dam bao ton tai thu muc upload
 if(!fs.existsSync(uploadDir)){
@@ -161,7 +162,7 @@ if(!fs.existsSync(uploadDir)){
 }
 console.log("path: "+uploadDir)
 
-//
+//C:\Workspaces\Nodejs\access-race\src\server\app.js
 route(app);
 
 //connect DB

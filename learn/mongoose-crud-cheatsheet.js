@@ -16,7 +16,12 @@ await Model.create({ field: "value" });
 
 // Cách 3: insertMany
 await Model.insertMany([{ field: "a" }, { field: "b" }]);
-
+// update + create (neu chua co)
+db.collection.updateOne(
+  { _id: "abc123" }, // điều kiện tìm document
+  { $set: { name: "Kien", age: 30 } }, // dữ liệu cập nhật
+  { upsert: true } // nếu không tìm thấy thì tạo mới
+);
 
 //////////////////////
 // 🔵 READ (Đọc dữ liệu)

@@ -120,7 +120,7 @@ module.exports = (_categoryService, _postService) => {
       const id = req.params.id;
       var _post = await _postService.GetById(id);
       var _categories = await getCategories();
-      console.log(_post);
+      // console.log(_post);
       res.render("admin/news/postedit", {
         layout: "layout/layoutAdmin",
         post: _post.data,

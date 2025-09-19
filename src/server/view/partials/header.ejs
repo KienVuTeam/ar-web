@@ -10,7 +10,7 @@
     <a href="/" class="">Home</a>
     <a href="/event">Events</a>
     <a href="/about">About</a>
-    <!-- <a href="#">Support</a> -->
+    <a href="/volunteer">Volunteer</a>
     <!-- <a href="#" class="">Company</a> -->
     <!-- <a href="#">Shop</a> -->
   </nav>
@@ -34,7 +34,7 @@
   // });
   // 
   const navLinks = document.querySelectorAll(".nav-menu a");
-  const currentPath = window.location.pathname;
+  var currentPath = window.location.pathname;
 
   navLinks.forEach((link) => {
     if (link.getAttribute("href") === currentPath) {

@@ -1,6 +1,37 @@
 const express = require('express')
 const router = express.Router();
-const {uploadExcel, uploadImage} = require('../config/multerUpload')
+const path = require('path')
+const fs = require('fs');
+const multer = require('multer');
+
+const myPath = require('../config/path.config');
+const {uploadExcel, uploadImage} = require('../config/multerUpload');
+const uploadExcelVolunteer = require("../config/excelMulterVolunteer");
+// const uploadImageVolunteer = require("../config/uploadImageVolunteer");
+
+// =================Config muter ====================== //
+const uploadDir = path.join(myPath.root, "src", "uploads", "volunteer_certificate");
+if(!fs.existsSync(uploadDir)){
+    fs.mkdirSync(uploadDir, {recursive: true});
+}
+const storage = multer.diskStorage({
+    destination: (req, file, cb)=> cb(null, uploadDir),
+    filename: (req, file, cb)=> cb(null, Date.now()+path.extname(file.originalname))
+});
+
+//chi cho phep anh jpg/png/jpe/jpeg
+const fileFilter =(req, file, cb)=>{
+    const allowed =["image/jpeg", "image/png", "image/jpg"];
+    if(allowed.includes(file.mimetype)){
+        cb(null, true)
+    }else{
+        cb(new Error("Chỉ cho phép file ảnh (.jpg, .jpeg, .png)"), false);
+    }
+}
+const limits = { fileSize: 5 * 1024 * 1024 }; // giới hạn 5MB
+
+const uploadImageVolunteer = multer({ storage, fileFilter, limits });
+//=============== END =============================//
 
 // const HomeController = require('../areas/admin/controller/HomeController');
 const NewsController = require('../areas/admin/controller/NewsController');
@@ -12,11 +43,13 @@ const EventV2Controller = require('../areas/admin/controller/EventV2Controller')
 //services 
 const _PostService = require('../services/post.service') // server nap ngoai nay de de test
 const _CategoryService = require('../services/category.service'); //
+
 //controllers
 // const categoryController= require('../areas/admin/controller/category.controller')(_CategoryService)
 const news2Controller = require('../areas/admin/controller/new2.controller')(_CategoryService, _PostService)
 const imageController = require('../areas/admin/controller/image.controller')() //fx
 const pageSetting = require('../areas/admin/controller/PageSetting.controller')();
+const volunteerController = require('../areas/admin/controller/volunteer.controller')();
 
 //router 
 router.get('/news/post/index', news2Controller.ListPostAndCategory); //PostIndex
@@ -42,6 +75,16 @@ router.get('/img', imageController.Index)
 //page setting
 router.get('/setting/home-page', pageSetting.HomePage);
 router.post('/page-setting/home-page/config', pageSetting.ConfigHomePage)
+// volunteer 
+router.post('/volunteer/upload-excel',uploadExcelVolunteer.single('excelFile'), volunteerController.UploadExcel);
+router.post('/volunteer/upload-image', uploadImageVolunteer.single('cert_img'), volunteerController.UploadImage)
+router.get('/volunteer/event-list', volunteerController.EventList);
+router.get('/volunteer/control', volunteerController.GetVolunteer);
+router.post('/volunteer/certificate-config', volunteerController.CertificateConfig); //luu toa do img
+router.post('/volunteer/certificate-person/:id', volunteerController.CreateCertificate);
+router.get('/volunteer/vol-list/:event_id', volunteerController.VolunteerList);
+router.get('/volunteer/render-cert', volunteerController.RenderCert);
+router.get('/volunteer/',volunteerController.Index);
 //======== end
 
 //EventController

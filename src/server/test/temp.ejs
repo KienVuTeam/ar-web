@@ -1,0 +1,42 @@
+<h2 id="handlecontrol-header">Control Volunteer</h2>
+<section class="control-header">
+  <div class="row">
+    <div class="col-6">
+      <!--  -->
+      <div class="row">
+        <div class="col-6">
+      
+            <label for="" class="form-label">Choose certificate img</label>
+            <input type="file" id="choose-certimg" class="cert-img form-control " />
+    
+        </div>
+        <div class="col-6">
+          <button class="btn btn-outline-primary" id="cert-img-save">Lưu ảnh</button>
+            <!-- Nút mở modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editorModal">Cert position</button>
+     
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group">
+            <label for="" class="form-label">Choose excel file </label>
+            <div class="my-wrap" style="display: flex; justify-content: space-between">
+              <input type="file" name="fileExcel" class="form-control fileExcel w-75" id=""  />
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <input id="btn-submit" type="submit" class="btn btn-outline-primary btn-submit" value="Save file" />
+        </div>
+      </div>
+      <div id="result"></div>
+    </div>
+    <div class="col-6">
+      <div class="wrap-img" style="min-height: 100px; min-width: 100%; background-color: #ccc;">
+        <img src="" alt="" class="cert-preview" id="cert-preview" />
+      </div>
+
+    </div>
+  </div>
+</section>
