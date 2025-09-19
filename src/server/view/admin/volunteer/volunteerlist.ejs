@@ -67,7 +67,7 @@
       <!-- Certificate Image Upload -->
       <div class="card shadow-sm mb-3">
         <div class="card-body">
-          <h5 class="card-title">Certificate Image</h5>
+          <h5 class="card-title">Certificate Image / <small><a href="/xlsx/VolunteerCert_Exemple.xlsx" download="">Excel mẫu</a></small></h5> 
           <div class="mb-3">
             <label for="choose-certimg" class="form-label">Choose certificate image</label>
             <input type="file" id="choose-certimg" class="form-control" />
@@ -120,7 +120,11 @@
 </section>
 
 <hr />
-
+<div class="event-table-info mb-3" style="text-align: center;">
+  <h5><%=event.name%></h5>
+  <p class="date"></p>
+  <small>[ <%=event.desc%> ]</small>
+</div>
 <table class="table table-striped" id="volunteer_tbl">
   <thead>
     <th>#</th>

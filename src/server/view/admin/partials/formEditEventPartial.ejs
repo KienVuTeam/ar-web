@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="/css/my_gallery.css">
+
 <style>
     .form-container {
       background: #fff;
@@ -56,6 +58,9 @@
     .btn-media:hover {
       background: #5848d6;
     }
+    .careful{
+      color: red;
+    }
   </style>
   
   <!--  -->
@@ -67,9 +72,13 @@
         <div class="card-body">
           <!--  -->
           <div class="form-group">
-            <label for="event-name" >Tên sự kiện <small>(*)</small></label>
+            <label for="event-name" >Tên sự kiện <small class="careful">(*)</small></label>
             <input type="text" id="title" name="title" placeholder="Nhập tên sự kiện" value="<%=event.name%>" />
           </div>
+          <div class="form-group">
+          <label for="">Description <small class="careful">(*)</small></label>
+          <textarea name="" id="desc" cols="30" rows="3" placeholder="Nhập mô tả"><%=event.desc%></textarea>
+        </div>
   
           <div class="form-group">
             <label for="event-link">Link <small>Tự động có theo tên sự kiện</small></label>
@@ -77,7 +86,7 @@
           </div>
   
           <div class="form-group">
-            <label>Thời gian sự kiện <small>(*)</small></label>
+            <label>Thời gian sự kiện <small class="careful">(*)</small></label>
             <div class="date-range">
               <input class="form-control" type="date" name="startDate" id="startDate"   value="<%=event.startDate%>" />
               <input class="form-control" type="date" name="endDate" id="endDate" value="<%=event.endDate%>"/>
@@ -85,14 +94,14 @@
           </div>
   
           <div class="form-group">
-            <label>Thời gian đóng ủy quyền <small>(*)</small></label>
+            <label>Thời gian đóng ủy quyền <small class="careful">(*)</small></label>
             <input class="form-control" type="date" name="authorityDate" id="authorityDate" value="<%=event.authorityDate%>" />
           </div>
   
           <br />
           <!-- content 2 -->
           <div class="form-group">
-            <label>Nội dung giới thiệu <small>(*)</small></label>
+            <label>Nội dung giới thiệu </label>
             <!-- <button class="btn-media">Thêm media</button> <br /> <br> -->
             <!-- <label for=""></label> -->
             <textarea id="event-tinymce-4" name="event-tinymce-4" class="tox-target" placeholder="Write here"><%= event.content %></textarea>
@@ -114,7 +123,7 @@
 
         </div>
         <div class="card-footer">
-          <button id="eventSubmit" type="button" class="btn btn-primary">Update event 1</button>
+          <button id="eventSubmit" type="button" class="btn btn-primary">Update Event</button>
           <input type="hidden"  value="<%=event._id%>" id="idObject">
         </div>
       </div>
@@ -131,21 +140,43 @@
           </div>
           </div>
           <div class="form-group">
-            <label for="" class="form-label" >Place <small>(*)</small></label>
+            <label for="" class="form-label" >Place <small class="careful">(*)</small></label>
             <input type="text" id="event-place" value="<%=event.place%>">
             <input type="hidden" id="eventStatus" value="<%=event.status%>">
 
           </div>
-          <div class="form-group">
-            <label for="" class="form-label">Choose imge</label>
-            <input type="text" value="<%=event.imagePath%>" id="imgPath">
-          </div>
-          <div class="form-group">
-            <label for="" class="form-label">Hinh Banner:</label>
-            <div class="show-image" style="margin: 0 auto;" id="show-image">
-            <img src="/img/hero-banner.jpg" data-folder="image-1.png" alt="pre-img" style="display: inline-block; width: 100%; height: 250px; object-fit: cover; ">
-          </div> <br>
-          </div>
+          <!-- Thumb -->
+        <label class="form-label">Thumb (700x420) <small style="color: red;">(*)</small></label>
+        <div class="img_preview" id="img_preview_thumb">
+          <img src="" alt="" loading="lazy">
+          <input id="img_path_thumb" value="" type="hidden">
+        </div>
+        <div class="form-group mb-3">
+          <button class="btn btn-outline-info btn-choose-image" data-target="thumb" data-bs-toggle="modal"
+            data-bs-target="#exampleModal">Choose image</button>
+        </div>
+
+        <!-- Banner -->
+        <label class="form-label">Banner (1800x600) <small style="color: red;">(*)</small></label>
+        <div class="img_preview" id="img_preview_banner">
+          <img src="" alt="" loading="lazy">
+          <input id="img_path_banner" value="" type="hidden">
+        </div>
+        <div class="form-group mb-3">
+          <button class="btn btn-outline-info btn-choose-image" data-target="banner" data-bs-toggle="modal"
+            data-bs-target="#exampleModal">Choose image</button>
+        </div>
+
+        <!-- Certificate -->
+        <label class="form-label">Certificate (2400x1700): <small style="color: red;">(*)</small></label>
+        <div class="img_preview" id="img_preview_certificate">
+          <img src="" alt="" loading="lazy">
+          <input id="img_path_certificate" value="" type="hidden">
+        </div>
+        <div class="form-group mb-3">
+          <button class="btn btn-outline-info btn-choose-image" data-target="certificate" data-bs-toggle="modal"
+            data-bs-target="#exampleModal">Choose image</button>
+        </div>
           <!--  -->
           <button id="secondEventSubmit" class="btn btn-primary" >Update Event</button>
         </div>
@@ -155,12 +186,12 @@
   
   <!-- [Script start] -->
    <script>
-
     function eventSubmitHandle(){
       // alert("hekl")
       const idEvent =$('#idObject').val();
       console.log('id '+idEvent)
       const title = $('#title').val();
+      const desc = $('#desc').val();
       const slug = $("#slug").val();
       // const content = tinymce.get('event-tinymce-4').getContent();
       const editor = tinymce.get('event-tinymce-4');
@@ -177,6 +208,7 @@
       const isShow =$('#isShow').is(':checked');
       const dataSend={
         title,
+        desc,
         slug,
         content,
         startDate,
@@ -190,7 +222,7 @@
         isShow
       }
       //test
-      console.log(title, slug, content, startDate, endDate, authorityDate, imagePath, rankType, apiLink, place, isShow, idEvent);
+      // console.log(title, slug, content, startDate, endDate, authorityDate, imagePath, rankType, apiLink, place, isShow, idEvent);
       console.log(dataSend);
       //ajax
       $.ajax({
@@ -221,4 +253,67 @@
     })
 
 </script>
+<!--  -->
+<!--gallery  -->
 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const modalEl = document.getElementById("exampleModal");
+    let currentTarget = null; // lưu block nào đang chọn ảnh
+
+    // Bắt sự kiện click vào các nút "Choose image"
+    document.querySelectorAll(".btn-choose-image").forEach(btn => {
+      btn.addEventListener("click", function () {
+        currentTarget = this.dataset.target; // thumb, banner, certificate
+      });
+    });
+    if (modalEl) {
+      modalEl.addEventListener("shown.bs.modal", function () {
+        const galleryRoot = document.getElementById("galleryRoot");
+        galleryRoot.innerHTML = ""; // clear cũ
+        MediaGallery.init(galleryRoot, {
+          onSelect: (img) => {
+            if (!currentTarget) return;
+            document.getElementById("img_preview_"+currentTarget).style.display = "block";
+            const preview = document.getElementById("img_preview_" + currentTarget);
+            const input = document.getElementById("img_path_" + currentTarget);
+
+            preview.querySelector("img").src = img.url;
+            input.value = img.url;
+
+            // đóng modal
+            const closeBtn = modalEl.querySelector("[data-bs-dismiss='modal']");
+            if (closeBtn) closeBtn.click();
+          },
+        });
+      });
+    }
+  });
+
+</script>
+
+<!-- [Modal area] -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen" style="max-height: 95%; max-width: 95%; margin: 20px auto;">
+    <div class="modal-content">
+      <!-- <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title A</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div> -->
+      <div class="modal-body">
+        <!-- start -->
+        <div id="galleryRoot"></div>
+        <!-- end -->
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" hidden data-bs-dismiss="modal">Close</button> -->
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- [End modal area] -->

@@ -21,6 +21,7 @@ class EventService {
     try {
       var event = new EventEntity({
         name: dataClient.title,
+        desc: dataClient.desc,
         slug: dataClient.slug,
         content: dataClient.content,
         imagePath: dataClient.imagePath,
@@ -48,6 +49,7 @@ class EventService {
         {
           $set: {
             name: dataClient.title,
+            desc: dataClient.desc,
             slug: dataClient.slug,
             content: dataClient.content,
             imagePath: dataClient.imagePath,

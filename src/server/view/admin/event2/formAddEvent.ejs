@@ -67,6 +67,9 @@
   .btn-media:hover {
     background: #5848d6;
   }
+  .careful{
+    color: red;
+  }
 </style>
 <script src="/admin/assets/js/plugins/tinymce/tinymce.min.js"></script>
 <!--  -->
@@ -97,12 +100,16 @@
       <div class="card-body">
         <!--  -->
         <div class="form-group">
-          <label for="event-name">Tên sự kiện <small>(*)</small></label>
+          <label for="event-name">Tên sự kiện <small class="careful">(*)</small></label>
           <input type="text" id="title" name="title" placeholder="Nhập tên sự kiện" />
+        </div>
+        <div class="form-group">
+          <label for="">Description <small class="careful">(*)</small></label>
+          <textarea name="" id="desc" cols="30" rows="3" placeholder="Nhập mô tả"></textarea>
         </div>
 
         <div class="form-group">
-          <label for="event-link">Link <small>Tự động có theo tên sự kiện</small></label>
+          <label for="event-link">Link <small>(Tự động có theo tên sự kiện)</small></label>
           <input type="text" id="slug" name="slug" placeholder="Nhập link" />
         </div>
 
@@ -119,20 +126,6 @@
           <input class="form-control" type="date" name="authorityDate" id="authorityDate" />
         </div>
 
-        <!-- <div class="form-group checkbox-group">
-          <input type="checkbox" id="no-sale" />
-          <label for="no-sale">Sự kiện không bán vé trên TimVe365</label>
-        </div> -->
-
-        <!-- <div class="form-group">
-          <label>Nội dung giới thiệu</label>
-          <button class="btn-media">Thêm media</button> <br />
-          <br />
-          <textarea
-            id="description"
-            placeholder="Nhập nội dung giới thiệu..."
-          ></textarea>
-        </div> -->
         <br />
         <!-- content 2 -->
         <div class="form-group">
@@ -156,31 +149,13 @@
           </select>
         </div>
 
-        <!-- <div class="form-group">
-          <label for="select-event">Chọn sự kiện từ Tìm Hình</label>
-          <select id="select-event">
-            <option>---</option>
-            <option>Sự kiện A</option>
-            <option>Sự kiện B</option>
-          </select>
-        </div> -->
-
-        <!-- <div class="form-group">
-          <label for="" class="form-label">Staus <small>(*)</small></label>
-          <select class="form-select" id="eventStatus">
-            <option value="default">choose option</option>
-            <option value="1">Initial</option>
-            <option value="2">Dan Bib</option>
-            <option value="3">Send QR code</option>
-          </select>
-        </div> -->
         <!--  -->
       </div>
       <div class="card-footer">
         <button id="eventSubmit" class="btn btn-primary">
-          Create new event
+          Event New
         </button>
-        <button class="btn btn-secondary">Hủy</button>
+        <button class="btn btn-secondary">Cancel</button>
       </div>
     </div>
   </div>
@@ -199,10 +174,7 @@
           <label for="" class="form-label">Place <small>(*)</small></label>
           <input class="form-control" type="email" name="" placeholder="Enter place" id="event-place" />
         </div>
-        <!-- <div class="form-group">
-          <label for="" class="form-label">Choose imge</label>
-          <input type="text" value="image1.png" id="imgPath" />
-        </div> -->
+
         <!-- Thumb -->
         <label class="form-label">Thumb (700x420) <small style="color: red;">(*)</small></label>
         <div class="img_preview" id="img_preview_thumb">
@@ -235,26 +207,9 @@
           <button class="btn btn-outline-info btn-choose-image" data-target="certificate" data-bs-toggle="modal"
             data-bs-target="#exampleModal">Choose image</button>
         </div>
-        <!-- <div class="form-group">
-          <label for="" class="form-label">Hinh Banner:</label>
-          <div class="show-image" style="margin: 0 auto" id="show-image">
-            <img
-              src="/img/hero-banner.jpg"
-              data-folder="image-1.png"
-              alt="pre-img"
-              style="
-                display: inline-block;
-                width: 100%;
-                height: 250px;
-                object-fit: cover;
-              "
-            />
-          </div>
-
-        </div> -->
         <!--  -->
         <button class="btn btn-primary" id="secondSubmitAddEvent">
-          Add Event
+          Event New
         </button>
       </div>
     </div>
@@ -273,6 +228,7 @@
   function submitEventHandler() {
     const title = $("#title").val();
     const slug = null;
+    const desc= $("#desc").val();
     const img_thumb= $('#img_preview_thumb').val();
     const img_banner = $("#img_preview_banner").val();
     const img_certificate = $("#img_preview_certificate").val();
@@ -292,6 +248,7 @@
       img_banner,
       img_certificate,
       title,
+      desc,
       slug,
       content,
       startDate,
@@ -367,20 +324,6 @@
       modalEl.addEventListener("shown.bs.modal", function () {
         const galleryRoot = document.getElementById("galleryRoot");
         galleryRoot.innerHTML = ""; // clear cũ
-
-        // MediaGallery.init(galleryRoot, {
-        //   onSelect: (img) => {
-        //     document.getElementById("img_preview").style.display = "block";
-        //     document.querySelector("#img_preview img").src = img.url;
-        //     document.getElementById("img_path").value = img.url;
-
-        //     // Đóng modal
-        //     // đóng modal an toàn
-        //     const closeBtn = modalEl.querySelector("[data-bs-dismiss='modal']");
-        //     if (closeBtn) closeBtn.click();
-        //   },
-        // });
-        // new
         MediaGallery.init(galleryRoot, {
           onSelect: (img) => {
             if (!currentTarget) return;

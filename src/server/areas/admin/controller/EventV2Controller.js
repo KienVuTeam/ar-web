@@ -53,10 +53,8 @@ class EventV2Controller {
   //
   async LoadFormEditPartial(req, res) {
     try {
-      // const _id = req.query.id;
       const _id = req.params.id;
       console.log(_id);
-      // alert(_id)
       var statusOfEvent = await EventService.getStatusOfEvent(_id);
       // FlagCheck(statusOfEvent.status);
       var result = await EventService.findEventById(_id);
@@ -75,7 +73,7 @@ class EventV2Controller {
   // U
   //[ajax]
   async UpdateEvent(req, res) {
-    console.log("tests");
+    // console.log("tests");
     try {
       const _id = req.params.id;
       const dataClient = req.body;
@@ -131,10 +129,7 @@ class EventV2Controller {
             handleReturnView,
           );
         case 2:
-          // console.log(_eventId);
           var result = await this.AthleteList(_eventId);
-          // console.log(result.data.length);
-          // var result = null;
           if (result.data.length === 0) {
             return res.render("admin/event2/athleteImport", {
               layout: false,

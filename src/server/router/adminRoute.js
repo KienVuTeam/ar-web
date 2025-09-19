@@ -100,17 +100,18 @@ router.post('/event2/athlete/xlsx-upload',uploadExcel.single('file') ,EventV2Con
 router.post('/event2/mail/send-mail', EventV2Controller.sendMailQRToAthlete.bind(EventV2Controller))
 router.post('/event2/mail/send-mail2', EventV2Controller.sendMailQRToAthlete2.bind(EventV2Controller));
 router.get('/event2/mail/send-mail-person', EventV2Controller.sendMailPersional.bind(EventV2Controller));
-router.put('/event2/update-event/:id', EventV2Controller.UpdateEvent.bind(EventV2Controller))
-router.post('/event2/new-event', EventV2Controller.AddEvent.bind(EventV2Controller))
-router.get('/event2/form-add-event', EventV2Controller.FormAddEvent.bind(EventV2Controller))
 router.get('/event2/asign-qrcode', EventV2Controller.AthleteQrCode.bind(EventV2Controller))
 router.get('/event2/scan-qrcode', EventV2Controller.ScanQRCode.bind(EventV2Controller))
 router.post('/event2/read-qrcode', EventV2Controller.ReadQRCode.bind(EventV2Controller))
 router.get('/event2/qr-code', EventV2Controller.GenerateSign.bind(EventV2Controller))
 router.post('/event2/change-status', EventV2Controller.GoToNextStep.bind(EventV2Controller))
 //load here
-router.get('/event2/event-list', EventV2Controller.EventList.bind(EventV2Controller))
+router.post('/event2/new-event', EventV2Controller.AddEvent.bind(EventV2Controller))
+router.get('/event2/form-add-event', EventV2Controller.FormAddEvent.bind(EventV2Controller))
 router.get('/event2/form-edit-event/:id', EventV2Controller.LoadFormEditPartial.bind(EventV2Controller))//khi click vao event detail trong eventlist
+router.put('/event2/update-event/:id', EventV2Controller.UpdateEvent.bind(EventV2Controller))
+// ---
+router.get('/event2/event-list', EventV2Controller.EventList.bind(EventV2Controller))
 router.use('/event2/progress/step/:step', EventV2Controller.LoadPartialPage.bind(EventV2Controller))
 router.get('/event2', EventV2Controller.Index.bind(EventV2Controller))
 // 

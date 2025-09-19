@@ -93,6 +93,8 @@
     fetch(`/admin/event2/progress/step/${step}?id=${eventId}`)
       .then((res) => res.text())
       .then((html) => {
+
+        
         const container = document.querySelector("#step-content");
         container.innerHTML = html;
 
@@ -108,13 +110,56 @@
           }
           document.body.appendChild(newScript);
           // tránh trùng lặp, remove đi nếu không muốn lưu lại
-          document.body.removeChild(newScript);
+          // document.body.removeChild(newScript); //bo
+          document.body.appendChild(newScript);
         });
-
+        // fix 19/09
+        // Sau đó xoá script trong container (chứ không xoá newScript)
+        container.querySelectorAll("script").forEach(s => s.remove());
+        // end fix 19/09
         MyInitialTinymce();
 
         // luôn vẽ lại progress bar theo statusCurent, ko theo step
         updateProgressBar();
+        // fix 19/09
+        // Sau khi load partial Edit
+if (step == 1) {   // hoặc kiểm tra container có #galleryRoot
+  const galleryRoot = document.getElementById("galleryRoot");
+  if (galleryRoot) {
+    const modalEl = document.getElementById("exampleModal");
+    let currentTarget = null; // lưu block nào đang chọn ảnh
+
+    // Bắt sự kiện click vào các nút "Choose image"
+    document.querySelectorAll(".btn-choose-image").forEach(btn => {
+      btn.addEventListener("click", function () {
+        currentTarget = this.dataset.target; // thumb, banner, certificate
+      });
+    });
+    if (modalEl) {
+      modalEl.addEventListener("shown.bs.modal", function () {
+        const galleryRoot = document.getElementById("galleryRoot");
+        galleryRoot.innerHTML = ""; // clear cũ
+        MediaGallery.init(galleryRoot, {
+          onSelect: (img) => {
+            if (!currentTarget) return;
+            document.getElementById("img_preview_"+currentTarget).style.display = "block";
+            const preview = document.getElementById("img_preview_" + currentTarget);
+            const input = document.getElementById("img_path_" + currentTarget);
+
+            preview.querySelector("img").src = img.url;
+            input.value = img.url;
+
+            // đóng modal
+            const closeBtn = modalEl.querySelector("[data-bs-dismiss='modal']");
+            if (closeBtn) closeBtn.click();
+          },
+        });
+      });
+    }
+  }
+}
+
+        // end fix
       });
   }
 
@@ -146,7 +191,15 @@
     loadStep(statusCurent);
   });
 </script>
-
+<!-- Script gallery -->
+ <script src="/js/my_gallery.js"></script>
+ <script>
+  document.addEventListener('DOMContentLoaded', function(){
+    
+  })
+ </script>
+ 
+ <!-- END -->
 <style>
   .steps {
     display: flex;

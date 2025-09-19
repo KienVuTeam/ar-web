@@ -27,12 +27,16 @@ module.exports = () => {
         const event_id = req.params.event_id;
         console.log("event_id "+event_id)
         var result = await VolunteerEntity.find({event_id: event_id});
+        var event = await EventEntity.findOne({_id: event_id})
+        console.log("Event neeeeeeee")
+        console.log(event)
         var certConfig = await CertificateConfigEntity.findOne({event_id: event_id}).lean();
         res.render("admin/volunteer/volunteerlist", {
           layout: "layout/layoutAdmin",
           data: result,
           ei : event_id,
-          cc: certConfig
+          cc: certConfig,
+          event: event
         });
       } catch (error) {
         console.log("C_Volunteer "+error);
