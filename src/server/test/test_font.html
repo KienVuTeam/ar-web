@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Font Test</title>
+    <style>
+        @font-face {
+            font-family: 'AlexBrush-Regular';
+            src: url('./font/AlexBrush-Regular.woff2') format('woff2');
+        }
+
+        body {
+            font-family: sans-serif;
+        }
+
+        .test-font {
+            font-family: 'AlexBrush-Regular', cursive;
+            font-size: 48px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Font Test Page</h1>
+    <p>This is a paragraph with the default font.</p>
+    <p class="test-font">This paragraph should use the Alex Brush font.</p>
+</body>
+</html>

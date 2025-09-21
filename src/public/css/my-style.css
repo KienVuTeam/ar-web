@@ -92,3 +92,8 @@ header {
   color: #333;
 }
 
+
+@font-face {
+  font-family: 'MyCustomAlexBrush';
+  src: url('/font/AlexBrush-Regular.ttf') format('truetype');
+}

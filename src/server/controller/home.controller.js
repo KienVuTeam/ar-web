@@ -1,12 +1,12 @@
-const path = require('path')
-const { createCanvas, loadImage } = require("canvas");
+const path = require("path");
+const { createCanvas, loadImage, registerFont } = require("canvas");
 
 const pageConfig = require("../utils/aboutConfig.json");
 const PageSettingEntity = require("../model/PageSetting");
 const EventEntity = require("../model/Event");
 const VolunteerEntity = require("../model/Volunteer");
-const CertificateConfigEntity = require('../model/CertificateConfig')
-const pathConfig = require('../config/path.config');
+const CertificateConfigEntity = require("../model/CertificateConfig");
+const pathConfig = require("../config/path.config");
 
 module.exports = () => {
   async function HomePageHelper() {
@@ -73,10 +73,16 @@ module.exports = () => {
       try {
         const volunteer_id = req.body.volunteer_id;
         const event_id = req.body.event_id;
-        console.log("OA"+pathConfig.root);
+        console.log("OA" + pathConfig.root);
         console.log(pathConfig.root2);
         // const cc = await CertificateConfigEntity.find({event_id: event_id}).lean();
         // ------------
+
+        // --- Đăng ký font ---
+        const fontPath = path.join(pathConfig.root, "src", "public", "font", "AlexBrush-Regular.ttf");
+        registerFont(fontPath, { family: "MyCustomAlexBrush" });
+        // --------------------
+
         const volunteer = await VolunteerEntity.findOne({
           _id: volunteer_id,
         }).lean();
@@ -86,7 +92,7 @@ module.exports = () => {
           name: volunteer.fullname,
           role: volunteer.role,
         };
-        console.log("event_id "+event_id)
+        console.log("event_id " + event_id);
         // === Config vị trí (export từ Fabric) ===
         const certconfig = await CertificateConfigEntity.findOne({
           event_id: event_id,
@@ -94,8 +100,8 @@ module.exports = () => {
         console.log(certconfig);
         const positions = await certconfig.fields;
 
-        const imgPath = path.join(pathConfig.root, "src",certconfig.img_path); //src/uploads/certificate/cer1.jpg
-        console.log("Test path: "+imgPath)
+        const imgPath = path.join(pathConfig.root, "src", certconfig.img_path); //src/uploads/certificate/cer1.jpg
+        console.log("Test path: " + imgPath);
         console.log(imgPath);
         const bg = await loadImage(imgPath);
 
@@ -111,7 +117,7 @@ module.exports = () => {
           options = {},
         ) => {
           const {
-            fontWeight = "bold",
+            fontWeight = "normal", // Đổi từ "bold" sang "normal"
             maxFontSize = 80,
             minFontSize = 20,
           } = options;
@@ -119,23 +125,25 @@ module.exports = () => {
           ctx.fillStyle = color || "black";
           ctx.textAlign = align || "left";
 
+          let finalFontFamily = fontFamily || "Arial";
+
           let finalFontSize = fontSize || maxFontSize;
 
           // Nếu không có fontSize → tìm font vừa box
           if (!fontSize) {
             while (finalFontSize >= minFontSize) {
-              ctx.font = `${fontWeight} ${finalFontSize}px ${fontFamily || "Arial"}`;
+              ctx.font = `${fontWeight} ${finalFontSize}px "${finalFontFamily}"`;
               const textWidth = ctx.measureText(text).width;
               if (textWidth <= w) break;
               finalFontSize -= 2;
             }
           } else {
-            ctx.font = `${fontWeight} ${finalFontSize}px ${fontFamily || "Arial"}`;
+            ctx.font = `${fontWeight} ${finalFontSize}px "${finalFontFamily}"`;
             const textWidth = ctx.measureText(text).width;
             if (textWidth > w) {
               // Nếu text dài quá thì auto scale nhỏ lại
               finalFontSize = (finalFontSize * w) / textWidth;
-              ctx.font = `${fontWeight} ${finalFontSize}px ${fontFamily || "Arial"}`;
+              ctx.font = `${fontWeight} ${finalFontSize}px "${finalFontFamily}"`;
             }
           }
 
@@ -168,10 +176,10 @@ module.exports = () => {
           drawTextInBox(data[lowerKey] || "", positions[key]);
         }
         const imageBase64 = canvas.toDataURL("image/png"); // hoặc 'image/jpeg'
-        res.json({ success: true, mess:'ok', image: imageBase64 });
+        res.json({ success: true, mess: "ok", image: imageBase64 });
       } catch (error) {
-        console.log('C_Home-V_Cert', error);
-        res.json({success: false, mess: 'failed'})
+        console.log("C_Home-V_Cert", error);
+        res.json({ success: false, mess: "failed" });
       }
     },
   };

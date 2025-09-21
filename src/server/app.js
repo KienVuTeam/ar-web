@@ -1,45 +1,41 @@
-const express = require('express');
-const path = require('path');
+const express = require("express");
+const path = require("path");
 const app = express();
-require('dotenv').config();
-const expressLayouts = require('express-ejs-layouts');
-const fs = require('fs');
-
+require("dotenv").config();
+const expressLayouts = require("express-ejs-layouts");
+const fs = require("fs");
 
 //
-const route = require('./router')
-const connectDB = require('./config/connectDB');
-const multerUpload = require('./config/multerUpload');
+const route = require("./router");
+const connectDB = require("./config/connectDB");
+const multerUpload = require("./config/multerUpload");
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Cấu hình EJS
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
 // app.engine('ejs', require('ejs').__express);
-app.set('views', path.join(__dirname, 'view'));
-app.use(require('express-ejs-layouts')); //app.use(expressLayouts);
-app.set('layout', 'layout/main');
+app.set("views", path.join(__dirname, "view"));
+app.use(require("express-ejs-layouts")); //app.use(expressLayouts);
+app.set("layout", "layout/main");
 
 //
 
-
-
 // Serve static files
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, "../public")));
 // ⚠️ Trỏ đúng tới thư mục public chứa file CSS/JS
 // app.use('/admin/assets', express.static(path.join(__dirname, 'public/admin/assets')));
 // Cho phép truy cập thư mục uploads từ trình duyệt
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-
-//config route | truyen app vao func routes 
+//config route | truyen app vao func routes
 // console.log("co gi: "+route)
-app.use('/hehe', (req, res)=>{
-    res.render('admin/home/index', {
-        layout :'layout/layoutAdmin'
-    })
+app.use("/hehe", (req, res) => {
+  res.render("admin/home/index", {
+    layout: "layout/layoutAdmin",
+  });
 });
 //test area start
 // Tạo thư mục uploads nếu chưa tồn tại
@@ -50,7 +46,7 @@ app.use('/hehe', (req, res)=>{
 // // Route upload ảnh
 
 // app.use("/test/upload", multerUpload.single("image"), (req, res) => {
-    
+
 //   try {
 //     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 // //     // Kiểm tra xem file đã được lưu thành công
@@ -154,19 +150,16 @@ app.use('/hehe', (req, res)=>{
 const uploadDir = path.join(__dirname, "../uploads");
 app.use("/uploads", express.static(uploadDir));
 
-
-
 //dam bao ton tai thu muc upload
-if(!fs.existsSync(uploadDir)){
+if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
-console.log("path: "+uploadDir)
+console.log("path: " + uploadDir);
 
 //C:\Workspaces\Nodejs\access-race\src\server\app.js
 route(app);
 
 //connect DB
 connectDB();
-
 
 module.exports = app;

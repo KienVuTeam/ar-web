@@ -5,9 +5,14 @@ const fs = require("fs");
 const myPath = require("./path.config");
 
 // save path
-const uploadDir = path.join(myPath.root,"src","uploads", "volunteer_certificate");
-if(!fs.existsSync(uploadDir)){
-    fs.mkdirSync(uploadDir, {recursive: true});
+const uploadDir = path.join(
+  myPath.root,
+  "src",
+  "uploads",
+  "volunteer_certificate",
+);
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 // diskStorage cho ảnh
@@ -17,7 +22,7 @@ const imageStorage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname));
-  }
+  },
 });
 
 const imageFilter = (req, file, cb) => {
@@ -26,5 +31,9 @@ const imageFilter = (req, file, cb) => {
   else cb(new Error("Chỉ cho phép ảnh (.jpg, .jpeg, .png)"), false);
 };
 
-const uploadImageVolunteer = multer({ storage: imageStorage, fileFilter: imageFilter, limits: {fileSize: 5 * 1024*1024} }); //5MB
+const uploadImageVolunteer = multer({
+  storage: imageStorage,
+  fileFilter: imageFilter,
+  limits: { fileSize: 5 * 1024 * 1024 },
+}); //5MB
 module.exports = uploadImageVolunteer;

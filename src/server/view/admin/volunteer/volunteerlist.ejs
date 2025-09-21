@@ -42,39 +42,58 @@
         controlheader_el.classList.toggle("active");
         // alert(ev.target.textContent)
       });
-    document.getElementById('choose-certimg').addEventListener('change', function (ev) {
-      // alert('a')
-      const file = ev.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        document.getElementById('cert-preview').src = event.target.result;
-        const placeholder = document.getElementById('cert-preview-placeholder');
-        const preview = document.getElementById('cert-preview');
-        preview.classList.remove('d-none');   // hiện ảnh
-        placeholder.classList.add('d-none');  // ẩn text placeholder
-      }
-      reader.readAsDataURL(file)
-    })
+    document
+      .getElementById("choose-certimg")
+      .addEventListener("change", function (ev) {
+        // alert('a')
+        const file = ev.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          document.getElementById("cert-preview").src = event.target.result;
+          const placeholder = document.getElementById(
+            "cert-preview-placeholder",
+          );
+          const preview = document.getElementById("cert-preview");
+          preview.classList.remove("d-none"); // hiện ảnh
+          placeholder.classList.add("d-none"); // ẩn text placeholder
+        };
+        reader.readAsDataURL(file);
+      });
   });
 </script>
 <h2 id="handlecontrol-header" class="mb-4 fw-bold">Control Volunteer</h2>
 <section class="control-header">
   <div class="row g-4">
-    
     <!-- LEFT SIDE -->
     <div class="col-md-6">
       <!-- Certificate Image Upload -->
       <div class="card shadow-sm mb-3">
         <div class="card-body">
-          <h5 class="card-title">Certificate Image / <small><a href="/xlsx/VolunteerCert_Exemple.xlsx" download="">Excel mẫu</a></small></h5> 
+          <h5 class="card-title">
+            Certificate Image /
+            <small
+              ><a href="/xlsx/VolunteerCert_Exemple.xlsx" download=""
+                >Excel mẫu</a
+              ></small
+            >
+          </h5>
           <div class="mb-3">
-            <label for="choose-certimg" class="form-label">Choose certificate image</label>
+            <label for="choose-certimg" class="form-label"
+              >Choose certificate image</label
+            >
             <input type="file" id="choose-certimg" class="form-control" />
           </div>
           <div class="d-flex gap-2">
-            <button class="btn btn-outline-primary w-50" id="cert-img-save">Lưu ảnh</button>
-            <button type="button" class="btn btn-primary w-50" data-bs-toggle="modal" data-bs-target="#editorModal">
+            <button class="btn btn-outline-primary w-50" id="cert-img-save">
+              Lưu ảnh
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary w-50"
+              data-bs-toggle="modal"
+              data-bs-target="#editorModal"
+            >
               Cert position
             </button>
           </div>
@@ -87,115 +106,153 @@
           <h5 class="card-title">Excel File</h5>
           <div class="mb-3">
             <label for="fileExcel" class="form-label">Choose excel file</label>
-            <input type="file" id="fileExcel" name="fileExcel" class="form-control" />
+            <input
+              type="file"
+              id="fileExcel"
+              name="fileExcel"
+              class="form-control"
+            />
           </div>
-          <button id="btn-submit" type="submit" class="btn btn-outline-primary w-100">Save file</button>
+          <button
+            id="btn-submit"
+            type="submit"
+            class="btn btn-outline-primary w-100"
+          >
+            Save file
+          </button>
         </div>
       </div>
-
-      
     </div>
 
     <!-- RIGHT SIDE -->
     <div class="col-md-6">
       <div class="card shadow-sm">
-        <div class="card-body d-flex justify-content-center align-items-center" style="min-height: 300px;">
+        <div
+          class="card-body d-flex justify-content-center align-items-center"
+          style="min-height: 300px"
+        >
           <!-- <img src="" alt="Certificate preview"  id="cert-preview" class="img-fluid rounded border d-none" />
           <span class="text-muted" id="cert-preview-placeholder">Preview will appear here</span> -->
           <% if (cc && cc.img_path) { %>
-      <img src="/<%= cc.img_path %>" 
-           alt="Certificate preview"  
-           id="cert-preview" 
-           class="img-fluid rounded border" />
-    <% } else { %>
-      <span class="text-muted" id="cert-preview-placeholder">Preview will appear here</span>
-    <% } %>
+          <img
+            src="/<%= cc.img_path %>"
+            alt="Certificate preview"
+            id="cert-preview"
+            class="img-fluid rounded border"
+          />
+          <% } else { %>
+          <span class="text-muted" id="cert-preview-placeholder"
+            >Preview will appear here</span
+          >
+          <% } %>
         </div>
       </div>
       <!--  -->
       <div id="result" class="mt-3"></div>
     </div>
-
   </div>
 </section>
 
 <hr />
-<div class="event-table-info mb-3" style="text-align: center;">
+<div class="event-table-info mb-3" style="text-align: center">
   <h5><%=event.name%></h5>
   <p class="date"></p>
-  <small>[ <%=event.desc%> ]</small>
+  <small
+    >[
+    <%=event.desc%>
+    ]</small
+  >
 </div>
 <table class="table table-striped" id="volunteer_tbl">
   <thead>
-    <th>#</th>
-    <th>Name</th>
-    <th>Cccd</th>
-    <th>DOB</th>
-    <th>Email</th>
-    <th>Role</th>
-    <th>T-Shirt Size</th>
-    <th>Certificate</th>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Cccd</th>
+      <th scope="col">DOB</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">T-Shirt Size</th>
+      <th scope="col">Certificate</th>
+    </tr>
   </thead>
   <tbody>
     <% data.forEach((v, index)=>{ %>
-      <tr data-id="<%=v._id%>" data-name="<%=v.fullname%>" data-email="<%=v.email%>" data-cccd="<%=v.cccd%>"
-        data-dob="<%=v.dob%>" data-role="<%=v.role%>">
-        <td>
-          <%=index+1%>
-        </td>
-        <td style="font-size: 12px; font-weight: 400">
-          <span>
-            <b>
-              <%= v.fullname %>
-            </b>
-            <span style="color: <%= v.gender === true ? '#007bff' : '#ff69b4' %>;">
-              /
-              <%= v.gender===true ? 'M' : 'F' %>
-            </span>
+    <tr
+      data-id="<%=v._id%>"
+      data-name="<%=v.fullname%>"
+      data-email="<%=v.email%>"
+      data-cccd="<%=v.cccd%>"
+      data-dob="<%=v.dob%>"
+      data-role="<%=v.role%>"
+    >
+      <td>
+        <%=index+1%>
+      </td>
+      <td style="font-size: 12px; font-weight: 400">
+        <span>
+          <b> <%= v.fullname %> </b>
+          <span
+            style="color: <%= v.gender === true ? '#007bff' : '#ff69b4' %>;"
+          >
+            /
+            <%= v.gender===true ? 'M' : 'F' %>
           </span>
-          <br />
-          <span>
-            <%= v.phone_number %>
-          </span>
-        </td>
+        </span>
+        <br />
+        <span>
+          <%= v.phone_number %>
+        </span>
+      </td>
 
-        <td>
-          <%=v.cccd%>
-        </td>
+      <td>
+        <%=v.cccd%>
+      </td>
 
-        <td>
-          <%=new Date(v.DOB).toLocaleDateString('vi-VN') %>
-        </td>
-        <td>
-          <%=v.email%>
-        </td>
+      <td>
+        <%=new Date(v.DOB).toLocaleDateString('vi-VN') %>
+      </td>
+      <td>
+        <%=v.email%>
+      </td>
 
-        <td>
-          <%=v.role%>
-        </td>
-        <td>XL</td>
-        <td><button class="btn btn-secondary btn-cert">Cert</button></td>
-      </tr>
-      <%})%>
+      <td>
+        <%=v.role%>
+      </td>
+      <td>XL</td>
+      <td><button class="btn btn-secondary btn-cert">Cert</button></td>
+    </tr>
+    <%})%>
   </tbody>
 </table>
 <!--  -->
 <input type="hidden" id="ie_hidden" value="<%=ei%>" name="" />
 <% if (cc && cc.img_path) { %>
-  <input type="hidden" id="cc_hidden" value="<%= cc.img_path %>">
+<input type="hidden" id="cc_hidden" value="<%= cc.img_path %>" />
 <% } else { %>
-  <input type="hidden" id="cc_hidden" value="">
+<input type="hidden" id="cc_hidden" value="" />
 <% } %>
 
 <!--  -->
 
 <!-- Modal -->
-<div class="modal fade" id="volunteer_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="volunteer_modal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">Volunteer edit</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
         <div class="row">
@@ -264,39 +321,57 @@
         });
       });
     //cert-img save
-    document.getElementById('cert-img-save').addEventListener('click', function(ev){
-      // alert("A")
-      const _fileFlag = document.getElementById('choose-certimg').files[0];
-      if(!_fileFlag){
-        document.getElementById('result').innerHTML= "<pre>" +JSON.stringify({success: false, mess: "Ko co file anh!!!", img:document.getElementById('ie_hidden').value}, null, 2) +"</pre>";
-      }
-      const formData = new FormData();
-      formData.append('ei', document.getElementById('ie_hidden').value)
-      formData.append('cert_img', document.getElementById('choose-certimg').files[0]);
-      $.ajax({
-        url: `/admin/volunteer/upload-image`,
-        method: 'POST',
-        data: formData,
-        contentType: false, //ko set content-Type
-        processData: false, //ko parse du lieu
-        success: (res)=>{
-          // document.getElementById("result").innerHTML =
-          //     "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
-          document.getElementById('result').innerHTML= "<pre>" +JSON.stringify(res, null, 2) +"</pre>";
-        },
-        error: (err)=>{
-          // alert("err upload anh cert")
-          console.log(err)
-        } 
-     
-      })
-    })
-    // 
+    document
+      .getElementById("cert-img-save")
+      .addEventListener("click", function (ev) {
+        // alert("A")
+        const _fileFlag = document.getElementById("choose-certimg").files[0];
+        if (!_fileFlag) {
+          document.getElementById("result").innerHTML =
+            "<pre>" +
+            JSON.stringify(
+              {
+                success: false,
+                mess: "Ko co file anh!!!",
+                img: document.getElementById("ie_hidden").value,
+              },
+              null,
+              2,
+            ) +
+            "</pre>";
+        }
+        const formData = new FormData();
+        formData.append("ei", document.getElementById("ie_hidden").value);
+        formData.append(
+          "cert_img",
+          document.getElementById("choose-certimg").files[0],
+        );
+        $.ajax({
+          url: `/admin/volunteer/upload-image`,
+          method: "POST",
+          data: formData,
+          contentType: false, //ko set content-Type
+          processData: false, //ko parse du lieu
+          success: (res) => {
+            // document.getElementById("result").innerHTML =
+            //     "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+            document.getElementById("result").innerHTML =
+              "<pre>" + JSON.stringify(res, null, 2) + "</pre>";
+          },
+          error: (err) => {
+            // alert("err upload anh cert")
+            console.log(err);
+          },
+        });
+      });
+    //
     function GetCertificate(id) {
       $.ajax({
         url: `/admin/volunteer/certificate-person/${id}`,
         method: "POST",
-        data: JSON.stringify({ei: document.getElementById('ie_hidden').value}),
+        data: JSON.stringify({
+          ei: document.getElementById("ie_hidden").value,
+        }),
         success: function (res) {
           // Tạo URL từ blob để hiển thị ảnh
           // const url = URL.createObjectURL(blob);
@@ -318,40 +393,120 @@
       .getElementById("btn-submit")
       .addEventListener("click", function (el) {
         el.preventDefault();
-        //   alert("A");
+
         const inputFile = document.getElementById("fileExcel");
         const file = inputFile.files[0];
-        // debugger
+
+        // ✅ Validation file
+        if (!file) {
+          showError("Vui lòng chọn file Excel!");
+          return;
+        }
+
+        // ✅ Kiểm tra file type
+        const allowedTypes = [
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "application/vnd.ms-excel",
+        ];
+        if (!allowedTypes.includes(file.type)) {
+          showError("Chỉ cho phép file Excel (.xlsx, .xls)!");
+          return;
+        }
+
+        // ✅ Kiểm tra file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+          showError("File quá lớn! Vui lòng chọn file nhỏ hơn 10MB.");
+          return;
+        }
+
+        // ✅ Hiển thị loading
+        showLoading();
+
         const formData = new FormData();
         formData.append("excelFile", file);
         formData.append("ei", $("#ie_hidden").val());
+
         fetch("/admin/volunteer/upload-excel", {
           method: "POST",
-          // headers: { "Content-Type": "application/json" },
           body: formData,
         })
           .then((res) => res.json())
           .then((data) => {
+            hideLoading();
+
             if (data.success) {
-              // alert("success");
+              showSuccess(
+                `Import thành công! Đã xóa ${data.data.deleted} bản ghi cũ và thêm ${data.data.inserted} bản ghi mới.`,
+              );
+              // ✅ Reload trang để hiển thị dữ liệu mới
+              setTimeout(() => {
+                window.location.reload();
+              }, 2000);
+            } else {
+              if (data.errors && data.errors.length > 0) {
+                showError(`Dữ liệu không hợp lệ:\n${data.errors.join("\n")}`);
+              } else {
+                showError(data.message || "Import thất bại!");
+              }
             }
+
+            // ✅ Hiển thị chi tiết kết quả
             document.getElementById("result").innerHTML =
               "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
           })
-          .catch((err) => console.log(err));
+          .catch((err) => {
+            hideLoading();
+            console.error("Import error:", err);
+            showError("Lỗi kết nối! Vui lòng thử lại.");
+          });
       });
+
+    // ✅ Helper functions
+    function showLoading() {
+      const btn = document.getElementById("btn-submit");
+      btn.disabled = true;
+      btn.innerHTML =
+        '<span class="spinner-border spinner-border-sm me-2"></span>Đang import...';
+    }
+
+    function hideLoading() {
+      const btn = document.getElementById("btn-submit");
+      btn.disabled = false;
+      btn.innerHTML = "Save file";
+    }
+
+    function showError(message) {
+      const result = document.getElementById("result");
+      result.innerHTML = `<div class="alert alert-danger">${message}</div>`;
+    }
+
+    function showSuccess(message) {
+      const result = document.getElementById("result");
+      result.innerHTML = `<div class="alert alert-success">${message}</div>`;
+    }
 
     //
   });
 </script>
 
 <!-- Modal -->
-<div class="modal fade" id="certificateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="certificateModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
         <img src="" alt="Certificate Preview" class="img-fluid" />
@@ -361,7 +516,9 @@
           Close
         </button>
         <!-- <button type="button" id="btn-download" download class="btn btn-primary">Download Certificate</button> -->
-        <a href="" id="btn-download" download class="btn btn-outline-success">Download certificate</a>
+        <a href="" id="btn-download" download class="btn btn-outline-success"
+          >Download certificate</a
+        >
       </div>
     </div>
   </div>
@@ -376,11 +533,19 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Modal title</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
         </div>
         <div class="modal-body position-relative p-0">
           <!-- Nút toggle sidebar -->
-          <button id="toggleSidebar" class="btn btn-secondary position-absolute top-0 end-0 m-3 z-3">
+          <button
+            id="toggleSidebar"
+            class="btn btn-secondary position-absolute top-0 end-0 m-3 z-3"
+          >
             ⚙️ Tuỳ chỉnh
           </button>
 
@@ -392,18 +557,31 @@
           <!-- Sidebar overlay -->
           <div id="sidebar" class="sidebar-overlay">
             <!-- Nút đóng -->
-            <button id="closeSidebar" class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2">
+            <button
+              id="closeSidebar"
+              class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2"
+            >
               ✖
             </button>
             <div class="p-3">
               <h3>Thuộc tính</h3>
               <div class="control">
                 <label for="fontSize">Cỡ chữ</label>
-                <input type="number" id="fontSize" value="28" class="form-control" />
+                <input
+                  type="number"
+                  id="fontSize"
+                  value="28"
+                  class="form-control"
+                />
               </div>
               <div class="control">
                 <label for="color">Màu chữ</label>
-                <input type="color" id="color" value="#000000" class="form-control" />
+                <input
+                  type="color"
+                  id="color"
+                  value="#000000"
+                  class="form-control"
+                />
               </div>
               <div class="control">
                 <label for="fontFamily">Font chữ</label>
@@ -412,6 +590,7 @@
                   <option value="Times New Roman">Times New Roman</option>
                   <option value="Courier New">Courier New</option>
                   <option value="Verdana">Verdana</option>
+                  <option value="MyCustomAlexBrush">Alex Brush</option>
                 </select>
               </div>
               <div class="control">
@@ -434,7 +613,12 @@
               <hr />
               <h4>Quản lý Field</h4>
               <div class="d-flex gap-2 mb-2">
-                <input type="text" id="newField" placeholder="Tên field (VD: ClubName)" class="form-control" />
+                <input
+                  type="text"
+                  id="newField"
+                  placeholder="Tên field (VD: ClubName)"
+                  class="form-control"
+                />
                 <button id="addFieldBtn" class="btn btn-success">Thêm</button>
               </div>
               <ul id="fieldList" class="list-unstyled"></ul>
@@ -590,9 +774,12 @@
     });
     canvas.setBackgroundImage(img, () => {
       drawGrid(100);
-      initDefaultFields(); // thêm 5 field mặc định
+      initDefaultFields(); // ✅ Load fields từ DB hoặc tạo mặc định
       canvas.renderAll();
     });
+  }, function(error) {
+    console.error("Lỗi khi tải ảnh certificate:", error);
+    alert("Không thể tải ảnh certificate. Vui lòng kiểm tra đường dẫn ảnh.");
   });
 
   // ====== Field Management ======
@@ -615,11 +802,60 @@
   }
 
   function initDefaultFields() {
-    createTextbox("Name", { left: 50, top: 50, fill: "black" });
-    createTextbox("Bib", { left: 50, top: 120, fill: "black" });
-    createTextbox("FinishTime", { left: 50, top: 190 });
-    createTextbox("OverallRank", { left: 50, top: 260, fill: "black" });
-    createTextbox("ClubName", { left: 50, top: 330, fill: "black" });
+    // ✅ Load cấu hình từ DB nếu có
+    const savedConfig = getSavedConfig();
+
+    if (savedConfig && Object.keys(savedConfig).length > 0) {
+      // Load từ cấu hình đã lưu
+      loadFieldsFromConfig(savedConfig);
+    } else {
+      // Tạo field mặc định nếu chưa có cấu hình
+      createTextbox("Name", { left: 50, top: 50, fill: "black" });
+      createTextbox("Bib", { left: 50, top: 120, fill: "black" });
+      createTextbox("FinishTime", { left: 50, top: 190 });
+      createTextbox("OverallRank", { left: 50, top: 260, fill: "black" });
+      createTextbox("ClubName", { left: 50, top: 330, fill: "black" });
+    }
+  }
+
+  // ✅ Lấy cấu hình đã lưu từ EJS template
+  function getSavedConfig() {
+    <% if (cc && cc.fields) { %>
+    console.log("✅ Loaded config from DB:", <%- JSON.stringify(cc.fields) %>);
+    return <%- JSON.stringify(cc.fields) %>;
+    <% } else { %>
+    console.log("❌ No config found in DB");
+    return null;
+    <% } %>
+  }
+
+  // ✅ Load fields từ cấu hình đã lưu
+  function loadFieldsFromConfig(config) {
+    console.log("🔄 Loading fields from config:", config);
+    console.log("📐 Canvas size:", canvas.width, "x", canvas.height);
+    console.log("🖼️ Natural size:", naturalW, "x", naturalH);
+
+    const scaleX = canvas.width / naturalW;
+    const scaleY = canvas.height / naturalH;
+
+    console.log("📏 Scale factors:", scaleX, "x", scaleY);
+
+    for (const [key, fieldConfig] of Object.entries(config)) {
+      const scaledConfig = {
+        left: (fieldConfig.x || 0) * scaleX,
+        top: (fieldConfig.y || 0) * scaleY,
+        width: (fieldConfig.w || 200) * scaleX,
+        height: (fieldConfig.h || 50) * scaleY,
+        fontSize: (fieldConfig.fontSize || 28) * scaleX,
+        fontFamily: fieldConfig.fontFamily || "Arial",
+        fill: fieldConfig.color || "black",
+        textAlign: fieldConfig.align || "center",
+        customValign: fieldConfig.valign || "middle"
+      };
+
+      console.log(`📝 Creating field "${key}":`, scaledConfig);
+      createTextbox(key, scaledConfig);
+    }
   }
 
   function renderFieldList() {
@@ -716,7 +952,15 @@
   });
 
   document.getElementById("fontFamily").addEventListener("change", (e) => {
-    updateTextbox("fontFamily", e.target.value);
+    const selectedFont = e.target.value;
+
+    // For custom fonts, we might need to ensure they are loaded.
+    // Fabric.js might not automatically pick up fonts loaded via @font-face after initialization.
+    // A simple way to handle this is to apply the font and re-render.
+    if (activeTextbox) {
+        activeTextbox.set("fontFamily", selectedFont);
+        canvas.requestRenderAll();
+    }
   });
 
   document.getElementById("textAlign").addEventListener("change", (e) => {
