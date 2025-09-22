@@ -79,7 +79,13 @@ module.exports = () => {
         // ------------
 
         // --- Đăng ký font ---
-        const fontPath = path.join(pathConfig.root, "src", "public", "font", "AlexBrush-Regular.ttf");
+        const fontPath = path.join(
+          pathConfig.root,
+          "src",
+          "public",
+          "font",
+          "AlexBrush-Regular.ttf",
+        );
         registerFont(fontPath, { family: "MyCustomAlexBrush" });
         // --------------------
 
@@ -88,10 +94,10 @@ module.exports = () => {
         }).lean();
         // console.log(volunteer);
         // === Data từ DB (đồng bộ key với positions) ===
-        const data = {
-          name: volunteer.fullname,
-          role: volunteer.role,
-        };
+        // const data = {
+        //   name: volunteer.fullname,
+        //   role: volunteer.role,
+        // };
         // console.log("event_id " + event_id);
         // === Config vị trí (export từ Fabric) ===
         const certconfig = await CertificateConfigEntity.findOne({
@@ -171,9 +177,28 @@ module.exports = () => {
         };
 
         // === Vẽ tất cả field ===
+        // ✅ Volunteer data (convert hết key sang lowercase để đồng bộ)
+        const data = {};
+        for (const [key, value] of Object.entries(volunteer)) {
+          data[key.toLowerCase()] = value;
+        }
+
+        // ✅ Map field trong DB sang field trong volunteer
+        const fieldMapping = {
+          name: "fullname", // DB "Name" -> volunteer.fullname
+          bib: "bib", // nếu volunteer có bib
+          finishtime: "finishtime",
+          overallrank: "overallrank",
+          clubname: "clubname",
+          role: "role",
+        };
+
+        // ✅ Vẽ tất cả field
         for (const key in positions) {
-          const lowerKey = key.toLowerCase(); // chuyển key thành chữ thường
-          drawTextInBox(data[lowerKey] || "", positions[key]);
+          const lowerKey = key.toLowerCase();
+          const volunteerField = fieldMapping[lowerKey]; // ánh xạ
+          const text = volunteerField ? data[volunteerField] : "";
+          drawTextInBox(text || "", positions[key]);
         }
         const imageBase64 = canvas.toDataURL("image/png"); // hoặc 'image/jpeg'
         res.json({ success: true, mess: "ok", image: imageBase64 });

@@ -107,7 +107,7 @@ router.post(
 router.post(
   "/volunteer/certificate-person/:id",
   volunteerController.CreateCertificate,
-);
+);//admin cert for volunteer
 router.get("/volunteer/vol-list/:event_id", volunteerController.VolunteerList);
 router.get("/volunteer/render-cert", volunteerController.RenderCert);
 router.get("/volunteer/", volunteerController.Index);

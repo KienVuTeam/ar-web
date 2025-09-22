@@ -1,5 +1,5 @@
 const XLSX = require("xlsx");
-const { createCanvas, loadImage } = require("canvas");
+const { createCanvas, loadImage, registerFont } = require("canvas");
 const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
@@ -8,7 +8,7 @@ const { UploadExcel } = require("./AthleteController");
 const VolunteerEntity = require("../../../model/Volunteer");
 const CertificateConfigEntity = require("../../../model/CertificateConfig");
 const EventEntity = require("../../../model/Event");
-const myPath = require("../../../config/path.config")
+const myPath = require("../../../config/path.config");
 
 module.exports = () => {
   return {
@@ -36,8 +36,8 @@ module.exports = () => {
         console.log("event_id " + event_id);
         var result = await VolunteerEntity.find({ event_id: event_id });
         var event = await EventEntity.findOne({ _id: event_id });
-        console.log("Event neeeeeeee");
-        console.log(event);
+        // console.log("Event neeeeeeee");
+        // console.log(event);
         var certConfig = await CertificateConfigEntity.findOne({
           event_id: event_id,
         }).lean();
@@ -68,12 +68,14 @@ module.exports = () => {
         const relativePath =
           "uploads/volunteer_certificate/" + req.file.filename;
         //tim anh cu
-        const oldCert = await CertificateConfigEntity.findOne({event_id: event_id});
-        if(oldCert && oldCert.img_path){
-          const oldFilePath = path.join(myPath.root, "src" ,oldCert.img_path)
-          if(fs.existsSync(oldFilePath)){
+        const oldCert = await CertificateConfigEntity.findOne({
+          event_id: event_id,
+        });
+        if (oldCert && oldCert.img_path) {
+          const oldFilePath = path.join(myPath.root, "src", oldCert.img_path);
+          if (fs.existsSync(oldFilePath)) {
             fs.unlinkSync(oldFilePath);
-            console.log("da xoa file: "+ oldFilePath);
+            console.log("da xoa file: " + oldFilePath);
           }
         }
 
@@ -93,16 +95,18 @@ module.exports = () => {
             setDefaultsOnInsert: true, //ap default neu tao moi
           },
         );
-        res.json({ success: true, mess: "success", path: req.file.path });
+        res.json({
+          success: true,
+          mess: "success",
+          path: req.file.path,
+          img_path: relativePath,
+        });
       } catch (error) {
         console.log("C_Volunteer " + error);
         res.status(500).json({ success: false, mess: error });
       }
     },
     UploadExcel: async (req, res) => {
-      const session = await mongoose.startSession();
-      session.startTransaction();
-
       try {
         if (!req.file) {
           return res
@@ -129,7 +133,6 @@ module.exports = () => {
         const buffer = req.file.buffer;
         const workbook = XLSX.read(buffer, { type: "buffer" });
 
-        // ✅ Kiểm tra sheet "volunteer" có tồn tại không
         if (!workbook.Sheets["volunteer"]) {
           return res.status(400).json({
             success: false,
@@ -140,7 +143,6 @@ module.exports = () => {
         const sheet = workbook.Sheets["volunteer"];
         let rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-        // ✅ Kiểm tra có dữ liệu không
         if (rows.length <= 1) {
           return res
             .status(400)
@@ -152,49 +154,52 @@ module.exports = () => {
         const errors = [];
 
         rows.slice(1).forEach((r, index) => {
-          const rowNumber = index + 2; // +2 vì bắt đầu từ dòng 2 (sau header)
+          const rowNumber = index + 2;
 
-          // ✅ Validate required fields
           if (!r[0] || !r[1]) {
             errors.push(`Dòng ${rowNumber}: Thiếu tên hoặc CCCD`);
             return;
           }
 
-          // ✅ Parse gender
           let genderValue = null;
           if (r[2]) {
             const g = String(r[2]).trim().toLowerCase();
             if (["nam", "male", "m"].includes(g)) genderValue = 1;
             else if (["nữ", "nu", "female", "f"].includes(g)) genderValue = 0;
-            else {
+            else
               errors.push(
                 `Dòng ${rowNumber}: Giới tính không hợp lệ (${r[2]})`,
               );
-            }
           }
 
-          // ✅ Parse DOB
           let dobValue = null;
           if (r[3]) {
             if (typeof r[3] === "number") {
               dobValue = XLSX.SSF.format("yyyy-mm-dd", r[3]);
-            } else {
-              dobValue = new Date(r[3]);
-              if (isNaN(dobValue)) {
+            } else if (typeof r[3] === "string") {
+              const parts = r[3].split(/[\/\-]/);
+              if (parts.length === 3) {
+                const day = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1;
+                const year = parseInt(parts[2], 10);
+                const d = new Date(year, month, day);
+                if (!isNaN(d)) dobValue = d;
+                else
+                  errors.push(
+                    `Dòng ${rowNumber}: Ngày sinh không hợp lệ (${r[3]})`,
+                  );
+              } else {
                 errors.push(
                   `Dòng ${rowNumber}: Ngày sinh không hợp lệ (${r[3]})`,
                 );
-                dobValue = null;
               }
             }
           }
 
-          // ✅ Validate email format
           if (r[4] && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r[4])) {
             errors.push(`Dòng ${rowNumber}: Email không hợp lệ (${r[4]})`);
           }
 
-          // ✅ Validate phone number
           if (r[5] && !/^[0-9+\-\s()]+$/.test(r[5])) {
             errors.push(
               `Dòng ${rowNumber}: Số điện thoại không hợp lệ (${r[5]})`,
@@ -209,37 +214,26 @@ module.exports = () => {
             email: r[4] ? r[4].toString().trim() : null,
             phone_number: r[5] ? r[5].toString().trim() : null,
             role: r[6] ? r[6].toString().trim() : null,
-            event_id: event_id,
+            event_id,
             created_at: new Date(),
             updated_at: new Date(),
           });
         });
 
-        // ✅ Nếu có lỗi validation, trả về lỗi
         if (errors.length > 0) {
           return res.status(400).json({
             success: false,
             message: "Dữ liệu không hợp lệ:",
-            errors: errors,
+            errors,
           });
         }
 
-        // ✅ RESET: Xóa tất cả volunteer cũ của event này
+        // ✅ RESET + INSERT (không cần transaction)
         console.log(`🗑️ Deleting old volunteers for event: ${event_id}`);
-        const deleteResult = await VolunteerEntity.deleteMany(
-          { event_id: event_id },
-          { session },
-        );
-        console.log(`✅ Deleted ${deleteResult.deletedCount} old volunteers`);
+        const deleteResult = await VolunteerEntity.deleteMany({ event_id });
 
-        // ✅ INSERT: Thêm dữ liệu mới
         console.log(`📥 Inserting ${mappedData.length} new volunteers`);
-        const result = await VolunteerEntity.insertMany(mappedData, {
-          session,
-        });
-
-        // ✅ Commit transaction
-        await session.commitTransaction();
+        const result = await VolunteerEntity.insertMany(mappedData);
 
         res.json({
           success: true,
@@ -251,16 +245,12 @@ module.exports = () => {
           },
         });
       } catch (error) {
-        // ✅ Rollback transaction nếu có lỗi
-        await session.abortTransaction();
         console.error("❌ Import error:", error);
         res.status(500).json({
           success: false,
           message: "Lỗi khi import dữ liệu",
           error: error.message,
         });
-      } finally {
-        session.endSession();
       }
     },
     GetVolunteer: async (req, res) => {
@@ -303,31 +293,38 @@ module.exports = () => {
     CreateCertificate: async (req, res) => {
       try {
         const volunteer_id = req.params.id;
-        const event_id = req.body.ei;
-        console.log(volunteer_id);
-        //data volunteer
+        const event_id = req.body.event_id;
+        // --- Đăng ký font ---
+        const fontPath = path.join(
+          myPath.root,
+          "src",
+          "public",
+          "font",
+          "AlexBrush-Regular.ttf",
+        );
+        registerFont(fontPath, { family: "MyCustomAlexBrush" });
+        // --------------------
+
         const volunteer = await VolunteerEntity.findOne({
           _id: volunteer_id,
         }).lean();
-        console.log(volunteer);
+        // console.log(volunteer);
         // === Data từ DB (đồng bộ key với positions) ===
-        const data = {
-          name: volunteer.fullname,
-          role: volunteer.role,
-        };
+        // const data = {
+        //   name: volunteer.fullname,
+        //   role: volunteer.role,
+        // };
+        // console.log("event_id " + event_id);
         // === Config vị trí (export từ Fabric) ===
         const certconfig = await CertificateConfigEntity.findOne({
           event_id: event_id,
         });
         console.log(certconfig);
         const positions = await certconfig.fields;
-        // add
-        // === Load background ===
-        const imgPath = path.join(
-          __dirname,
-          "../../../../uploads/certificate",
-          "cer1.jpg",
-        );
+
+        const imgPath = path.join(myPath.root, "src", certconfig.img_path); //src/uploads/certificate/cer1.jpg
+        console.log("Test path: " + imgPath);
+        console.log(imgPath);
         const bg = await loadImage(imgPath);
 
         const canvas = createCanvas(bg.width, bg.height);
@@ -342,7 +339,7 @@ module.exports = () => {
           options = {},
         ) => {
           const {
-            fontWeight = "bold",
+            fontWeight = "normal", // Đổi từ "bold" sang "normal"
             maxFontSize = 80,
             minFontSize = 20,
           } = options;
@@ -350,23 +347,25 @@ module.exports = () => {
           ctx.fillStyle = color || "black";
           ctx.textAlign = align || "left";
 
+          let finalFontFamily = fontFamily || "Arial";
+
           let finalFontSize = fontSize || maxFontSize;
 
           // Nếu không có fontSize → tìm font vừa box
           if (!fontSize) {
             while (finalFontSize >= minFontSize) {
-              ctx.font = `${fontWeight} ${finalFontSize}px ${fontFamily || "Arial"}`;
+              ctx.font = `${fontWeight} ${finalFontSize}px "${finalFontFamily}"`;
               const textWidth = ctx.measureText(text).width;
               if (textWidth <= w) break;
               finalFontSize -= 2;
             }
           } else {
-            ctx.font = `${fontWeight} ${finalFontSize}px ${fontFamily || "Arial"}`;
+            ctx.font = `${fontWeight} ${finalFontSize}px "${finalFontFamily}"`;
             const textWidth = ctx.measureText(text).width;
             if (textWidth > w) {
               // Nếu text dài quá thì auto scale nhỏ lại
               finalFontSize = (finalFontSize * w) / textWidth;
-              ctx.font = `${fontWeight} ${finalFontSize}px ${fontFamily || "Arial"}`;
+              ctx.font = `${fontWeight} ${finalFontSize}px "${finalFontFamily}"`;
             }
           }
 
@@ -394,19 +393,34 @@ module.exports = () => {
         };
 
         // === Vẽ tất cả field ===
-        for (const key in positions) {
-          const lowerKey = key.toLowerCase(); // chuyển key thành chữ thường
-          drawTextInBox(data[lowerKey] || "", positions[key]);
+        // ✅ Volunteer data (convert hết key sang lowercase để đồng bộ)
+        const data = {};
+        for (const [key, value] of Object.entries(volunteer)) {
+          data[key.toLowerCase()] = value;
         }
 
-        // === Xuất ảnh ===
-        // res.setHeader("Content-Type", "image/png");
-        // res.send(canvas.toBuffer("image/png"));
+        // ✅ Map field trong DB sang field trong volunteer
+        const fieldMapping = {
+          name: "fullname", // DB "Name" -> volunteer.fullname
+          bib: "bib", // nếu volunteer có bib
+          finishtime: "finishtime",
+          overallrank: "overallrank",
+          clubname: "clubname",
+          role: "role",
+        };
+
+        // ✅ Vẽ tất cả field
+        for (const key in positions) {
+          const lowerKey = key.toLowerCase();
+          const volunteerField = fieldMapping[lowerKey]; // ánh xạ
+          const text = volunteerField ? data[volunteerField] : "";
+          drawTextInBox(text || "", positions[key]);
+        }
         const imageBase64 = canvas.toDataURL("image/png"); // hoặc 'image/jpeg'
         res.json({ success: true, mess: "ok", image: imageBase64 });
       } catch (err) {
         console.error(err);
-        res.status(500).send("Error generating certificate");
+        res.json({ success: false, mess: "Error generating certificate" });
       }
     },
 
