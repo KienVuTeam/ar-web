@@ -45,6 +45,7 @@ const GalleryController = require("../areas/admin/controller/GalleryController")
 const EventController = require("../areas/admin/controller/EventController");
 const AthleteController = require("../areas/admin/controller/AthleteController");
 const EventV2Controller = require("../areas/admin/controller/EventV2Controller");
+const EventProcessingController = require("../areas/admin/controller/EventProcessingController");
 //======== start new way
 //services
 const _PostService = require("../services/post.service"); // server nap ngoai nay de de test
@@ -192,11 +193,20 @@ router.get(
   "/event2/event-list",
   EventV2Controller.EventList.bind(EventV2Controller),
 );
+router.get(
+  "/event2/athlete/stats/:eventId",
+  EventV2Controller.getAthleteStats.bind(EventV2Controller),
+);
 router.use(
   "/event2/progress/step/:step",
   EventV2Controller.LoadPartialPage.bind(EventV2Controller),
 );
 router.get("/event2", EventV2Controller.Index.bind(EventV2Controller));
+// ==================================Event 3================================== //
+router.get('/eventprocessing/create', EventProcessingController.FormAdd.bind(EventProcessingController));
+router.get("/eventprocessing/progress-flow", EventProcessingController.progressFlowAction.bind(EventProcessingController));
+router.get("/eventprocessing/test", EventProcessingController.testAction.bind(EventProcessingController));
+router.get("/eventprocessing", EventProcessingController.Index.bind(EventProcessingController));
 //
 
 //Athlete

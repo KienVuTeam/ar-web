@@ -1,0 +1,67 @@
+<style>
+  /* Giữ lại CSS thanh tiến trình để hiển thị */
+  .steps { display: flex; justify-content: space-between; position: relative; margin: 40px 0; padding: 0 20px; }
+  .steps::before { content: ""; position: absolute; top: 50%; left: 40px; right: 40px; height: 4px; background: #e5e7eb; transform: translateY(-50%); z-index: 0; border-radius: 2px; }
+  .step { position: relative; background: none; border: none; flex: 1; text-align: center; cursor: pointer; z-index: 1; }
+  .step .dot { width: 28px; height: 28px; border-radius: 50%; border: 3px solid #d1d5db; background: #fff; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; color: #9ca3af; transition: all 0.3s ease; }
+  .step .label { margin-top: 10px; font-size: 14px; color: #6b7280; transition: color 0.3s ease; }
+  .step.done .dot { background: #4caf50; border-color: #4caf50; color: white; }
+  .step.done .label { color: #4caf50; }
+  .step.active .dot { background: #2196f3; border-color: #2196f3; color: white; box-shadow: 0 0 12px rgba(33, 150, 243, 0.5); }
+  .step.active .label { color: #2196f3; font-weight: 600; }
+  .step.disabled .dot { border-color: #d1d5db; background: #f3f4f6; color: #9ca3af; }
+  .step.disabled .label { color: #9ca3af; }
+  .step.disabled { cursor: not-allowed; pointer-events: none; }
+  #next-step-btn { padding: 10px 20px; background: #2196f3; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+  #next-step-btn:hover { background: #1976d2; }
+</style>
+
+<div class="page-header">
+  <div class="page-block">
+    <div class="row align-items-center">
+      <div class="col-md-12">
+        <div class="page-header-title">
+          <h5 class="m-b-10"><%= title %></h5>
+        </div>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/admin/eventprocessing/test">Test Controller</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="#!">Progress Flow</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="step-action">
+    <button id="next-step-btn" data-next-step="<%= currentStatus + 1 %>">
+      ✅ Chuyển đến bước tiếp theo
+    </button>
+  </div>
+</div>
+
+<div class="steps">
+  <% steps.forEach(step => { %>
+  <button
+    class="step <% if (step.id === currentStatus) { %>active<% } else if (step.id < currentStatus) { %>done<% } else { %>disabled<% } %>"
+    data-id="<%= step.id %>"
+    <% if (step.id > currentStatus) { %>disabled<% } %>
+  >
+    <span class="dot"></span>
+    <span class="label"><%= step.label %></span>
+  </button>
+  <% }) %>
+</div>
+
+<div id="step-content" style="text-align: center; padding: 20px; border: 1px dashed #ccc; margin-top: 20px;">
+  <h2>Nội dung cho Bước <%= currentStatus %>: <%= steps[currentStatus - 1].label %></h2>
+  <p>Đây là nội dung đơn giản để test. Trong thực tế, nội dung này có thể phức tạp hơn.</p>
+</div>
+
+<script>
+  // Hàm này sẽ được gọi khi click vào nút "Chuyển đến bước tiếp theo" hoặc các nút step
+  function goToStep(stepId) {
+    window.location.href = `/admin/eventprocessing/progress-flow?status=${stepId}`;
+  }
+</script>

@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const path = require("path");
+const fs = require("fs");
 
 const EventService = require("../../../services/event.service");
 const FlagCheck = require("../../../utils/flagCheck");
@@ -91,16 +92,25 @@ class EventV2Controller {
           .status(400)
           .json({ status: false, mess: "No file uploaded" });
       }
-      const filePath = path.resolve(req.file.path);
+      // const filePath = path.resolve(req.file.path); // No longer needed as file is in memory
+      const excelBuffer = req.file.buffer; // Get file buffer from memory
       const event_id = req.body.event_id;
       console.log(event_id);
 
       const _athleteService = new AthleteService();
-      const result = await _athleteService.UploadExcelToDB(filePath, event_id);
+      const result = await _athleteService.UploadExcelToDB(excelBuffer, event_id);
+      
+      // No need to delete file as it's not saved to disk
+      // fs.unlinkSync(filePath);
+
       // FlagCheck(result.status, result.mess)
       res.json({ staus: true, mess: result.data });
     } catch (error) {
       console.log(error);
+      // No need to delete file as it's not saved to disk
+      // if (req.file && fs.existsSync(filePath)) {
+      //   fs.unlinkSync(filePath);
+      // }
       res.json({ status: false, mess: error.message });
     }
   }
@@ -130,17 +140,12 @@ class EventV2Controller {
           );
         case 2:
           var result = await this.AthleteList(_eventId);
-          if (result.data.length === 0) {
-            return res.render("admin/event2/athleteImport", {
-              layout: false,
-              title: "import athlete",
-            });
-          }
-          return res.render(
-            "admin/partials/bib",
-            { layout: false, athletes: result.data },
-            handleReturnView,
-          );
+          return res.render("admin/event2/athleteImport", {
+            layout: false,
+            title: "import athlete",
+            athletes: result.data, // Pass athlete data to the view
+            eventId: _eventId, // Pass eventId to the view
+          });
         case 3:
           return res.render(
             "admin/partials/sendMail",
@@ -395,6 +400,26 @@ class EventV2Controller {
   //   var result = this.AthleteList()
   //   return result;
   // }
+
+  async getAthleteStats(req, res) {
+    try {
+      const eventId = req.params.eventId;
+      const _athleteService = new AthleteService();
+
+      const totalAthletes = await _athleteService.getTotalAthletes(eventId);
+      const checkedInAthletes = await _athleteService.getCheckedInAthletes(eventId);
+      const distanceStats = await _athleteService.getDistanceStats(eventId);
+
+      res.json({
+        totalAthletes: totalAthletes.data,
+        checkedInAthletes: checkedInAthletes.data,
+        distanceStats: distanceStats.data,
+      });
+    } catch (error) {
+      console.error("Error in getAthleteStats:", error);
+      res.status(500).json({ status: false, mess: "Failed to retrieve athlete statistics." });
+    }
+  }
 }
 
 module.exports = new EventV2Controller();

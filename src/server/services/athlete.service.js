@@ -6,44 +6,38 @@ const {chunkArray,mapExcelRowToAthlete,} = require("../utils/mapExcelRowToAthlet
 
 
 class AthleteService {
-  async UploadExcelToDB(filePath, eventId) {
+  async UploadExcelToDB(excelBuffer, eventId) {
     let insertLog = [];
     try {
-      const workbook = xlsx.readFile(filePath, { cellDates: true });
+      // Clear existing athlete data for this event before importing new data
+      console.log(`[AthleteService] Deleting existing athletes for event: ${eventId}`);
+      await Athlete.deleteMany({ event_id: new mongoose.Types.ObjectId(eventId) });
+      console.log(`[AthleteService] Existing athletes deleted for event: ${eventId}`);
+
+      console.log(`[AthleteService] Reading Excel buffer.`);
+      const workbook = xlsx.read(excelBuffer, { type: 'buffer', cellDates: true });
       const sheetName = workbook.SheetNames.find(
         (name) => name.trim() === "Data"
       );
       if (!sheetName) {
-        return res.status(400).json({ error: "Không tìm thấy sheet 'Data'" });
-      }
-      if (!sheetName) {
-        throw new Error("Không tìm thấy sheet 'Data'");
+        console.error("[AthleteService] Error: 'Data' sheet not found in Excel file.");
+        return { status: false, mess: "Không tìm thấy sheet 'Data'" };
       }
       const sheet = workbook.Sheets[sheetName];
 
-      // const rawData = xlsx.utils.sheet_to_json(sheet, { defval: "" });
       const rawData = xlsx.utils.sheet_to_json(sheet, { defval: "" });
-      // rawData.shift(); // bỏ dòng header?
-
-      // Lúc này rawData[0] là dòng đầu tiên, rawData[0][0] là ô đầu tiên
-
-      // Giả sử eventId lấy từ query hoặc body
-      // var eventId = req.body.eventId || null;
-      // eventId = "689d3e161d99d1e9a91f9682"; //689d3e161d99d1e9a91f9682 || 689d4480638544c8d475a5c8
+      console.log(`[AthleteService] Raw data rows from Excel: ${rawData.length}`);
 
       const mappedData = rawData.map((row) => {
         return mapExcelRowToAthlete(row, eventId);
       });
-      console.log("data type of mappedData: " + typeof mappedData);
+      console.log(`[AthleteService] Mapped data rows: ${mappedData.length}`);
+
       const BATCH_SIZE = 1000;
-      //
-      // Chỉ cần chạy 1 lần khi khởi tạo dự án
-      // Athlete.collection.createIndex({ event_id: 1, bib: 1 }, { unique: true });
-      //
-      const batches = chunkArray(mappedData, BATCH_SIZE); //chia cac batch thanh 1000 phan tu
-      //for để insert trong mảng batches
+      const batches = chunkArray(mappedData, BATCH_SIZE);
+      console.log(`[AthleteService] Number of batches for bulk write: ${batches.length}`);
+
       for (const batch of batches) {
-        // Tạo danh sách thao tác bulk
         const bulkOps = batch.map((athlete) => ({
           updateOne: {
             filter: { bib: athlete.bib, event_id: athlete.event_id },
@@ -52,27 +46,23 @@ class AthleteService {
           },
         }));
 
-        // Gửi lệnh bulk lên MongoDB
         const result = await Athlete.bulkWrite(bulkOps);
-        //catch err
-        //
         insertLog.push({
-          matched: result.matchedCount, // matchedCount -> Số document trong DB mà filter tìm thấy. (Tức là số record trùng bib + event_id mà nó match được.)
-          insert: result.upsertedCount, // upsertedCount → Số document được insert mới do không tìm thấy bản ghi trùng.
-          modified: result.modifiedCount, // modifiedCount → Số document đã được update vì match được và có dữ liệu thay đổi.
+          matched: result.matchedCount,
+          insert: result.upsertedCount,
+          modified: result.modifiedCount,
         });
         console.log(
-          `Batch done => Matched: ${result.matchedCount}, Inserted: ${result.upsertedCount}, Modified: ${result.modifiedCount}`
+          `[AthleteService] Batch done => Matched: ${result.matchedCount}, Inserted: ${result.upsertedCount}, Modified: ${result.modifiedCount}`
         );
-        //catch err end
       }
       return {
         status: true,
         data: insertLog,
       };
     } catch (error) {
-      console.log(error);
-      return { status: false, mess: "Err_Service: ExcelToDb" };
+      console.error("[AthleteService] Error in UploadExcelToDB:", error);
+      return { status: false, mess: `Err_Service: ExcelToDb - ${error.message}` };
     }
   }
   //GetList
@@ -133,6 +123,68 @@ class AthleteService {
     } catch (error) {
       console.log(error)
       return {status: false, mess: 'AthleteService_DeleteById'}
+    }
+  }
+
+  async getTotalAthletes(eventId) {
+    try {
+      const total = await Athlete.countDocuments({ event_id: new mongoose.Types.ObjectId(eventId) });
+      return { status: true, data: total };
+    } catch (error) {
+      console.log(error);
+      return { status: false, mess: "AthleteService_getTotalAthletes" };
+    }
+  }
+
+  async getCheckedInAthletes(eventId) {
+    try {
+      const checkedIn = await Athlete.countDocuments({
+        event_id: new mongoose.Types.ObjectId(eventId),
+        checked_in: true, // Assuming 'checked_in' field exists and is a boolean
+      });
+      return { status: true, data: checkedIn };
+    } catch (error) {
+      console.log(error);
+      return { status: false, mess: "AthleteService_getCheckedInAthletes" };
+    }
+  }
+
+  async getDistanceStats(eventId) {
+    try {
+      const stats = await Athlete.aggregate([
+        {
+          $match: {
+            event_id: new mongoose.Types.ObjectId(eventId),
+          },
+        },
+        {
+          $group: {
+            _id: "$distance", // Group by distance field
+            total: { $sum: 1 },
+            male: { $sum: { $cond: [{ $eq: ["$gender", "male"] }, 1, 0] } },
+            female: { $sum: { $cond: [{ $eq: ["$gender", "female"] }, 1, 0] } },
+            checkedIn: { $sum: { $cond: [{ $eq: ["$checked_in", true] }, 1, 0] } },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            name: "$_id",
+            total: "$total",
+            male: "$male",
+            female: "$female",
+            checkedIn: "$checkedIn",
+            uncheckedIn: { $subtract: ["$total", "$checkedIn"] },
+          },
+        },
+        {
+          $sort: { name: 1 } // Sort by distance name
+        }
+      ]);
+      return { status: true, data: stats };
+    } catch (error) {
+      console.log(error);
+      return { status: false, mess: "AthleteService_getDistanceStats" };
     }
   }
 }

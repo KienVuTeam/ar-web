@@ -34,6 +34,7 @@
 <!-- [Template CSS Files] -->
 <link rel="stylesheet" href="/admin/assets/css/style.css" id="main-style-link" >
 <link rel="stylesheet" href="/admin/assets/css/style-preset.css" >
+<link rel="stylesheet" href="/css/my_gallery.css">
 <!-- Custom add Jquery -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
 <!-- new script -->
@@ -50,6 +51,9 @@
     header.pc-header{
       /* margin-top: -18px !important; */
     }
+   }
+   a{
+    text-decoration: none !important;
    }
 </style>
 </head>
@@ -125,6 +129,16 @@
 
             <!-- <li class="pc-item"><a class="pc-link" href="/admin/news/form-create-post">Create Post</a></li> -->
             <!-- <li class="pc-item"><a class="pc-link" href="/admin/news/post-list">Posts List</a></li> -->
+          </ul>
+        </li>
+    
+        <!-- Event 3 -->
+        <li class="pc-item pc-hasmenu">
+          <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-news"></i></span><span class="pc-mtext">Event 3</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+          <ul class="pc-submenu">
+            <li class="pc-item"><a class="pc-link" href="/admin/eventprocessing/">List</a></li>
+            <li class="pc-item"><a class="pc-link" href="/admin/eventprocessing/create">Create</a></li>
+          
           </ul>
         </li>
         <!--  -->
@@ -433,13 +447,14 @@
   <!-- [Page Specific JS] end -->
   <!-- Required Js -->
   <script src="/admin/assets/js/plugins/popper.min.js"></script>
-  <script src="/admin/assets/js/plugins/simplebar.min.js"></script>  
+  <script src="/admin/assets/js/plugins/simplebar.min.js"></script>
   <!-- <script src="/admin/assets/fix/simplebar.min.js"></script> -->
   <script src="/admin/assets/js/plugins/bootstrap.min.js"></script>
   <script src="/admin/assets/js/fonts/custom-font.js"></script>
   <script src="/admin/assets/js/pcoded.js"></script>
   <script src="/admin/assets/js/plugins/feather.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/yup@1.7.0/index.min.js"></script>
+  <script src="/js/my_gallery.js"></script>
 
   
   

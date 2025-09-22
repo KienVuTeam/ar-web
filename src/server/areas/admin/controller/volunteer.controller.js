@@ -8,6 +8,7 @@ const { UploadExcel } = require("./AthleteController");
 const VolunteerEntity = require("../../../model/Volunteer");
 const CertificateConfigEntity = require("../../../model/CertificateConfig");
 const EventEntity = require("../../../model/Event");
+const myPath = require("../../../config/path.config")
 
 module.exports = () => {
   return {
@@ -66,7 +67,16 @@ module.exports = () => {
         // build path
         const relativePath =
           "uploads/volunteer_certificate/" + req.file.filename;
-        //
+        //tim anh cu
+        const oldCert = await CertificateConfigEntity.findOne({event_id: event_id});
+        if(oldCert && oldCert.img_path){
+          const oldFilePath = path.join(myPath.root, "src" ,oldCert.img_path)
+          if(fs.existsSync(oldFilePath)){
+            fs.unlinkSync(oldFilePath);
+            console.log("da xoa file: "+ oldFilePath);
+          }
+        }
+
         var cert = new CertificateConfigEntity({
           event_id: event_id,
           img_path: relativePath,
@@ -76,7 +86,7 @@ module.exports = () => {
         //
         const result = await CertificateConfigEntity.findOneAndUpdate(
           { event_id: event_id },
-          { $set: cert },
+          { $set: plainData },
           {
             new: true,
             upsert: true, ///neu chua co thi tao moi

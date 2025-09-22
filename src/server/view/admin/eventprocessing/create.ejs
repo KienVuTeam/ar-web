@@ -1,0 +1,464 @@
+<link rel="stylesheet" href="/css/my_gallery.css" />
+<style>
+  .form-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 900px;
+    margin: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  input[type="text"],
+  input[type="datetime-local"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .date-range {
+    display: flex;
+    gap: 10px;
+  }
+
+  .date-range input {
+    flex: 1;
+  }
+
+  .btn-media {
+    background: #6c63ff;
+    color: #fff;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btn-media:hover {
+    background: #5848d6;
+  }
+  .careful {
+    color: red;
+  }
+</style>
+<script src="/admin/assets/js/plugins/tinymce/tinymce.min.js"></script>
+<!--  -->
+
+<div class="page-header">
+  <div class="page-block">
+    <div class="row align-items-center">
+      <div class="col-md-12">
+        <div class="page-header-title">
+          <h5 class="m-b-10">Event</h5>
+        </div>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/admin/event2/event-list">list</a>
+          </li>
+          <li class="breadcrumb-item"><a href="#!">new post</a></li>
+          <!-- <li class="breadcrumb-item" aria-current="page">Home</li> -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- breack-crum -->
+<h1>Form Add Event</h1>
+<br />
+
+<div class="row">
+  <div class="col-8">
+    <div class="card">
+      <div class="card-body">
+        <!--  -->
+        <div class="form-group">
+          <label for="event-name"
+            >Tên sự kiện <small class="careful">(*)</small></label
+          >
+          <input
+            type="text"
+            id="title"
+            name="title"
+            placeholder="Nhập tên sự kiện"
+          />
+        </div>
+        <div class="form-group">
+          <label for="">Description <small class="careful">(*)</small></label>
+          <textarea
+            name=""
+            id="desc"
+            cols="30"
+            rows="3"
+            placeholder="Nhập mô tả"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="event-link"
+            >Link <small>(Tự động có theo tên sự kiện)</small></label
+          >
+          <input type="text" id="slug" name="slug" placeholder="Nhập link" />
+        </div>
+
+        <div class="form-group">
+          <label>Thời gian sự kiện <small>(*)</small></label>
+          <div class="date-range">
+            <input
+              class="form-control"
+              type="date"
+              name="startDate"
+              id="startDate"
+            />
+            <input
+              class="form-control"
+              type="date"
+              name="endDate"
+              id="endDate"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Thời gian đóng ủy quyền <small>(*)</small></label>
+          <input
+            class="form-control"
+            type="date"
+            name="authorityDate"
+            id="authorityDate"
+          />
+        </div>
+
+        <br />
+        <!-- content 2 -->
+        <div class="form-group">
+          <!-- <label>Nội dung giới thiệu <small>(*)</small></label>
+          <button class="btn-media">Thêm media</button> <br /> <br> -->
+          <!-- <label for=""></label> -->
+          <textarea
+            id="event-tinymce-4"
+            name="event-tinymce-4"
+            class="tox-target"
+            placeholder="Write here"
+          >
+          </textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="api-chipt">API chiptime</label>
+          <input
+            type="text"
+            id="apiLink"
+            name="apiLink"
+            placeholder="Nhập API chiptime"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="rank-type">Lấy xếp hạng theo <small>(*)</small></label>
+          <select id="rankType">
+            <option value="1">Gun time</option>
+            <option value="0">Net time</option>
+          </select>
+        </div>
+
+        <!--  -->
+      </div>
+      <div class="card-footer">
+        <button id="eventSubmit" class="btn btn-primary">Event New</button>
+        <button class="btn btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <!-- haft -->
+  <div class="col-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="form-group">
+          <!-- <label for="">hiện trên web</label> -->
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="isShow"
+              name="isActive"
+            />
+            <label class="form-check-label" for="isActive">Hiện trên web</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="" class="form-label">Place <small>(*)</small></label>
+          <input
+            class="form-control"
+            type="email"
+            name=""
+            placeholder="Enter place"
+            id="event-place"
+          />
+        </div>
+
+        <!-- Thumb -->
+        <label class="form-label"
+          >Thumb (700x420) <small style="color: red">(*)</small></label
+        >
+        <div class="img_preview" id="img_preview_thumb">
+          <img src="" alt="" loading="lazy" />
+          <input id="img_path_thumb" value="" type="hidden" />
+        </div>
+        <div class="form-group mb-3">
+          <button
+            class="btn btn-outline-info btn-choose-image"
+            data-target="thumb"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal"
+          >
+            Choose image
+          </button>
+        </div>
+
+        <!-- Banner -->
+        <label class="form-label"
+          >Banner (1800x600) <small style="color: red">(*)</small></label
+        >
+        <div class="img_preview" id="img_preview_banner">
+          <img src="" alt="" loading="lazy" />
+          <input id="img_path_banner" value="" type="hidden" />
+        </div>
+        <div class="form-group mb-3">
+          <button
+            class="btn btn-outline-info btn-choose-image"
+            data-target="banner"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal"
+          >
+            Choose image
+          </button>
+        </div>
+
+        <!-- Certificate -->
+        <label class="form-label"
+          >Certificate (2400x1700): <small style="color: red">(*)</small></label
+        >
+        <div class="img_preview" id="img_preview_certificate">
+          <img src="" alt="" loading="lazy" />
+          <input id="img_path_certificate" value="" type="hidden" />
+        </div>
+        <div class="form-group mb-3">
+          <button
+            class="btn btn-outline-info btn-choose-image"
+            data-target="certificate"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal"
+          >
+            Choose image
+          </button>
+        </div>
+        <!--  -->
+        <button class="btn btn-primary" id="secondSubmitAddEvent">
+          Event New
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- [Script start] -->
+<script>
+  document.title = "Admin | <%=title%>";
+  document
+    .getElementById("secondSubmitAddEvent")
+    .addEventListener("click", (el) => {
+      // alert('click')
+      submitEventHandler();
+    });
+  function submitEventHandler() {
+    const title = $("#title").val();
+    const slug = null;
+    const desc = $("#desc").val();
+    const img_thumb = $("#img_preview_thumb").val();
+    const img_banner = $("#img_preview_banner").val();
+    const img_certificate = $("#img_preview_certificate").val();
+    console.log(img_thumb, img_banner, img_certificate);
+    const content = tinymce.get("event-tinymce-4").getContent();
+    const startDate = $("#startDate").val();
+    const endDate = $("#endDate").val();
+    const authorityDate = $("#authorityDate").val();
+    // const imagePath = $("#imgPath").val();
+    const rankType = $("#rankType").val();
+    // const eventStatus = $('#eventStatus').val();
+    const apiLink = $("#apiLink").val();
+    const place = $("#event-place").val();
+    const isShow = $("#isShow").is(":checked");
+    const dataSend = {
+      img_thumb,
+      img_banner,
+      img_certificate,
+      title,
+      desc,
+      slug,
+      content,
+      startDate,
+      endDate,
+      authorityDate,
+      // imagePath,
+      rankType,
+      //   eventStatus,
+      apiLink,
+      place,
+      isShow,
+    };
+    //test
+    // console.log(title, slug, content, startDate, endDate, authorityDate, imagePath, rankType, eventStatus, apiLink, place, isShow);
+    console.log(dataSend);
+    //ajax
+    $.ajax({
+      url: `/admin/event2/new-event`,
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(dataSend),
+      success: (res) => {
+        if (res.status) {
+          // alert("add event success || " + res.status);
+          window.location = "/admin/event2/event-list";
+        }
+      },
+      error: (err) => {
+        alert("Xóa event thất bại");
+        console.log(err);
+      },
+    });
+  }
+  $("#eventSubmit").on("click", function (e) {
+    // alert("click")
+    submitEventHandler();
+  });
+</script>
+<!-- [Script end] -->
+<!-- [Ourdoor start] -->
+
+<!-- tagify -->
+<script>
+  tinymce.init({
+    height: "300",
+    selector: "#event-tinymce-4",
+    content_style: 'body { font-family: "Inter", sans-serif; }',
+    menubar: false,
+    toolbar: [
+      "styleselect fontselect fontsizeselect",
+      "undo redo | cut copy paste | bold italic | link image | alignleft aligncenter alignright alignjustify",
+      "bullist numlist | outdent indent | blockquote subscript superscript | advlist | autolink | lists charmap | print preview |  code",
+    ],
+    plugins: "advlist autolink link image lists charmap print preview code",
+  });
+</script>
+<!-- [Page Specific JS] end -->
+<!-- [Ourdoor end] -->
+<!--gallery  -->
+<script src="/js/my_gallery.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const modalEl = document.getElementById("exampleModal");
+    let currentTarget = null; // lưu block nào đang chọn ảnh
+
+    // Bắt sự kiện click vào các nút "Choose image"
+    document.querySelectorAll(".btn-choose-image").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        currentTarget = this.dataset.target; // thumb, banner, certificate
+      });
+    });
+    if (modalEl) {
+      modalEl.addEventListener("shown.bs.modal", function () {
+        const galleryRoot = document.getElementById("galleryRoot");
+        galleryRoot.innerHTML = ""; // clear cũ
+        MediaGallery.init(galleryRoot, {
+          onSelect: (img) => {
+            if (!currentTarget) return;
+            document.getElementById(
+              "img_preview_" + currentTarget,
+            ).style.display = "block";
+            const preview = document.getElementById(
+              "img_preview_" + currentTarget,
+            );
+            const input = document.getElementById("img_path_" + currentTarget);
+
+            preview.querySelector("img").src = img.url;
+            input.value = img.url;
+
+            // đóng modal
+            const closeBtn = modalEl.querySelector("[data-bs-dismiss='modal']");
+            if (closeBtn) closeBtn.click();
+          },
+        });
+      });
+    }
+  });
+</script>
+
+<!-- [Modal area] -->
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-fullscreen"
+    style="max-height: 95%; max-width: 95%; margin: 20px auto"
+  >
+    <div class="modal-content">
+      <!-- <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title A</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div> -->
+      <div class="modal-body">
+        <!-- start -->
+        <div id="galleryRoot"></div>
+        <!-- end -->
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" hidden data-bs-dismiss="modal">Close</button> -->
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- [End modal area] -->

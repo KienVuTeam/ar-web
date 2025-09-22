@@ -73,8 +73,8 @@ module.exports = () => {
       try {
         const volunteer_id = req.body.volunteer_id;
         const event_id = req.body.event_id;
-        console.log("OA" + pathConfig.root);
-        console.log(pathConfig.root2);
+        // console.log("OA" + pathConfig.root);
+        // console.log(pathConfig.root2);
         // const cc = await CertificateConfigEntity.find({event_id: event_id}).lean();
         // ------------
 
@@ -92,7 +92,7 @@ module.exports = () => {
           name: volunteer.fullname,
           role: volunteer.role,
         };
-        console.log("event_id " + event_id);
+        // console.log("event_id " + event_id);
         // === Config vị trí (export từ Fabric) ===
         const certconfig = await CertificateConfigEntity.findOne({
           event_id: event_id,
