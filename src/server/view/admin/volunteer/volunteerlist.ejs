@@ -882,37 +882,39 @@
         function applyVerticalAlign(obj) {
           if (!obj || !obj.customValign) return;
 
-          // Store original position before alignment
-          const originalTop = obj.top;
-          const originalHeight = obj.height;
+          // Get the vertical alignment offset from the last run, default to 0
+          const oldOffset = obj.valignOffset || 0;
 
-          // Get the actual text metrics for accurate positioning
-          const ctx = canvas.getContext();
-          ctx.font = `${obj.fontSize}px ${obj.fontFamily}`;
-          const textMetrics = ctx.measureText(obj.text || '');
-          const textHeight = textMetrics.actualBoundingBoxAscent + textMetrics.actualBoundingBoxDescent;
+          // Calculate the "true" top of the object before this alignment was applied
+          const unalignedTop = obj.top - oldOffset;
 
-          // Calculate the box height
+          // Use object's bounding box height.
           const boxHeight = obj.height * obj.scaleY;
 
-          // Apply vertical alignment based on the text height
+          // Use built-in method to calculate actual text height
+          const textHeight = obj.calcTextHeight();
+
+          let newOffset = 0;
           if (obj.customValign === "middle") {
-            // Center the text vertically within the box
-            obj.top = originalTop + (boxHeight - textHeight) / 2;
+            // For middle alignment, offset is half the difference between box and text height
+            newOffset = (boxHeight - textHeight) / 2;
           } else if (obj.customValign === "bottom") {
-            // Align text to bottom of the box
-            obj.top = originalTop + boxHeight - textHeight;
-          } else if (obj.customValign === "top") {
-            // Align text to top of the box (default behavior)
-            obj.top = originalTop;
+            // For bottom alignment, offset is the full difference
+            newOffset = boxHeight - textHeight;
           }
+          // For 'top', offset is 0, which is the default
+
+          // Set the new top position and store the offset for the next run
+          obj.top = unalignedTop + newOffset;
+          obj.valignOffset = newOffset;
 
           console.log("🔄 Applied vertical alignment:", {
             valign: obj.customValign,
-            originalTop,
+            unalignedTop,
             newTop: obj.top,
             textHeight,
-            boxHeight
+            boxHeight,
+            newOffset
           });
 
           canvas.renderAll();
@@ -1079,9 +1081,11 @@
           const config = {};
           for (const key in fields) {
             const obj = fields[key];
+            // Account for vertical alignment offset when saving
+            const unalignedTop = obj.top - (obj.valignOffset || 0);
             config[key] = {
               x: Math.round(obj.left * scaleX),
-              y: Math.round(obj.top * scaleY),
+              y: Math.round(unalignedTop * scaleY), // Save the un-aligned 'top'
               w: Math.round(obj.width * scaleX),
               h: Math.round(obj.height * scaleY),
               fontSize: Math.round(obj.fontSize * scaleX),

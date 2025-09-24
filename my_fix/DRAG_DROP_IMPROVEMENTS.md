@@ -156,3 +156,4 @@ fontConfig.addCustomFont("Font Name", "FontFamily", "font.ttf", "font.woff2");
 - Font sẽ tự động được load và hiển thị đúng
 - Căn chỉnh ngang/dọc hoạt động chính xác
 - Tự động scale font size để fit trong box
+

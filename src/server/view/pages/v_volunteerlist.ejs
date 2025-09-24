@@ -24,10 +24,10 @@
       <%= d.getDate().toString().padStart(2, '0') %>/<%= (d.getMonth() +
       1).toString().padStart(2, '0') %>/<%= d.getFullYear() %>
     </p>
-    <small
+    <!-- <small
       >Ban Tổ Chức xin gửi lời cảm ơn chân thành đến tất cả các tình nguyện
-      viên</small
-    >
+      viên</small> -->
+      <small><%=(event.desc && event) ? event.desc : ''%></small>
   </div>
 </section>
 
@@ -38,7 +38,6 @@
         <th>#</th>
         <th>Name</th>
         <th>Role</th>
-        <th>T-Shirt Size</th>
         <th>Certificate</th>
       </thead>
       <tbody>
@@ -51,8 +50,7 @@
           <td><%=index+1%></td>
           <td><%= v.fullname %></td>
           <td><%=v.role%></td>
-          <td>XL</td>
-          <td><button class="btn btn-secondary btn-cert">Cert</button></td>
+          <td><button class="btn btn-outline-success btn-cert">Cert</button></td>
         </tr>
         <%})%>
       </tbody>

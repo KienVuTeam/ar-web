@@ -227,3 +227,4 @@ setTimeout(() => {
 4. **Đổi font:** Chọn "Alex Brush" trong dropdown font
 5. **Thay đổi kích thước:** Drag các corner để resize
 6. **Lưu cấu hình:** Click "Save vị trí" để lưu vào database
+

@@ -113,3 +113,4 @@
 - **Font Validation**: Validate font files trước khi sử dụng
 - **Font Metrics**: Hiển thị thông tin font (size, weight, etc.)
 - **Font Backup**: Backup/restore font configurations
+

@@ -90,3 +90,4 @@ const fontConfig = {
 };
 
 module.exports = fontConfig;
+

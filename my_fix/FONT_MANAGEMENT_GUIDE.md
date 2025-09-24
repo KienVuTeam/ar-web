@@ -238,3 +238,4 @@ Lấy danh sách tất cả fonts có sẵn.
    - Test font trong cả UI và controller
    - Kiểm tra trên nhiều browsers
    - Test với các kích thước text khác nhau
+

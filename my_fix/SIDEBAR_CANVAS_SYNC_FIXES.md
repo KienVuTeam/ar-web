@@ -207,3 +207,4 @@ if (!/^[a-zA-Z0-9_]+$/.test(key)) {
 - [ ] Scale text-box
 - [ ] Xóa text-box
 - [ ] Lưu cấu hình
+

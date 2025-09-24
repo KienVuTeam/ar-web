@@ -212,3 +212,4 @@ Tất cả các vấn đề về đồng bộ giữa sidebar và canvas đã đ�
 - Debug dễ dàng với console logging
 
 Hệ thống đã sẵn sàng để sử dụng trong production!
+

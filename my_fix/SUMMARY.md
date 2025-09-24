@@ -112,3 +112,4 @@ fontConfig.addCustomFont("Font Name", "FontFamily", "font.ttf", "font.woff2");
 - Hỗ trợ WOFF2 và TTF formats
 - Fallback cho các browser cũ
 - Cross-browser font loading
+
