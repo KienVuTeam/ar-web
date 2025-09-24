@@ -62,7 +62,6 @@ const pageSetting =
   require("../areas/admin/controller/PageSetting.controller")();
 const volunteerController =
   require("../areas/admin/controller/volunteer.controller")();
-
 //router
 router.get("/news/post/index", news2Controller.ListPostAndCategory); //PostIndex
 router.get("/news/post/form-create", news2Controller.FormCreatePost);
@@ -203,10 +202,17 @@ router.use(
 );
 router.get("/event2", EventV2Controller.Index.bind(EventV2Controller));
 // ==================================Event 3================================== //
-router.get('/eventprocessing/create', EventProcessingController.FormAdd.bind(EventProcessingController));
+// =========Athlete
+router.get('/eventprocessing/athlete/', EventProcessingController.AthleteIndex.bind(EventProcessingController));//R
+
+router.get('/eventprocessing/create-form', EventProcessingController.FormAdd.bind(EventProcessingController)) //c_form
+router.post('/eventprocessing/create', EventProcessingController.Create.bind(EventProcessingController)); //C
+router.get('/eventprocessing/event-detail/:id', EventProcessingController.EditForm.bind(EventProcessingController)) //u_form
+router.put('/eventprocessing/:id/update', EventProcessingController.Update.bind(EventProcessingController)); //U
+router.delete('/eventprocessing/:id/delete', EventProcessingController.Delete.bind(EventProcessingController)); //D
 router.get("/eventprocessing/progress-flow", EventProcessingController.progressFlowAction.bind(EventProcessingController));
-router.get("/eventprocessing/test", EventProcessingController.testAction.bind(EventProcessingController));
-router.get("/eventprocessing", EventProcessingController.Index.bind(EventProcessingController));
+// router.get("/eventprocessing/test", EventProcessingController.testAction.bind(EventProcessingController));
+router.get("/eventprocessing", EventProcessingController.Index.bind(EventProcessingController)); //R
 //
 
 //Athlete
@@ -253,11 +259,14 @@ router.use("/gallery", GalleryController.Index.bind(GalleryController));
 // router.use('/news', NewsController.Index)
 
 //dashboard
-router.use("/", (req, res) => {
+router.get("/dashboard", (req, res) => {
   res.render("admin/index", {
     layout: "layout/layoutAdmin",
     title: "Admin Dashboard",
   });
 });
+router.use((req, res)=>{
+  res.status(404).render('admin/404', {layout: false})
+})
 
 module.exports = router;

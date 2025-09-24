@@ -7,6 +7,10 @@ const EventEntity = require("../model/Event");
 const VolunteerEntity = require("../model/Volunteer");
 const CertificateConfigEntity = require("../model/CertificateConfig");
 const pathConfig = require("../config/path.config");
+const fontConfig = require("../config/fontConfig");
+
+// Image cache to avoid reloading images from filesystem
+const imageCache = new Map();
 
 module.exports = () => {
   async function HomePageHelper() {
@@ -78,38 +82,30 @@ module.exports = () => {
         // const cc = await CertificateConfigEntity.find({event_id: event_id}).lean();
         // ------------
 
-        // --- Đăng ký font ---
-        const fontPath = path.join(
-          pathConfig.root,
-          "src",
-          "public",
-          "font",
-          "AlexBrush-Regular.ttf",
-        );
-        registerFont(fontPath, { family: "MyCustomAlexBrush" });
-        // --------------------
+        // Font is now registered at startup, no need to register here
 
-        const volunteer = await VolunteerEntity.findOne({
-          _id: volunteer_id,
-        }).lean();
-        // console.log(volunteer);
-        // === Data từ DB (đồng bộ key với positions) ===
-        // const data = {
-        //   name: volunteer.fullname,
-        //   role: volunteer.role,
-        // };
-        // console.log("event_id " + event_id);
-        // === Config vị trí (export từ Fabric) ===
-        const certconfig = await CertificateConfigEntity.findOne({
-          event_id: event_id,
-        });
+        // Run database queries in parallel for better performance
+        const [volunteer, certconfig] = await Promise.all([
+          VolunteerEntity.findOne({ _id: volunteer_id }).lean(),
+          CertificateConfigEntity.findOne({ event_id: event_id }),
+        ]);
         console.log(certconfig);
         const positions = await certconfig.fields;
 
         const imgPath = path.join(pathConfig.root, "src", certconfig.img_path); //src/uploads/certificate/cer1.jpg
         console.log("Test path: " + imgPath);
         console.log(imgPath);
-        const bg = await loadImage(imgPath);
+
+        // Use cached image if available, otherwise load and cache it
+        let bg;
+        if (imageCache.has(imgPath)) {
+          bg = imageCache.get(imgPath);
+          console.log("Using cached image");
+        } else {
+          bg = await loadImage(imgPath);
+          imageCache.set(imgPath, bg);
+          console.log("Loaded and cached image");
+        }
 
         const canvas = createCanvas(bg.width, bg.height);
         const ctx = canvas.getContext("2d");
@@ -132,17 +128,33 @@ module.exports = () => {
           ctx.textAlign = align || "left";
 
           let finalFontFamily = fontFamily || "Arial";
-
           let finalFontSize = fontSize || maxFontSize;
 
-          // Nếu không có fontSize → tìm font vừa box
+          // Handle custom fonts using font config
+          const fontInfo = fontConfig.fonts[finalFontFamily];
+          if (fontInfo && fontInfo.isCustom) {
+            finalFontFamily = fontInfo.family;
+          }
+
+          // Optimized font size calculation using binary search
           if (!fontSize) {
-            while (finalFontSize >= minFontSize) {
-              ctx.font = `${fontWeight} ${finalFontSize}px "${finalFontFamily}"`;
+            let low = minFontSize;
+            let high = maxFontSize;
+            let bestSize = minFontSize;
+
+            while (low <= high) {
+              const mid = Math.floor((low + high) / 2);
+              ctx.font = `${fontWeight} ${mid}px "${finalFontFamily}"`;
               const textWidth = ctx.measureText(text).width;
-              if (textWidth <= w) break;
-              finalFontSize -= 2;
+
+              if (textWidth <= w) {
+                bestSize = mid;
+                low = mid + 1;
+              } else {
+                high = mid - 1;
+              }
             }
+            finalFontSize = bestSize;
           } else {
             ctx.font = `${fontWeight} ${finalFontSize}px "${finalFontFamily}"`;
             const textWidth = ctx.measureText(text).width;
@@ -158,21 +170,28 @@ module.exports = () => {
           const textHeight =
             metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
 
-          // Xác định vị trí X
+          // Xác định vị trí X với căn chỉnh ngang chính xác
           let posX = x;
-          if (align === "center") posX = x + w / 2;
-          else if (align === "right") posX = x + w;
+          if (align === "center") {
+            posX = x + w / 2;
+          } else if (align === "right") {
+            posX = x + w;
+          } else {
+            // left alignment
+            posX = x;
+          }
 
-          // Xác định vị trí Y
+          // Xác định vị trí Y với căn chỉnh dọc chính xác
           let posY = y;
           if (valign === "middle") {
             posY = y + h / 2 + textHeight / 4; // căn giữa theo metrics
           } else if (valign === "bottom") {
-            posY = y + h;
+            posY = y + h - textHeight / 4; // căn dưới
           } else {
             posY = y + textHeight; // top
           }
 
+          // Draw text with proper alignment
           ctx.fillText(text, posX, posY);
         };
 
@@ -193,13 +212,21 @@ module.exports = () => {
           role: "role",
         };
 
-        // ✅ Vẽ tất cả field
+        // ✅ Vẽ tất cả field - batch font operations for better performance
+        const fontOperations = [];
         for (const key in positions) {
           const lowerKey = key.toLowerCase();
           const volunteerField = fieldMapping[lowerKey]; // ánh xạ
           const text = volunteerField ? data[volunteerField] : "";
-          drawTextInBox(text || "", positions[key]);
+          if (text) {
+            fontOperations.push({ text, position: positions[key] });
+          }
         }
+
+        // Execute all font operations
+        fontOperations.forEach(({ text, position }) => {
+          drawTextInBox(text, position);
+        });
         const imageBase64 = canvas.toDataURL("image/png"); // hoặc 'image/jpeg'
         res.json({ success: true, mess: "ok", image: imageBase64 });
       } catch (error) {

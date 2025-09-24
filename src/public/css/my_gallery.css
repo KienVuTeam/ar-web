@@ -95,3 +95,40 @@
     height: 250px;     /* chiều cao khung (có thể thay đổi tùy ý) */
     object-fit: cover;
   }
+  /* addd */
+  .folder-actions {
+  margin-bottom: 10px;
+}
+
+.folder-list {
+  list-style: none;
+  padding: 0;
+}
+
+.folder-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.folder-list li:hover {
+  background: #f0f0f0;
+}
+
+.folder-del-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #c00;
+  font-size: 14px;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}

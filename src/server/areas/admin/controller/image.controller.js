@@ -47,6 +47,7 @@ module.exports = () => {
         //custom targetDir
         const realPath = path.join(pathUpload, currentPath);
         const uploadPath = path.join(realPath, filename);
+        console.log("path upload:" +realPath);
         // console
         // 👉 Tạo thư mục cha nếu chưa có
         fs.mkdirSync(realPath, { recursive: true });

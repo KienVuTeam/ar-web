@@ -140,12 +140,16 @@ class EventV2Controller {
           );
         case 2:
           var result = await this.AthleteList(_eventId);
-          return res.render("admin/event2/athleteImport", {
-            layout: false,
-            title: "import athlete",
-            athletes: result.data, // Pass athlete data to the view
-            eventId: _eventId, // Pass eventId to the view
-          });
+          console.log(result.data.length)
+          // var result = null;
+          if(result.data.length===0){
+            return res.render("admin/event2/athleteImport", {layout: false, title: 'import athlete'})
+          }
+          return res.render(
+            "admin/partials/bib",
+            { layout: false, athletes: result.data },
+            handleReturnView
+          );
         case 3:
           return res.render(
             "admin/partials/sendMail",

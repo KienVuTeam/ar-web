@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin login</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh; /* Chiều cao toàn màn hình */
+        display: flex;
+        justify-content: center; /* Căn giữa theo chiều ngang */
+        align-items: center; /* Căn giữa theo chiều dọc */
+      }
+
+      .main-content {
+        margin: auto auto;
+      }
+
+      .form-login {
+        height: 200px;
+        width: 300px;
+        border: 1px solid #ccc;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+      <h1>Admin login</h1> <br>
+      <form action="/admin/auth/login" method="post" class="form-login">
+        <div class="form-group">
+          <label for="" class="form-label" autocomplete="username" >Username</label>
+          <input type="text" name="username" placeholder="username" />
+        </div> <br> 
+        <div class="form-group">
+          <label for="" class="form-label">passwork</label>
+          <input type="password" name="password" id=""suget placeholder="password" autocomplete="current-password" />
+        </div> <br>
+        <input type="submit" value="Login" />
+      </form>
+    </div>
+  </body>
+</html>

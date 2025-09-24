@@ -56,7 +56,6 @@ class EventController{
     }
     //
     async DeleteEvent(req, res){
-        console.log('runn')
         try {
             const _id = req.params.id;
             console.log(typeof _id)

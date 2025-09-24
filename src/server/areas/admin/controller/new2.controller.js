@@ -133,9 +133,10 @@ module.exports = (_categoryService, _postService) => {
         const data = req.body;
         const obj = new PostEntity({
           title: data.title,
-          desc: data.desc,
-          content: data.content,
           category_id: data.category,
+          desc: data.desc,
+          
+          content: data.content,
           slug: data.slug,
           imageFolder: data.imagePath,
           keyMeta: data.keyMeta,

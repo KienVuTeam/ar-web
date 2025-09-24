@@ -4,6 +4,8 @@ const app = express();
 require("dotenv").config();
 const expressLayouts = require("express-ejs-layouts");
 const fs = require("fs");
+const session = require("express-session");
+const { registerFont } = require("canvas");
 
 //
 const route = require("./router");
@@ -12,7 +14,21 @@ const multerUpload = require("./config/multerUpload");
 
 // Middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true })); // để parse form x-www-form-urlencoded
+
+// session
+app.use(
+  session({
+    secret: "secret-key",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      httpOnly: true, // ngăn JS truy cập cookie
+      // secure: true,      // chỉ hoạt động trên HTTPS
+      maxAge: 1000 * 60 * 60, // session sống 1h
+    },
+  }),
+);
 
 // Cấu hình EJS
 app.set("view engine", "ejs");
@@ -158,6 +174,11 @@ console.log("path: " + uploadDir);
 
 //C:\Workspaces\Nodejs\access-race\src\server\app.js
 route(app);
+
+// Register font once at startup
+const fontPath = path.join(__dirname, "../public/font/AlexBrush-Regular.ttf");
+registerFont(fontPath, { family: "MyCustomAlexBrush" });
+console.log("Font registered at startup:", fontPath);
 
 //connect DB
 connectDB();

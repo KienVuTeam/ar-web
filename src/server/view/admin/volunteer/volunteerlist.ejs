@@ -1,53 +1,100 @@
 <!-- ============================== STYLE ============================== -->
 <style>
+  /* Load Alex Brush font for Fabric.js */
+  @font-face {
+    font-family: "MyCustomAlexBrush";
+    src:
+      url("/font/AlexBrush-Regular.woff2") format("woff2"),
+      url("/font/AlexBrush-Regular.ttf") format("truetype");
+    font-display: swap;
+  }
+
   .control-header {
     padding-top: 20px;
     min-height: 200px;
   }
+
   .control-header.active {
     display: none;
   }
+
   .control-header .col-6 {
     border: 1px solid #ccc;
   }
+
   .wrap-img {
     min-height: 200px;
   }
+
   .cert-preview {
     object-fit: cover;
     display: inline-block;
     width: 100%;
     height: auto;
   }
+
   canvas {
     border: 1px solid #aaa;
   }
+
   #sidebar {
     margin-top: 20px;
     width: 280px;
     border: 1px solid #ccc;
     padding: 10px;
   }
-  .control { margin-bottom: 12px; }
-  .control label { display: block; font-size: 14px; margin-bottom: 4px; }
-  #fieldList li { margin-bottom: 4px; }
-  #fieldList span { cursor: pointer; color: blue; }
-  #fieldList button { margin-left: 8px; color: red; cursor: pointer; }
+
+  .control {
+    margin-bottom: 12px;
+  }
+
+  .control label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  #fieldList li {
+    margin-bottom: 4px;
+  }
+
+  #fieldList span {
+    cursor: pointer;
+    color: blue;
+  }
+
+  #fieldList button {
+    margin-left: 8px;
+    color: red;
+    cursor: pointer;
+  }
+
   pre {
-    max-height: 300px; overflow: auto;
-    background: #f7f7f7; padding: 10px; border: 1px solid #ddd;
+    max-height: 300px;
+    overflow: auto;
+    background: #f7f7f7;
+    padding: 10px;
+    border: 1px solid #ddd;
   }
+
   .sidebar-overlay {
-    position: fixed; top: 0; right: -320px; width: 300px; height: 100%;
-    background: #fff; border-left: 1px solid #ccc;
-    box-shadow: -2px 0 8px rgba(0,0,0,.2);
-    overflow-y: auto; transition: right .3s ease; z-index: 1056;
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 300px;
+    height: 100%;
+    background: #fff;
+    border-left: 1px solid #ccc;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    transition: right 0.3s ease;
+    z-index: 1056;
   }
-  .sidebar-overlay.open { right: 0; }
+
+  .sidebar-overlay.open {
+    right: 0;
+  }
 </style>
-
-
-
 
 <h2 id="handlecontrol-header" class="mb-4 fw-bold">Control Volunteer</h2>
 <section class="control-header">
@@ -59,28 +106,17 @@
         <div class="card-body">
           <h5 class="card-title">
             Certificate Image /
-            <small
-              ><a href="/xlsx/VolunteerCert_Exemple.xlsx" download=""
-                >Sample File</a
-              ></small
-            >
+            <small><a href="/xlsx/VolunteerCert_Exemple.xlsx" download="">Sample File</a></small>
           </h5>
           <div class="mb-3">
-            <label for="choose-certimg" class="form-label"
-              >Choose certificate image</label
-            >
+            <label for="choose-certimg" class="form-label">Choose certificate image</label>
             <input type="file" id="choose-certimg" class="form-control" />
           </div>
           <div class="d-flex gap-2">
             <button class="btn btn-outline-primary w-50" id="cert-img-save">
               Lưu ảnh
             </button>
-            <button
-              type="button"
-              class="btn btn-primary w-50"
-              data-bs-toggle="modal"
-              data-bs-target="#editorModal"
-            >
+            <button type="button" class="btn btn-primary w-50" data-bs-toggle="modal" data-bs-target="#editorModal">
               Cert position
             </button>
           </div>
@@ -93,18 +129,9 @@
           <h5 class="card-title">Excel File</h5>
           <div class="mb-3">
             <label for="fileExcel" class="form-label">Choose excel file</label>
-            <input
-              type="file"
-              id="fileExcel"
-              name="fileExcel"
-              class="form-control"
-            />
+            <input type="file" id="fileExcel" name="fileExcel" class="form-control" />
           </div>
-          <button
-            id="btn-submit"
-            type="submit"
-            class="btn btn-outline-primary w-100"
-          >
+          <button id="btn-submit" type="submit" class="btn btn-outline-primary w-100">
             Save file
           </button>
         </div>
@@ -113,41 +140,31 @@
 
     <!-- RIGHT SIDE -->
     <!-- RIGHT SIDE -->
-<div class="col-md-6">
-  <div class="card shadow-sm">
-    <div
-      class="card-body d-flex justify-content-center align-items-center"
-      style="min-height: 300px"
-    >
-      <img
-        src="<%= cc && cc.img_path ? '/' + cc.img_path : '' %>"
-        alt="Certificate preview"
-        id="cert-preview"
-        class="img-fluid rounded border <%= cc && cc.img_path ? '' : 'd-none' %>"
-      />
-      <span
-        class="text-muted <%= cc && cc.img_path ? 'd-none' : '' %>"
-        id="cert-preview-placeholder"
-      >
-        Preview will appear here
-      </span>
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body d-flex justify-content-center align-items-center" style="min-height: 300px">
+          <img src="<%= cc && cc.img_path ? '/' + cc.img_path : '' %>" alt="Certificate preview" id="cert-preview"
+            class="img-fluid rounded border <%= cc && cc.img_path ? '' : 'd-none' %>" />
+          <span class="text-muted <%= cc && cc.img_path ? 'd-none' : '' %>" id="cert-preview-placeholder">
+            Preview will appear here
+          </span>
+        </div>
+      </div>
+      <div id="result" class="mt-3"></div>
     </div>
-  </div>
-  <div id="result" class="mt-3"></div>
-</div>
-
   </div>
 </section>
 
 <hr />
 <div class="event-table-info mb-3" style="text-align: center">
-  <h5><%=event.name%></h5>
+  <h5>
+    <%=event.name%>
+  </h5>
   <p class="date"></p>
-  <small
-    >[
+  <small>[
     <%=event.desc%>
-    ]</small
-  >
+      ]
+  </small>
 </div>
 <table class="table table-striped" id="volunteer_tbl">
   <thead>
@@ -164,937 +181,1070 @@
   </thead>
   <tbody>
     <% data.forEach((v, index)=>{ %>
-    <tr
-      data-id="<%=v._id%>"
-      data-name="<%=v.fullname%>"
-      data-email="<%=v.email%>"
-      data-cccd="<%=v.cccd%>"
-      data-dob="<%=v.dob%>"
-      data-role="<%=v.role%>"
-    >
-      <td>
-        <%=index+1%>
-      </td>
-      <td style="font-size: 12px; font-weight: 400">
-        <span>
-          <b> <%= v.fullname %> </b>
-          <span
-            style="color: <%= v.gender === true ? '#007bff' : '#ff69b4' %>;"
-          >
-            /
-            <%= v.gender===true ? 'M' : 'F' %>
+      <tr data-id="<%=v._id%>" data-name="<%=v.fullname%>" data-email="<%=v.email%>" data-cccd="<%=v.cccd%>"
+        data-dob="<%=v.dob%>" data-role="<%=v.role%>">
+        <td>
+          <%=index+1%>
+        </td>
+        <td style="font-size: 12px; font-weight: 400">
+          <span>
+            <b>
+              <%= v.fullname %>
+            </b>
+            <span style="color: <%= v.gender === true ? '#007bff' : '#ff69b4' %>">
+              / <%= v.gender===true ? 'M' : 'F' %>
+            </span>
           </span>
-        </span>
-        <br />
-        <span>
-          <%= v.phone_number %>
-        </span>
-      </td>
+          <br />
+          <span>
+            <%= v.phone_number %>
+          </span>
+        </td>
 
-      <td>
-        <%=v.cccd%>
-      </td>
+        <td>
+          <%=v.cccd%>
+        </td>
 
-      <td>
-        <%=new Date(v.DOB).toLocaleDateString('vi-VN') %>
-      </td>
-      <td>
-        <%=v.email%>
-      </td>
+        <td>
+          <%=new Date(v.DOB).toLocaleDateString('vi-VN') %>
+        </td>
+        <td>
+          <%=v.email%>
+        </td>
 
-      <td>
-        <%=v.role%>
-      </td>
-      <td>XL</td>
-      <td><button class="btn btn-secondary btn-cert">Cert</button></td>
-    </tr>
-    <%})%>
+        <td>
+          <%=v.role%>
+        </td>
+        <td>XL</td>
+        <td><button class="btn btn-secondary btn-cert">Cert</button></td>
+      </tr>
+      <%})%>
   </tbody>
 </table>
 <!--  -->
 <input type="hidden" id="ie_hidden" value="<%=ei%>" name="" />
 <% if (cc && cc.img_path) { %>
-<input type="hidden" id="cc_hidden" value="<%= cc.img_path %>" />
-<% } else { %>
-<input type="hidden" id="cc_hidden" value="" />
-<% } %>
+  <input type="hidden" id="cc_hidden" value="<%= cc.img_path %>" />
+  <% } else { %>
+    <input type="hidden" id="cc_hidden" value="" />
+    <% } %>
 
-<!--  -->
+      <!--  -->
 
-<!-- Modal -->
-<div
-  class="modal fade"
-  id="volunteer_modal"
-  tabindex="-1"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Volunteer edit</h1>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-6">
-            <div class="form-group">
-              <label for="" class="form-label">Name</label>
-              <input type="text" id="vol-name" class="form-control" />
+      <!-- Modal -->
+      <div class="modal fade" id="volunteer_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Volunteer edit</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="form-group">
-              <label for="" class="form-label">CCCD</label>
-              <input type="text" id="vol-cccd" class="form-control" />
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="" class="form-label">Name</label>
+                    <input type="text" id="vol-name" class="form-control" />
+                  </div>
+                  <div class="form-group">
+                    <label for="" class="form-label">CCCD</label>
+                    <input type="text" id="vol-cccd" class="form-control" />
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="" class="form-label">Email</label>
+                    <input type="text" id="vol-email" class="form-control" />
+                  </div>
+                  <div class="form-group">
+                    <label for="" class="form-label">Role</label>
+                    <input type="text" id="vol-role" class="form-control" />
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="col-6">
-            <div class="form-group">
-              <label for="" class="form-label">Email</label>
-              <input type="text" id="vol-email" class="form-control" />
-            </div>
-            <div class="form-group">
-              <label for="" class="form-label">Role</label>
-              <input type="text" id="vol-role" class="form-control" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
-        </button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    //start here
-
-    // script 1
-    document
-      .getElementById("handlecontrol-header")
-      .addEventListener("click", function (ev) {
-        // console.log(ev.target);
-        const controlheader_el =
-          document.getElementsByClassName("control-header")[0];
-        controlheader_el.classList.toggle("active");
-        // alert(ev.target.textContent)
-      });
-    document
-      .getElementById("choose-certimg")
-      .addEventListener("change", function (ev) {
-        // alert('a')
-        const file = ev.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function (event) {
-          document.getElementById("cert-preview").src = event.target.result;
-          const placeholder = document.getElementById(
-            "cert-preview-placeholder",
-          );
-          const preview = document.getElementById("cert-preview");
-          preview.classList.remove("d-none"); // hiện ảnh
-          placeholder.classList.add("d-none"); // ẩn text placeholder
-        };
-        reader.readAsDataURL(file);
-      });
-
-    //script end 1
-    // table volunteer btn xem cert
-    document
-      .querySelectorAll("#volunteer_tbl tbody tr")
-      .forEach((row, index) => {
-        row.addEventListener("click", function (el) {
-          var data_id = this.dataset.id;
-          document.getElementById("vol-name").value = this.dataset.name;
-          document.getElementById("vol-cccd").value = this.dataset.cccd;
-          document.getElementById("vol-email").value = this.dataset.email;
-          document.getElementById("vol-role").value = this.dataset.role;
-          // console.log(row);
-          // alert("row vi tri: "+index+" | "+data_id);
-          console.log(el);
-          var modal = new bootstrap.Modal(
-            document.getElementById("volunteer_modal"),
-          );
-          modal.show();
-        });
-      });
-    document
-      .querySelectorAll("#volunteer_tbl tbody .btn-cert")
-      .forEach((btn, index) => {
-        btn.addEventListener("click", function (el) {
-          el.stopPropagation();
-          const row = this.closest("tr");
-          const dataId = row.dataset.id;
-          // alert("click dong row: " + index + " | " + dataId);
-          GetCertificate(dataId);
-        });
-      });
-    //cert-img save
-    document
-      .getElementById("cert-img-save")
-      .addEventListener("click", function (ev) {
-        // alert("A")
-        const _fileFlag = document.getElementById("choose-certimg").files[0];
-        if (!_fileFlag) {
-          document.getElementById("result").innerHTML =
-            "<pre>" +
-            JSON.stringify(
-              {
-                success: false,
-                mess: "Ko co file anh!!!",
-                img: document.getElementById("ie_hidden").value,
-              },
-              null,
-              2,
-            ) +
-            "</pre>";
-        }
-        const formData = new FormData();
-        formData.append("ei", document.getElementById("ie_hidden").value);
-        formData.append(
-          "cert_img",
-          document.getElementById("choose-certimg").files[0],
-        );
-        $.ajax({
-          url: `/admin/volunteer/upload-image`,
-          method: "POST",
-          data: formData,
-          contentType: false, //ko set content-Type
-          processData: false, //ko parse du lieu
-          success: (res) => {
-            document.getElementById("result").innerHTML =
-    "<pre>" + JSON.stringify(res, null, 2) + "</pre>";
-
-  if (res.success && res.img_path) {
-    const newUrl = "/" + res.img_path + "?t=" + new Date().getTime();
-
-    let preview = document.getElementById("cert-preview");
-    let placeholder = document.getElementById("cert-preview-placeholder");
-
-    // Nếu preview chưa tồn tại → tạo mới
-    if (!preview) {
-      preview = document.createElement("img");
-      preview.id = "cert-preview";
-      preview.className = "img-fluid rounded border";
-      placeholder.parentNode.insertBefore(preview, placeholder);
-    }
-
-    preview.src = newUrl;
-    preview.classList.remove("d-none");
-    if (placeholder) placeholder.classList.add("d-none");
-
-    // Cập nhật Fabric.js
-    fabric.Image.fromURL(newUrl, function(img) {
-      naturalW = img.width;
-      naturalH = img.height;
-      img.set({
-        selectable: false,
-        evented: false,
-        scaleX: canvas.width / img.width,
-        scaleY: canvas.height / img.height
-      });
-      canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
-    });
-  }
-          },
-          error: (err) => {
-            // alert("err upload anh cert")
-            console.log(err);
-          },
-        });
-      });
-    //
-    function GetCertificate(id) {
-      const ei= document.getElementById("ie_hidden").value;
-      // (id+" "+ei)
-      $.ajax({
-        url: `/admin/volunteer/certificate-person/${id}`,
-        method: "POST",
-        contentType: 'application/json',
-        data: JSON.stringify({event_id: ei}),
-        success: function (res) {
-          // Tạo URL từ blob để hiển thị ảnh
-          // const url = URL.createObjectURL(blob);
-
-          // Gán vào thẻ <img> để hiển thị
-          // $("#certificate_img").attr("src", url);
-          $("#certificateModal img").attr("src", res.image);
-          $("#certificateModal").modal("show");
-          $("#btn-download").attr("href", res.image);
-        },
-        error: function (err) {
-          console.error("Lỗi khi nhận ảnh:", err);
-          alert("Không thể tải ảnh chứng nhận");
-        },
-      });
-    }
-    // import data
-    document
-      .getElementById("btn-submit")
-      .addEventListener("click", function (el) {
-        el.preventDefault();
-
-        const inputFile = document.getElementById("fileExcel");
-        const file = inputFile.files[0];
-
-        // ✅ Validation file
-        if (!file) {
-          showError("Vui lòng chọn file Excel!");
-          return;
-        }
-
-        // ✅ Kiểm tra file type
-        const allowedTypes = [
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          "application/vnd.ms-excel",
-        ];
-        if (!allowedTypes.includes(file.type)) {
-          showError("Chỉ cho phép file Excel (.xlsx, .xls)!");
-          return;
-        }
-
-        // ✅ Kiểm tra file size (max 10MB)
-        if (file.size > 10 * 1024 * 1024) {
-          showError("File quá lớn! Vui lòng chọn file nhỏ hơn 10MB.");
-          return;
-        }
-
-        // ✅ Hiển thị loading
-        showLoading();
-
-        const formData = new FormData();
-        formData.append("excelFile", file);
-        formData.append("ei", $("#ie_hidden").val());
-
-        fetch("/admin/volunteer/upload-excel", {
-          method: "POST",
-          body: formData,
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            hideLoading();
-
-            if (data.success) {
-              showSuccess(
-                `Import thành công! Đã xóa ${data.data.deleted} bản ghi cũ và thêm ${data.data.inserted} bản ghi mới.`,
-              );
-              // ✅ Reload trang để hiển thị dữ liệu mới
-              setTimeout(() => {
-                window.location.reload();
-              }, 2000);
-            } else {
-              if (data.errors && data.errors.length > 0) {
-                showError(`Dữ liệu không hợp lệ:\n${data.errors.join("\n")}`);
-              } else {
-                showError(data.message || "Import thất bại!");
-              }
-            }
-
-            // ✅ Hiển thị chi tiết kết quả
-            document.getElementById("result").innerHTML =
-              "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
-          })
-          .catch((err) => {
-            hideLoading();
-            console.error("Import error:", err);
-            showError("Lỗi kết nối! Vui lòng thử lại.");
-          });
-      });
-
-    // ✅ Helper functions
-    function showLoading() {
-      const btn = document.getElementById("btn-submit");
-      btn.disabled = true;
-      btn.innerHTML =
-        '<span class="spinner-border spinner-border-sm me-2"></span>Đang import...';
-    }
-
-    function hideLoading() {
-      const btn = document.getElementById("btn-submit");
-      btn.disabled = false;
-      btn.innerHTML = "Save file";
-    }
-
-    function showError(message) {
-      const result = document.getElementById("result");
-      result.innerHTML = `<div class="alert alert-danger">${message}</div>`;
-    }
-
-    function showSuccess(message) {
-      const result = document.getElementById("result");
-      result.innerHTML = `<div class="alert alert-success">${message}</div>`;
-    }
-
-    //
-  });
-</script>
-
-<!-- Modal -->
-<div
-  class="modal fade"
-  id="certificateModal"
-  tabindex="-1"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-xl">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Volunteer certificate</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <img src="" alt="Certificate Preview" class="img-fluid" />
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
-        </button>
-        <!-- <button type="button" id="btn-download" download class="btn btn-primary">Download Certificate</button> -->
-        <a href="" id="btn-download" download class="btn btn-outline-success"
-          >Download certificate</a
-        >
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ============================================== Certificate config =============================== -->
-<!-- Section thay cho body -->
-<section style="font-family: Arial, sans-serif">
-  <!-- Modal Fullscreen -->
-  <div class="modal fade" id="editorModal" tabindex="-1">
-    <div class="modal-dialog modal-fullscreen">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Modal title</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body position-relative p-0">
-          <!-- Nút toggle sidebar -->
-          <button
-            id="toggleSidebar"
-            class="btn btn-secondary position-absolute top-0 end-0 m-3 z-3"
-          >
-            ⚙️ Tuỳ chỉnh
-          </button>
-
-          <!-- Canvas -->
-          <div id="canvasWrapper" class="p-3">
-            <canvas id="c" width="1200" height="850"></canvas>
-          </div>
-
-          <!-- Sidebar overlay -->
-          <div id="sidebar" class="sidebar-overlay">
-            <!-- Nút đóng -->
-            <button
-              id="closeSidebar"
-              class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2"
-            >
-              ✖
-            </button>
-            <div class="p-3">
-              <h3>Thuộc tính</h3>
-              <div class="control">
-                <label for="fontSize">Cỡ chữ</label>
-                <input
-                  type="number"
-                  id="fontSize"
-                  value="28"
-                  class="form-control"
-                />
-              </div>
-              <div class="control">
-                <label for="color">Màu chữ</label>
-                <input
-                  type="color"
-                  id="color"
-                  value="#000000"
-                  class="form-control"
-                />
-              </div>
-              <div class="control">
-                <label for="fontFamily">Font chữ</label>
-                <select id="fontFamily" class="form-select">
-                  <option value="Arial">Arial</option>
-                  <option value="Times New Roman">Times New Roman</option>
-                  <option value="Courier New">Courier New</option>
-                  <option value="Verdana">Verdana</option>
-                  <option value="MyCustomAlexBrush">Alex Brush</option>
-                </select>
-              </div>
-              <div class="control">
-                <label for="textAlign">Căn ngang</label>
-                <select id="textAlign" class="form-select">
-                  <option value="left">Trái</option>
-                  <option value="center" selected>Giữa</option>
-                  <option value="right">Phải</option>
-                </select>
-              </div>
-              <div class="control">
-                <label for="valign">Căn dọc</label>
-                <select id="valign" class="form-select">
-                  <option value="top">Trên</option>
-                  <option value="middle" selected>Giữa</option>
-                  <option value="bottom">Dưới</option>
-                </select>
-              </div>
-
-              <hr />
-              <h4>Quản lý Field</h4>
-              <div class="d-flex gap-2 mb-2">
-                <input
-                  type="text"
-                  id="newField"
-                  placeholder="Tên field (VD: ClubName)"
-                  class="form-control"
-                />
-                <button id="addFieldBtn" class="btn btn-success">Thêm</button>
-              </div>
-              <ul id="fieldList" class="list-unstyled"></ul>
-
-              <button id="saveBtn" class="btn btn-primary mt-3">
-                Save vị trí
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Close
               </button>
-              <pre id="output" class="mt-2"></pre>
+              <button type="button" class="btn btn-primary">Save changes</button>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          //start here
 
-<!-- ================================================Script=============================== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+          // script 1
+          document
+            .getElementById("handlecontrol-header")
+            .addEventListener("click", function (ev) {
+              // console.log(ev.target);
+              const controlheader_el =
+                document.getElementsByClassName("control-header")[0];
+              controlheader_el.classList.toggle("active");
+              // alert(ev.target.textContent)
+            });
+          document
+            .getElementById("choose-certimg")
+            .addEventListener("change", function (ev) {
+              // alert('a')
+              const file = ev.target.files[0];
+              if (!file) return;
+              const reader = new FileReader();
+              reader.onload = function (event) {
+                document.getElementById("cert-preview").src = event.target.result;
+                const placeholder = document.getElementById(
+                  "cert-preview-placeholder",
+                );
+                const preview = document.getElementById("cert-preview");
+                preview.classList.remove("d-none"); // hiện ảnh
+                placeholder.classList.add("d-none"); // ẩn text placeholder
+              };
+              reader.readAsDataURL(file);
+            });
 
-<script>
-  const canvas = new fabric.Canvas("c", { selection: true });
-  let naturalW = 0,
-    naturalH = 0;
-  let activeTextbox = null;
-  let fields = {}; // field động
+          //script end 1
+          // table volunteer btn xem cert
+          document
+            .querySelectorAll("#volunteer_tbl tbody tr")
+            .forEach((row, index) => {
+              row.addEventListener("click", function (el) {
+                var data_id = this.dataset.id;
+                document.getElementById("vol-name").value = this.dataset.name;
+                document.getElementById("vol-cccd").value = this.dataset.cccd;
+                document.getElementById("vol-email").value = this.dataset.email;
+                document.getElementById("vol-role").value = this.dataset.role;
+                // console.log(row);
+                // alert("row vi tri: "+index+" | "+data_id);
+                console.log(el);
+                var modal = new bootstrap.Modal(
+                  document.getElementById("volunteer_modal"),
+                );
+                modal.show();
+              });
+            });
+          document
+            .querySelectorAll("#volunteer_tbl tbody .btn-cert")
+            .forEach((btn, index) => {
+              btn.addEventListener("click", function (el) {
+                el.stopPropagation();
+                const row = this.closest("tr");
+                const dataId = row.dataset.id;
+                // alert("click dong row: " + index + " | " + dataId);
+                GetCertificate(dataId);
+              });
+            });
+          //cert-img save
+          document
+            .getElementById("cert-img-save")
+            .addEventListener("click", function (ev) {
+              // alert("A")
+              const _fileFlag = document.getElementById("choose-certimg").files[0];
+              if (!_fileFlag) {
+                document.getElementById("result").innerHTML =
+                  "<pre>" +
+                  JSON.stringify(
+                    {
+                      success: false,
+                      mess: "Ko co file anh!!!",
+                      img: document.getElementById("ie_hidden").value,
+                    },
+                    null,
+                    2,
+                  ) +
+                  "</pre>";
+              }
+              const formData = new FormData();
+              formData.append("ei", document.getElementById("ie_hidden").value);
+              formData.append(
+                "cert_img",
+                document.getElementById("choose-certimg").files[0],
+              );
+              $.ajax({
+                url: `/admin/volunteer/upload-image`,
+                method: "POST",
+                data: formData,
+                contentType: false, //ko set content-Type
+                processData: false, //ko parse du lieu
+                success: (res) => {
+                  document.getElementById("result").innerHTML =
+                    "<pre>" + JSON.stringify(res, null, 2) + "</pre>";
 
-  // Vẽ grid
-  function drawGrid(step = 100) {
-    for (let i = 0; i < canvas.width / step; i++) {
-      const distance = i * step;
-      canvas.add(
-        new fabric.Line([distance, 0, distance, canvas.height], {
-          stroke: "#eee",
-          selectable: false,
-          evented: false,
-        }),
-      );
-    }
-    for (let j = 0; j < canvas.height / step; j++) {
-      const distance = j * step;
-      canvas.add(
-        new fabric.Line([0, distance, canvas.width, distance], {
-          stroke: "#eee",
-          selectable: false,
-          evented: false,
-        }),
-      );
-    }
-  }
+                  if (res.success && res.img_path) {
+                    const newUrl = "/" + res.img_path + "?t=" + new Date().getTime();
 
-  // Load background
-  // const bgUrl = "/uploads/certificate/cer1.jpg"; // đổi link ảnh tại đây
-  const bgUrl = "/<%= cc && cc.img_path ? cc.img_path : '' %>"
+                    let preview = document.getElementById("cert-preview");
+                    let placeholder = document.getElementById(
+                      "cert-preview-placeholder",
+                    );
 
-  fabric.Image.fromURL(bgUrl, function (img) {
-    naturalW = img.width;
-    naturalH = img.height;
-    img.set({
-      selectable: false,
-      evented: false,
-      scaleX: canvas.width / img.width,
-      scaleY: canvas.height / img.height,
-    });
-    canvas.setBackgroundImage(img, () => {
-      drawGrid(100);
-      initDefaultFields(); // ✅ Load fields từ DB hoặc tạo mặc định
-      canvas.renderAll();
-    });
-  }, function(error) {
-    console.error("Lỗi khi tải ảnh certificate:", error);
-    alert("Không thể tải ảnh certificate. Vui lòng kiểm tra đường dẫn ảnh.");
-  });
+                    // Nếu preview chưa tồn tại → tạo mới
+                    if (!preview) {
+                      preview = document.createElement("img");
+                      preview.id = "cert-preview";
+                      preview.className = "img-fluid rounded border";
+                      placeholder.parentNode.insertBefore(preview, placeholder);
+                    }
 
-  // ====== Field Management ======
-  function createTextbox(key, options = {}) {
-    const textbox = new fabric.Textbox(key, {
-      left: 100,
-      top: 100,
-      width: 200,
-      fontSize: 28,
-      fontFamily: "Arial",
-      fill: "black",
-      textAlign: "center",
-      customValign: "middle",
-      ...options,
-    });
-    fields[key] = textbox;
-    canvas.add(textbox);
-    renderFieldList();
-    return textbox;
-  }
+                    preview.src = newUrl;
+                    preview.classList.remove("d-none");
+                    if (placeholder) placeholder.classList.add("d-none");
 
-  function initDefaultFields() {
-    // ✅ Load cấu hình từ DB nếu có
-    const savedConfig = getSavedConfig();
+                    // Cập nhật Fabric.js
+                    fabric.Image.fromURL(newUrl, function (img) {
+                      naturalW = img.width;
+                      naturalH = img.height;
+                      img.set({
+                        selectable: false,
+                        evented: false,
+                        scaleX: canvas.width / img.width,
+                        scaleY: canvas.height / img.height,
+                      });
+                      canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+                    });
+                  }
+                },
+                error: (err) => {
+                  // alert("err upload anh cert")
+                  console.log(err);
+                },
+              });
+            });
+          //
+          function GetCertificate(id) {
+            const ei = document.getElementById("ie_hidden").value;
+            // (id+" "+ei)
+            $.ajax({
+              url: `/admin/volunteer/certificate-person/${id}`,
+              method: "POST",
+              contentType: "application/json",
+              data: JSON.stringify({ event_id: ei }),
+              success: function (res) {
+                // Tạo URL từ blob để hiển thị ảnh
+                // const url = URL.createObjectURL(blob);
 
-    if (savedConfig && Object.keys(savedConfig).length > 0) {
-      // Load từ cấu hình đã lưu
-      loadFieldsFromConfig(savedConfig);
-    } else {
-      // Tạo field mặc định nếu chưa có cấu hình
-      createTextbox("name", { left: 50, top: 50, fill: "black" });
-      createTextbox("role", { left: 50, top: 120, fill: "black" }); // ✅ thêm Role
-      createTextbox("bib", { left: 50, top: 190, fill: "black" });
-      createTextbox("finishtime", { left: 50, top: 260 });
-      createTextbox("overallrank", { left: 50, top: 330, fill: "black" });
-      createTextbox("clubName", { left: 50, top: 400, fill: "black" });
-    }
-  }
+                // Gán vào thẻ <img> để hiển thị
+                // $("#certificate_img").attr("src", url);
+                $("#certificateModal img").attr("src", res.image);
+                $("#certificateModal").modal("show");
+                $("#btn-download").attr("href", res.image);
+              },
+              error: function (err) {
+                console.error("Lỗi khi nhận ảnh:", err);
+                alert("Không thể tải ảnh chứng nhận");
+              },
+            });
+          }
+          // import data
+          document
+            .getElementById("btn-submit")
+            .addEventListener("click", function (el) {
+              el.preventDefault();
 
-  // ✅ Lấy cấu hình đã lưu từ EJS template
-  function getSavedConfig() {
+              const inputFile = document.getElementById("fileExcel");
+              const file = inputFile.files[0];
+
+              // ✅ Validation file
+              if (!file) {
+                showError("Vui lòng chọn file Excel!");
+                return;
+              }
+
+              // ✅ Kiểm tra file type
+              const allowedTypes = [
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "application/vnd.ms-excel",
+              ];
+              if (!allowedTypes.includes(file.type)) {
+                showError("Chỉ cho phép file Excel (.xlsx, .xls)!");
+                return;
+              }
+
+              // ✅ Kiểm tra file size (max 10MB)
+              if (file.size > 10 * 1024 * 1024) {
+                showError("File quá lớn! Vui lòng chọn file nhỏ hơn 10MB.");
+                return;
+              }
+
+              // ✅ Hiển thị loading
+              showLoading();
+
+              const formData = new FormData();
+              formData.append("excelFile", file);
+              formData.append("ei", $("#ie_hidden").val());
+
+              fetch("/admin/volunteer/upload-excel", {
+                method: "POST",
+                body: formData,
+              })
+                .then((res) => res.json())
+                .then((data) => {
+                  hideLoading();
+
+                  if (data.success) {
+                    showSuccess(
+                      `Import thành công! Đã xóa ${data.data.deleted} bản ghi cũ và thêm ${data.data.inserted} bản ghi mới.`,
+                    );
+                    // ✅ Reload trang để hiển thị dữ liệu mới
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 2000);
+                  } else {
+                    if (data.errors && data.errors.length > 0) {
+                      showError(`Dữ liệu không hợp lệ:\n${data.errors.join("\n")}`);
+                    } else {
+                      showError(data.message || "Import thất bại!");
+                    }
+                  }
+
+                  // ✅ Hiển thị chi tiết kết quả
+                  document.getElementById("result").innerHTML =
+                    "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+                })
+                .catch((err) => {
+                  hideLoading();
+                  console.error("Import error:", err);
+                  showError("Lỗi kết nối! Vui lòng thử lại.");
+                });
+            });
+
+          // ✅ Helper functions
+          function showLoading() {
+            const btn = document.getElementById("btn-submit");
+            btn.disabled = true;
+            btn.innerHTML =
+              '<span class="spinner-border spinner-border-sm me-2"></span>Đang import...';
+          }
+
+          function hideLoading() {
+            const btn = document.getElementById("btn-submit");
+            btn.disabled = false;
+            btn.innerHTML = "Save file";
+          }
+
+          function showError(message) {
+            const result = document.getElementById("result");
+            result.innerHTML = `<div class="alert alert-danger">${message}</div>`;
+          }
+
+          function showSuccess(message) {
+            const result = document.getElementById("result");
+            result.innerHTML = `<div class="alert alert-success">${message}</div>`;
+          }
+
+          //
+        });
+      </script>
+
+      <!-- Modal -->
+      <div class="modal fade" id="certificateModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Volunteer certificate
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <img src="" alt="Certificate Preview" class="img-fluid" />
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Close
+              </button>
+              <!-- <button type="button" id="btn-download" download class="btn btn-primary">Download Certificate</button> -->
+              <a href="" id="btn-download" download class="btn btn-outline-success">Download certificate</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== Certificate config =============================== -->
+      <!-- Section thay cho body -->
+      <section style="font-family: Arial, sans-serif">
+        <!-- Modal Fullscreen -->
+        <div class="modal fade" id="editorModal" tabindex="-1">
+          <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body position-relative p-0">
+                <!-- Nút toggle sidebar -->
+                <button id="toggleSidebar" class="btn btn-secondary position-absolute top-0 end-0 m-3 z-3">
+                  ⚙️ Tuỳ chỉnh
+                </button>
+
+                <!-- Canvas -->
+                <div id="canvasWrapper" class="p-3">
+                  <canvas id="c" width="1200" height="850"></canvas>
+                </div>
+
+                <!-- Sidebar overlay -->
+                <div id="sidebar" class="sidebar-overlay">
+                  <!-- Nút đóng -->
+                  <button id="closeSidebar" class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2">
+                    ✖
+                  </button>
+                  <div class="p-3">
+                    <h3>Thuộc tính</h3>
+                    <div class="control">
+                      <label for="fontSize">Cỡ chữ</label>
+                      <input type="number" id="fontSize" value="28" class="form-control" />
+                    </div>
+                    <div class="control">
+                      <label for="color">Màu chữ</label>
+                      <input type="color" id="color" value="#000000" class="form-control" />
+                    </div>
+                    <div class="control">
+                      <label for="fontFamily">Font chữ</label>
+                      <select id="fontFamily" class="form-select">
+                        <option value="Arial">Arial</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Courier New">Courier New</option>
+                        <option value="Verdana">Verdana</option>
+                        <option value="MyCustomAlexBrush">Alex Brush</option>
+                        <!-- Add more fonts here as needed -->
+                      </select>
+                    </div>
+                    <div class="control">
+                      <label for="textAlign">Căn ngang</label>
+                      <select id="textAlign" class="form-select">
+                        <option value="left">Trái</option>
+                        <option value="center" selected>Giữa</option>
+                        <option value="right">Phải</option>
+                      </select>
+                    </div>
+                    <div class="control">
+                      <label for="valign">Căn dọc</label>
+                      <select id="valign" class="form-select">
+                        <option value="top">Trên</option>
+                        <option value="middle" selected>Giữa</option>
+                        <option value="bottom">Dưới</option>
+                      </select>
+                    </div>
+
+                    <hr />
+                    <h4>Quản lý Field</h4>
+                    <div class="d-flex gap-2 mb-2">
+                      <input type="text" id="newField" placeholder="Tên field (VD: ClubName)" class="form-control" />
+                      <button id="addFieldBtn" class="btn btn-success">Thêm</button>
+                    </div>
+                    <ul id="fieldList" class="list-unstyled"></ul>
+
+                    <button id="saveBtn" class="btn btn-primary mt-3">
+                      Save vị trí
+                    </button>
+                    <pre id="output" class="mt-2"></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================Script=============================== -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+
+      <script>
+        const canvas = new fabric.Canvas("c", { selection: true });
+        let naturalW = 0,
+          naturalH = 0;
+        let activeTextbox = null;
+        let fields = {}; // field động
+
+        // Vẽ grid
+        function drawGrid(step = 100) {
+          for (let i = 0; i < canvas.width / step; i++) {
+            const distance = i * step;
+            canvas.add(
+              new fabric.Line([distance, 0, distance, canvas.height], {
+                stroke: "#eee",
+                selectable: false,
+                evented: false,
+              }),
+            );
+          }
+          for (let j = 0; j < canvas.height / step; j++) {
+            const distance = j * step;
+            canvas.add(
+              new fabric.Line([0, distance, canvas.width, distance], {
+                stroke: "#eee",
+                selectable: false,
+                evented: false,
+              }),
+            );
+          }
+        }
+
+        // Load background
+        // const bgUrl = "/uploads/certificate/cer1.jpg"; // đổi link ảnh tại đây
+        const bgUrl = "/<%= cc && cc.img_path ? cc.img_path : '' %>"
+
+        fabric.Image.fromURL(bgUrl, function (img) {
+          naturalW = img.width;
+          naturalH = img.height;
+          img.set({
+            selectable: false,
+            evented: false,
+            scaleX: canvas.width / img.width,
+            scaleY: canvas.height / img.height,
+          });
+          canvas.setBackgroundImage(img, () => {
+            drawGrid(100);
+            initDefaultFields(); // ✅ Load fields từ DB hoặc tạo mặc định
+            canvas.renderAll();
+          });
+        }, function (error) {
+          console.error("Lỗi khi tải ảnh certificate:", error);
+          alert("Không thể tải ảnh certificate. Vui lòng kiểm tra đường dẫn ảnh.");
+        });
+
+        // ====== Field Management ======
+        function createTextbox(key, options = {}) {
+          const textbox = new fabric.Textbox(key, {
+            left: 100,
+            top: 100,
+            width: 200,
+            height: 50, // Set explicit height for better vertical alignment
+            fontSize: 28,
+            fontFamily: "Arial",
+            fill: "black",
+            textAlign: "center",
+            customValign: "middle",
+            // Add visual feedback for better UX
+            borderColor: '#007bff',
+            cornerColor: '#007bff',
+            cornerSize: 8,
+            transparentCorners: false,
+            // Prevent text from disappearing
+            text: key, // Ensure text is set
+            ...options,
+          });
+
+          // Apply vertical alignment after creation
+          fields[key] = textbox;
+          canvas.add(textbox);
+
+          // Add event listeners for better interaction
+          textbox.on('modified', () => {
+            // Don't apply vertical alignment on every modification to prevent jumping
+            console.log("📝 Textbox modified");
+          });
+
+          textbox.on('scaling', () => {
+            // Apply vertical alignment only when scaling
+            setTimeout(() => {
+              applyVerticalAlign(textbox);
+            }, 50);
+          });
+
+          // Apply vertical alignment after a short delay
+          setTimeout(() => {
+            applyVerticalAlign(textbox);
+          }, 100);
+
+          renderFieldList();
+          return textbox;
+        }
+
+        function initDefaultFields() {
+          // ✅ Load cấu hình từ DB nếu có
+          const savedConfig = getSavedConfig();
+
+          if (savedConfig && Object.keys(savedConfig).length > 0) {
+            // Load từ cấu hình đã lưu
+            loadFieldsFromConfig(savedConfig);
+          } else {
+            // Tạo field mặc định nếu chưa có cấu hình
+            createTextbox("name", { left: 50, top: 50, fill: "black" });
+            createTextbox("role", { left: 50, top: 120, fill: "black" }); // ✅ thêm Role
+            createTextbox("bib", { left: 50, top: 190, fill: "black" });
+            createTextbox("finishtime", { left: 50, top: 260 });
+            createTextbox("overallrank", { left: 50, top: 330, fill: "black" });
+            createTextbox("clubName", { left: 50, top: 400, fill: "black" });
+          }
+        }
+
+        // ✅ Lấy cấu hình đã lưu từ EJS template
+        function getSavedConfig() {
     <% if (cc && cc.fields) { %>
-    console.log("✅ Loaded config from DB:", <%- JSON.stringify(cc.fields) %>);
-    return <%- JSON.stringify(cc.fields) %>;
+            console.log("✅ Loaded config from DB:", <% - JSON.stringify(cc.fields) %>);
+            return <% - JSON.stringify(cc.fields) %>;
     <% } else { %>
-    console.log("❌ No config found in DB");
-    return null;
+            console.log("❌ No config found in DB");
+            return null;
     <% } %>
   }
 
-  // ✅ Load fields từ cấu hình đã lưu
-  function loadFieldsFromConfig(config) {
-    console.log("🔄 Loading fields from config:", config);
-    console.log("📐 Canvas size:", canvas.width, "x", canvas.height);
-    console.log("🖼️ Natural size:", naturalW, "x", naturalH);
+        // ✅ Load fields từ cấu hình đã lưu
+        function loadFieldsFromConfig(config) {
+          console.log("🔄 Loading fields from config:", config);
+          console.log("📐 Canvas size:", canvas.width, "x", canvas.height);
+          console.log("🖼️ Natural size:", naturalW, "x", naturalH);
 
-    const scaleX = canvas.width / naturalW;
-    const scaleY = canvas.height / naturalH;
+          const scaleX = canvas.width / naturalW;
+          const scaleY = canvas.height / naturalH;
 
-    console.log("📏 Scale factors:", scaleX, "x", scaleY);
+          console.log("📏 Scale factors:", scaleX, "x", scaleY);
 
-    for (const [key, fieldConfig] of Object.entries(config)) {
-      const scaledConfig = {
-        left: (fieldConfig.x || 0) * scaleX,
-        top: (fieldConfig.y || 0) * scaleY,
-        width: (fieldConfig.w || 200) * scaleX,
-        height: (fieldConfig.h || 50) * scaleY,
-        fontSize: (fieldConfig.fontSize || 28) * scaleX,
-        fontFamily: fieldConfig.fontFamily || "Arial",
-        fill: fieldConfig.color || "black",
-        textAlign: fieldConfig.align || "center",
-        customValign: fieldConfig.valign || "middle"
-      };
+          for (const [key, fieldConfig] of Object.entries(config)) {
+            const scaledConfig = {
+              left: (fieldConfig.x || 0) * scaleX,
+              top: (fieldConfig.y || 0) * scaleY,
+              width: (fieldConfig.w || 200) * scaleX,
+              height: (fieldConfig.h || 50) * scaleY,
+              fontSize: (fieldConfig.fontSize || 28) * scaleX,
+              fontFamily: fieldConfig.fontFamily || "Arial",
+              fill: fieldConfig.color || "black",
+              textAlign: fieldConfig.align || "center",
+              customValign: fieldConfig.valign || "middle",
+              // Add visual feedback
+              borderColor: '#007bff',
+              cornerColor: '#007bff',
+              cornerSize: 8,
+              transparentCorners: false,
+            };
 
-      console.log(`📝 Creating field "${key}":`, scaledConfig);
-      createTextbox(key, scaledConfig);
-    }
-  }
+            console.log(`📝 Creating field "${key}":`, scaledConfig);
+            createTextbox(key, scaledConfig);
+          }
 
-  function renderFieldList() {
-    const list = document.getElementById("fieldList");
-    list.innerHTML = "";
-    Object.keys(fields).forEach((key) => {
-      const li = document.createElement("li");
-      li.innerHTML = `
+          // Apply vertical alignment to all loaded fields after a short delay
+          setTimeout(() => {
+            Object.values(fields).forEach(textbox => {
+              applyVerticalAlign(textbox);
+            });
+          }, 200);
+        }
+
+        function renderFieldList() {
+          const list = document.getElementById("fieldList");
+          list.innerHTML = "";
+          Object.keys(fields).forEach((key) => {
+            const li = document.createElement("li");
+            li.innerHTML = `
         <span data-key="${key}">${key}</span>
         <button data-del="${key}">X</button>
       `;
-      list.appendChild(li);
-    });
-  }
-
-  document.getElementById("addFieldBtn").addEventListener("click", () => {
-    const key = document.getElementById("newField").value.trim();
-    if (!key || fields[key]) {
-      alert("Tên field trống hoặc đã tồn tại!");
-      return;
-    }
-    createTextbox(key);
-    document.getElementById("newField").value = "";
-  });
-
-  document.getElementById("fieldList").addEventListener("click", (e) => {
-    if (e.target.dataset.key) {
-      const key = e.target.dataset.key;
-      const obj = fields[key];
-      canvas.setActiveObject(obj);
-      canvas.renderAll();
-      syncSidebar(obj);
-    }
-    if (e.target.dataset.del) {
-      const key = e.target.dataset.del;
-      canvas.remove(fields[key]);
-      delete fields[key];
-      renderFieldList();
-    }
-  });
-
-  // ====== Vertical Align Handler ======
-  function applyVerticalAlign(obj) {
-    const textHeight = obj.height * obj.scaleY;
-    const boxHeight = obj.height;
-    if (obj.customValign === "middle") {
-      obj.top = obj.top - textHeight / 2 + boxHeight / 2;
-    } else if (obj.customValign === "bottom") {
-      obj.top = obj.top - textHeight + boxHeight;
-    }
-    canvas.renderAll();
-  }
-
-  // ====== Sidebar sync ======
-  function syncSidebar(obj) {
-    if (!obj) return;
-    document.getElementById("fontSize").value = obj.fontSize;
-    document.getElementById("color").value = obj.fill;
-    document.getElementById("fontFamily").value = obj.fontFamily;
-    document.getElementById("textAlign").value = obj.textAlign;
-    document.getElementById("valign").value = obj.customValign || "middle";
-  }
-
-  function updateTextbox(prop, value) {
-    if (activeTextbox) {
-      activeTextbox.set(prop, value);
-      canvas.renderAll();
-      for (const key in fields) {
-        if (fields[key] === activeTextbox) {
-          fields[key] = activeTextbox;
+            list.appendChild(li);
+          });
         }
-      }
-    }
-  }
 
-  canvas.on("selection:created", (e) => {
-    activeTextbox = e.selected[0];
-    syncSidebar(activeTextbox);
-  });
-  canvas.on("selection:updated", (e) => {
-    activeTextbox = e.selected[0];
-    syncSidebar(activeTextbox);
-  });
-  canvas.on("selection:cleared", () => {
-    activeTextbox = null;
-  });
+        document.getElementById("addFieldBtn").addEventListener("click", () => {
+          const key = document.getElementById("newField").value.trim();
 
-  document.getElementById("fontSize").addEventListener("input", (e) => {
-    updateTextbox("fontSize", parseInt(e.target.value));
-  });
+          // Validation
+          if (!key) {
+            alert("Vui lòng nhập tên field!");
+            return;
+          }
 
-  document.getElementById("color").addEventListener("input", (e) => {
-    updateTextbox("fill", e.target.value);
-  });
+          if (fields[key]) {
+            alert("Field này đã tồn tại!");
+            return;
+          }
 
-  document.getElementById("fontFamily").addEventListener("change", (e) => {
-    const selectedFont = e.target.value;
+          // Check for special characters
+          if (!/^[a-zA-Z0-9_]+$/.test(key)) {
+            alert("Tên field chỉ được chứa chữ cái, số và dấu gạch dưới!");
+            return;
+          }
 
-    // For custom fonts, we might need to ensure they are loaded.
-    // Fabric.js might not automatically pick up fonts loaded via @font-face after initialization.
-    // A simple way to handle this is to apply the font and re-render.
-    if (activeTextbox) {
-        activeTextbox.set("fontFamily", selectedFont);
-        canvas.requestRenderAll();
-    }
-  });
+          console.log("➕ Creating new field:", key);
+          createTextbox(key);
+          document.getElementById("newField").value = "";
+        });
 
-  document.getElementById("textAlign").addEventListener("change", (e) => {
-    updateTextbox("textAlign", e.target.value);
-  });
+        document.getElementById("fieldList").addEventListener("click", (e) => {
+          if (e.target.dataset.key) {
+            const key = e.target.dataset.key;
+            const obj = fields[key];
+            canvas.setActiveObject(obj);
+            canvas.renderAll();
+            syncSidebar(obj);
+          }
+          if (e.target.dataset.del) {
+            const key = e.target.dataset.del;
+            canvas.remove(fields[key]);
+            delete fields[key];
+            renderFieldList();
+          }
+        });
 
-  document.getElementById("valign").addEventListener("change", (e) => {
-    if (activeTextbox) {
-      activeTextbox.customValign = e.target.value;
-      applyVerticalAlign(activeTextbox);
-    }
-  });
+        // ====== Vertical Align Handler ======
+        function applyVerticalAlign(obj) {
+          if (!obj || !obj.customValign) return;
 
-  // Save vị trí + style
-  document.getElementById("saveBtn").addEventListener("click", () => {
-    if (!naturalW || !naturalH) {
-      alert("Ảnh chưa load xong!");
-      return;
-    }
-    const scaleX = naturalW / canvas.width;
-    const scaleY = naturalH / canvas.height;
-    const config = {};
-    for (const key in fields) {
-      const obj = fields[key];
-      config[key] = {
-        x: Math.round(obj.left * scaleX),
-        y: Math.round(obj.top * scaleY),
-        w: Math.round(obj.width * scaleX),
-        h: Math.round(obj.height * scaleY),
-        fontSize: Math.round(obj.fontSize * scaleX),
-        fontFamily: obj.fontFamily,
-        color: obj.fill,
-        align: obj.textAlign,
-        valign: obj.customValign || "middle",
-      };
-    }
-    document.getElementById("output").textContent = JSON.stringify(
-      config,
-      null,
-      2,
-    );
-    submitForm(config);
-  });
-  //Ajax guiwr len server
-  function submitForm(config) {
-    $.ajax({
-      url: `/admin/volunteer/certificate-config`,
-      method: "POST",
-      contentType: "application/json",
-      data: JSON.stringify({
-        ei: document.getElementById('ie_hidden').value,
-        config: config
-      }),
-      success: (res) => {
-        alert("config save");
-      },
-      error: (err) => {
-        alert("config failed");
-      },
-    });
-  }
+          // Store original position before alignment
+          const originalTop = obj.top;
+          const originalHeight = obj.height;
 
-  // ====== SNAP ALIGNMENT GUIDES ======
-  (function () {
-    const ctx = canvas.getSelectionContext();
-    const aligningLineMargin = 4;
-    const aligningLineWidth = 1;
-    const aligningLineColor = "rgba(0,0,255,0.6)";
-    let viewportTransform,
-      zoom = 1;
+          // Get the actual text metrics for accurate positioning
+          const ctx = canvas.getContext();
+          ctx.font = `${obj.fontSize}px ${obj.fontFamily}`;
+          const textMetrics = ctx.measureText(obj.text || '');
+          const textHeight = textMetrics.actualBoundingBoxAscent + textMetrics.actualBoundingBoxDescent;
 
-    function drawLine(coords) {
-      ctx.save();
-      ctx.lineWidth = aligningLineWidth;
-      ctx.strokeStyle = aligningLineColor;
-      ctx.beginPath();
-      ctx.moveTo(
-        (coords.x1 + viewportTransform[4]) * zoom,
-        (coords.y1 + viewportTransform[5]) * zoom,
-      );
-      ctx.lineTo(
-        (coords.x2 + viewportTransform[4]) * zoom,
-        (coords.y2 + viewportTransform[5]) * zoom,
-      );
-      ctx.stroke();
-      ctx.restore();
-    }
+          // Calculate the box height
+          const boxHeight = obj.height * obj.scaleY;
 
-    function isInRange(v1, v2) {
-      v1 = Math.round(v1);
-      v2 = Math.round(v2);
-      return Math.abs(v1 - v2) <= aligningLineMargin;
-    }
+          // Apply vertical alignment based on the text height
+          if (obj.customValign === "middle") {
+            // Center the text vertically within the box
+            obj.top = originalTop + (boxHeight - textHeight) / 2;
+          } else if (obj.customValign === "bottom") {
+            // Align text to bottom of the box
+            obj.top = originalTop + boxHeight - textHeight;
+          } else if (obj.customValign === "top") {
+            // Align text to top of the box (default behavior)
+            obj.top = originalTop;
+          }
 
-    canvas.on("before:render", function () {
-      canvas.clearContext(canvas.contextTop);
-    });
+          console.log("🔄 Applied vertical alignment:", {
+            valign: obj.customValign,
+            originalTop,
+            newTop: obj.top,
+            textHeight,
+            boxHeight
+          });
 
-    canvas.on("after:render", function () {
-      canvas.contextTop.stroke();
-    });
-
-    canvas.on("object:moving", function (e) {
-      let activeObject = e.target;
-      let aCenter = activeObject.getCenterPoint();
-      let aLeft = activeObject.left;
-      let aTop = activeObject.top;
-      let aRight = aLeft + activeObject.width * activeObject.scaleX;
-      let aBottom = aTop + activeObject.height * activeObject.scaleY;
-      let aCenterX = aCenter.x;
-      let aCenterY = aCenter.y;
-
-      let snap = { x: false, y: false };
-      viewportTransform = canvas.viewportTransform;
-      zoom = canvas.getZoom();
-
-      canvas.getObjects().forEach(function (obj) {
-        if (obj === activeObject) return;
-        let oCenter = obj.getCenterPoint();
-        let oLeft = obj.left;
-        let oTop = obj.top;
-        let oRight = oLeft + obj.width * obj.scaleX;
-        let oBottom = oTop + obj.height * obj.scaleY;
-        let oCenterX = oCenter.x;
-        let oCenterY = oCenter.y;
-
-        if (isInRange(oCenterX, aCenterX)) {
-          snap.x = oCenterX;
-          drawLine({ x1: oCenterX, y1: -5000, x2: oCenterX, y2: 5000 });
+          canvas.renderAll();
         }
-        if (isInRange(oCenterY, aCenterY)) {
-          snap.y = oCenterY;
-          drawLine({ x1: -5000, y1: oCenterY, x2: 5000, y2: oCenterY });
-        }
-        if (isInRange(oLeft, aLeft)) {
-          snap.x = oLeft + (activeObject.width * activeObject.scaleX) / 2;
-          drawLine({ x1: oLeft, y1: -5000, x2: oLeft, y2: 5000 });
-        }
-        if (isInRange(oRight, aRight)) {
-          snap.x = oRight - (activeObject.width * activeObject.scaleX) / 2;
-          drawLine({ x1: oRight, y1: -5000, x2: oRight, y2: 5000 });
-        }
-        if (isInRange(oTop, aTop)) {
-          snap.y = oTop + (activeObject.height * activeObject.scaleY) / 2;
-          drawLine({ x1: -5000, y1: oTop, x2: 5000, y2: oTop });
-        }
-        if (isInRange(oBottom, aBottom)) {
-          snap.y = oBottom - (activeObject.height * activeObject.scaleY) / 2;
-          drawLine({ x1: -5000, y1: oBottom, x2: 5000, y2: oBottom });
-        }
-      });
 
-      if (snap.x !== false) {
-        activeObject.setPositionByOrigin(
-          new fabric.Point(snap.x, aCenterY),
-          "center",
-          "center",
-        );
-      }
-      if (snap.y !== false) {
-        activeObject.setPositionByOrigin(
-          new fabric.Point(aCenterX, snap.y),
-          "center",
-          "center",
-        );
-      }
-    });
-  })();
+        // ====== Sidebar sync ======
+        function syncSidebar(obj) {
+          if (!obj) return;
 
-  // Toggle sidebar
-  document.getElementById("toggleSidebar").addEventListener("click", () => {
-    document.getElementById("sidebar").classList.add("open");
-  });
-  document.getElementById("closeSidebar").addEventListener("click", () => {
-    document.getElementById("sidebar").classList.remove("open");
-  });
-</script>
-<!-- ================================END ================================= -->
+          // Update sidebar controls with current object values
+          document.getElementById("fontSize").value = Math.round(obj.fontSize || 28);
+          document.getElementById("color").value = obj.fill || "#000000";
+          document.getElementById("fontFamily").value = obj.fontFamily || "Arial";
+          document.getElementById("textAlign").value = obj.textAlign || "center";
+          document.getElementById("valign").value = obj.customValign || "middle";
+
+          console.log("🔄 Synced sidebar with object:", {
+            fontSize: obj.fontSize,
+            fill: obj.fill,
+            fontFamily: obj.fontFamily,
+            textAlign: obj.textAlign,
+            valign: obj.customValign
+          });
+        }
+
+        function updateTextbox(prop, value) {
+          if (activeTextbox) {
+            console.log(`🔄 Updating textbox ${prop}:`, value);
+
+            // Update the property
+            activeTextbox.set(prop, value);
+
+            // Re-apply vertical alignment if needed
+            if (prop === "fontSize" || prop === "fontFamily") {
+              setTimeout(() => {
+                applyVerticalAlign(activeTextbox);
+              }, 50);
+            }
+
+            // Update fields reference
+            for (const key in fields) {
+              if (fields[key] === activeTextbox) {
+                fields[key] = activeTextbox;
+              }
+            }
+
+            // Re-render canvas
+            canvas.renderAll();
+          }
+        }
+
+        canvas.on("selection:created", (e) => {
+          activeTextbox = e.selected[0];
+          syncSidebar(activeTextbox);
+        });
+        canvas.on("selection:updated", (e) => {
+          activeTextbox = e.selected[0];
+          syncSidebar(activeTextbox);
+        });
+        canvas.on("selection:cleared", () => {
+          activeTextbox = null;
+        });
+
+        // Optimized event listeners with vertical alignment support
+        document.getElementById("fontSize").addEventListener("input", (e) => {
+          const fontSize = parseInt(e.target.value);
+
+          // Validation
+          if (isNaN(fontSize) || fontSize < 8 || fontSize > 200) {
+            e.target.value = activeTextbox ? activeTextbox.fontSize : 28;
+            alert("Font size phải từ 8 đến 200!");
+            return;
+          }
+
+          updateTextbox("fontSize", fontSize);
+          // Re-apply vertical alignment when font size changes
+          if (activeTextbox) {
+            setTimeout(() => {
+              applyVerticalAlign(activeTextbox);
+            }, 50);
+          }
+        });
+
+        document.getElementById("color").addEventListener("input", (e) => {
+          updateTextbox("fill", e.target.value);
+        });
+
+        document.getElementById("fontFamily").addEventListener("change", (e) => {
+          const selectedFont = e.target.value;
+
+          if (activeTextbox) {
+            // Prevent clearing font completely
+            if (!selectedFont || selectedFont.trim() === "") {
+              selectedFont = "Arial"; // Default fallback
+              e.target.value = "Arial";
+            }
+
+            // For custom fonts like Alex Brush, we need to ensure they're properly loaded
+            if (selectedFont === "MyCustomAlexBrush") {
+              // Preload the font to ensure it's available
+              const fontLink = document.createElement('link');
+              fontLink.href = '/font/AlexBrush-Regular.woff2';
+              fontLink.rel = 'preload';
+              fontLink.as = 'font';
+              fontLink.type = 'font/woff2';
+              fontLink.crossOrigin = 'anonymous';
+              document.head.appendChild(fontLink);
+
+              // Also try to load via CSS font-face
+              const style = document.createElement('style');
+              style.textContent = `
+          @font-face {
+            font-family: 'MyCustomAlexBrush';
+            src: url('/font/AlexBrush-Regular.woff2') format('woff2'),
+                 url('/font/AlexBrush-Regular.ttf') format('truetype');
+            font-display: swap;
+          }
+        `;
+              document.head.appendChild(style);
+            }
+
+            // Update font family
+            activeTextbox.set("fontFamily", selectedFont);
+
+            // Ensure text is not empty
+            if (!activeTextbox.text || activeTextbox.text.trim() === "") {
+              activeTextbox.set("text", activeTextbox.text || "Text");
+            }
+
+            // Force re-render and re-apply vertical alignment
+            canvas.requestRenderAll();
+            setTimeout(() => {
+              applyVerticalAlign(activeTextbox);
+            }, 50);
+          }
+        });
+
+        document.getElementById("textAlign").addEventListener("change", (e) => {
+          updateTextbox("textAlign", e.target.value);
+        });
+
+        document.getElementById("valign").addEventListener("change", (e) => {
+          if (activeTextbox) {
+            const newValign = e.target.value;
+            console.log("🔄 Changing vertical alignment to:", newValign);
+
+            activeTextbox.customValign = newValign;
+
+            // Apply vertical alignment with delay to ensure proper positioning
+            setTimeout(() => {
+              applyVerticalAlign(activeTextbox);
+            }, 50);
+          }
+        });
+
+        // Save vị trí + style
+        document.getElementById("saveBtn").addEventListener("click", () => {
+          if (!naturalW || !naturalH) {
+            alert("Ảnh chưa load xong!");
+            return;
+          }
+          const scaleX = naturalW / canvas.width;
+          const scaleY = naturalH / canvas.height;
+          const config = {};
+          for (const key in fields) {
+            const obj = fields[key];
+            config[key] = {
+              x: Math.round(obj.left * scaleX),
+              y: Math.round(obj.top * scaleY),
+              w: Math.round(obj.width * scaleX),
+              h: Math.round(obj.height * scaleY),
+              fontSize: Math.round(obj.fontSize * scaleX),
+              fontFamily: obj.fontFamily,
+              color: obj.fill,
+              align: obj.textAlign,
+              valign: obj.customValign || "middle",
+            };
+          }
+          document.getElementById("output").textContent = JSON.stringify(
+            config,
+            null,
+            2,
+          );
+          submitForm(config);
+        });
+        //Ajax guiwr len server
+        function submitForm(config) {
+          $.ajax({
+            url: `/admin/volunteer/certificate-config`,
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+              ei: document.getElementById('ie_hidden').value,
+              config: config
+            }),
+            success: (res) => {
+              alert("config save");
+            },
+            error: (err) => {
+              alert("config failed");
+            },
+          });
+        }
+
+        // ====== SNAP ALIGNMENT GUIDES ======
+        (function () {
+          const ctx = canvas.getSelectionContext();
+          const aligningLineMargin = 8; // Increased margin for better snapping
+          const aligningLineWidth = 1;
+          const aligningLineColor = "rgba(0,0,255,0.6)";
+          let viewportTransform,
+            zoom = 1;
+          let isSnapping = false; // Prevent multiple snap calculations
+
+          function drawLine(coords) {
+            ctx.save();
+            ctx.lineWidth = aligningLineWidth;
+            ctx.strokeStyle = aligningLineColor;
+            ctx.beginPath();
+            ctx.moveTo(
+              (coords.x1 + viewportTransform[4]) * zoom,
+              (coords.y1 + viewportTransform[5]) * zoom,
+            );
+            ctx.lineTo(
+              (coords.x2 + viewportTransform[4]) * zoom,
+              (coords.y2 + viewportTransform[5]) * zoom,
+            );
+            ctx.stroke();
+            ctx.restore();
+          }
+
+          function isInRange(v1, v2) {
+            v1 = Math.round(v1);
+            v2 = Math.round(v2);
+            return Math.abs(v1 - v2) <= aligningLineMargin;
+          }
+
+          canvas.on("before:render", function () {
+            canvas.clearContext(canvas.contextTop);
+          });
+
+          canvas.on("after:render", function () {
+            canvas.contextTop.stroke();
+          });
+
+          canvas.on("object:moving", function (e) {
+            if (isSnapping) return; // Prevent multiple snap calculations
+
+            let activeObject = e.target;
+            let aCenter = activeObject.getCenterPoint();
+            let aLeft = activeObject.left;
+            let aTop = activeObject.top;
+            let aRight = aLeft + activeObject.width * activeObject.scaleX;
+            let aBottom = aTop + activeObject.height * activeObject.scaleY;
+            let aCenterX = aCenter.x;
+            let aCenterY = aCenter.y;
+
+            let snap = { x: false, y: false };
+            viewportTransform = canvas.viewportTransform;
+            zoom = canvas.getZoom();
+
+            // Clear previous snap lines
+            canvas.clearContext(canvas.contextTop);
+
+            canvas.getObjects().forEach(function (obj) {
+              if (obj === activeObject || obj.type === 'line') return;
+              let oCenter = obj.getCenterPoint();
+              let oLeft = obj.left;
+              let oTop = obj.top;
+              let oRight = oLeft + obj.width * obj.scaleX;
+              let oBottom = oTop + obj.height * obj.scaleY;
+              let oCenterX = oCenter.x;
+              let oCenterY = oCenter.y;
+
+              if (isInRange(oCenterX, aCenterX)) {
+                snap.x = oCenterX;
+                drawLine({ x1: oCenterX, y1: -5000, x2: oCenterX, y2: 5000 });
+              }
+              if (isInRange(oCenterY, aCenterY)) {
+                snap.y = oCenterY;
+                drawLine({ x1: -5000, y1: oCenterY, x2: 5000, y2: oCenterY });
+              }
+              if (isInRange(oLeft, aLeft)) {
+                snap.x = oLeft + (activeObject.width * activeObject.scaleX) / 2;
+                drawLine({ x1: oLeft, y1: -5000, x2: oLeft, y2: 5000 });
+              }
+              if (isInRange(oRight, aRight)) {
+                snap.x = oRight - (activeObject.width * activeObject.scaleX) / 2;
+                drawLine({ x1: oRight, y1: -5000, x2: oRight, y2: 5000 });
+              }
+              if (isInRange(oTop, aTop)) {
+                snap.y = oTop + (activeObject.height * activeObject.scaleY) / 2;
+                drawLine({ x1: -5000, y1: oTop, x2: 5000, y2: oTop });
+              }
+              if (isInRange(oBottom, aBottom)) {
+                snap.y = oBottom - (activeObject.height * activeObject.scaleY) / 2;
+                drawLine({ x1: -5000, y1: oBottom, x2: 5000, y2: oBottom });
+              }
+            });
+
+            // Apply snapping with smooth transition
+            if (snap.x !== false || snap.y !== false) {
+              isSnapping = true;
+              const newX = snap.x !== false ? snap.x : aCenterX;
+              const newY = snap.y !== false ? snap.y : aCenterY;
+
+              // Store current vertical alignment before snapping
+              const currentValign = activeObject.customValign;
+
+              activeObject.setPositionByOrigin(
+                new fabric.Point(newX, newY),
+                "center",
+                "center",
+              );
+
+              // Re-apply vertical alignment after snapping only if needed
+              setTimeout(() => {
+                if (currentValign && currentValign !== "top") {
+                  applyVerticalAlign(activeObject);
+                }
+                isSnapping = false;
+              }, 10);
+            }
+          });
+        })();
+
+        // Toggle sidebar
+        document.getElementById("toggleSidebar").addEventListener("click", () => {
+          document.getElementById("sidebar").classList.add("open");
+        });
+        document.getElementById("closeSidebar").addEventListener("click", () => {
+          document.getElementById("sidebar").classList.remove("open");
+        });
+      </script>
+      <!-- ================================END ================================= -->

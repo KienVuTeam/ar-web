@@ -1,0 +1,171 @@
+<!-- ============================================== Konva.js Certificate Editor =============================== -->
+<style>
+  /* Load Alex Brush font for Konva.js */
+  @font-face {
+    font-family: "MyCustomAlexBrush";
+    src:
+      url("/font/AlexBrush-Regular.woff2") format("woff2"),
+      url("/font/AlexBrush-Regular.ttf") format("truetype");
+    font-display: swap;
+  }
+
+  /* Styles specific to the Konva.js editor */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 300px;
+    height: 100%;
+    background: #fff;
+    border-left: 1px solid #ccc;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    transition: right 0.3s ease;
+    z-index: 1056;
+  }
+  .sidebar-overlay.open {
+    right: 0;
+  }
+  .control {
+    margin-bottom: 12px;
+  }
+  .control label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  #fieldList li {
+    margin-bottom: 4px;
+  }
+  #fieldList span {
+    cursor: pointer;
+    color: blue;
+  }
+  #fieldList button {
+    margin-left: 8px;
+    color: red;
+    cursor: pointer;
+  }
+  pre {
+    max-height: 300px;
+    overflow: auto;
+    background: #f7f7f7;
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+</style>
+
+<section style="font-family: Arial, sans-serif">
+  <!-- Modal Fullscreen -->
+  <div class="modal fade" id="editorModal" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Certificate Editor (Konva.js)</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body position-relative p-0">
+          <!-- Sidebar toggle button -->
+          <button
+            id="toggleSidebar"
+            class="btn btn-secondary position-absolute top-0 end-0 m-3 z-3"
+          >
+            ⚙️ Tuỳ chỉnh
+          </button>
+
+          <!-- Canvas -->
+          <div id="canvasWrapper" class="p-3">
+            <div id="konva-container"></div>
+          </div>
+
+          <!-- Sidebar overlay -->
+          <div id="sidebar" class="sidebar-overlay">
+            <!-- Close button -->
+            <button
+              id="closeSidebar"
+              class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2"
+            >
+              ✖
+            </button>
+            <div class="p-3">
+              <h3>Thuộc tính</h3>
+              <div class="control">
+                <label for="fontSize">Cỡ chữ</label>
+                <input
+                  type="number"
+                  id="fontSize"
+                  value="28"
+                  class="form-control"
+                />
+              </div>
+              <div class="control">
+                <label for="color">Màu chữ</label>
+                <input
+                  type="color"
+                  id="color"
+                  value="#000000"
+                  class="form-control"
+                />
+              </div>
+              <div class="control">
+                <label for="fontFamily">Font chữ</label>
+                <select id="fontFamily" class="form-select">
+                  <option value="Arial">Arial</option>
+                  <option value="Times New Roman">Times New Roman</option>
+                  <option value="Courier New">Courier New</option>
+                  <option value="Verdana">Verdana</option>
+                  <option value="MyCustomAlexBrush">Alex Brush</option>
+                  <!-- Add more fonts here as needed -->
+                </select>
+              </div>
+              <div class="control">
+                <label for="textAlign">Căn ngang</label>
+                <select id="textAlign" class="form-select">
+                  <option value="left">Trái</option>
+                  <option value="center" selected>Giữa</option>
+                  <option value="right">Phải</option>
+                </select>
+              </div>
+              <div class="control">
+                <label for="valign">Căn dọc</label>
+                <select id="valign" class="form-select">
+                  <option value="top">Trên</option>
+                  <option value="middle" selected>Giữa</option>
+                  <option value="bottom">Dưới</option>
+                </select>
+              </div>
+
+              <hr />
+              <h4>Quản lý Field</h4>
+              <div class="d-flex gap-2 mb-2">
+                <input
+                  type="text"
+                  id="newField"
+                  placeholder="Tên field (VD: ClubName)"
+                  class="form-control"
+                />
+                <button id="addFieldBtn" class="btn btn-success">Thêm</button>
+              </div>
+              <ul id="fieldList" class="list-unstyled"></ul>
+
+              <button id="saveBtn" class="btn btn-primary mt-3">
+                Save vị trí
+              </button>
+              <pre id="output" class="mt-2"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Konva.js Library -->
+<script src="https://unpkg.com/konva@9.3.0/konva.min.js"></script>
+<!-- Custom Konva.js editor script -->
+<script src="/public/js/admin/konva-editor.js"></script>

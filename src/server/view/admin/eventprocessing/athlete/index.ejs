@@ -1,0 +1,197 @@
+<style>
+    #athlete_tbl thead th {
+        color: black;
+        font-size: 12px !important;
+    }
+
+    #athlete_tbl tbody td:nth-child(3) {
+        font-size: 10px !important;
+        font-weight: 600;
+    }
+</style>
+
+<!-- breack-crum -->
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-12">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Event</h5>
+                </div>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/admin/eventprocessing/">list</a>
+                    </li>
+                    <li class="breadcrumb-item"><span style="color: green;">Athlete</span></li>
+                    <!-- <li class="breadcrumb-item" aria-current="page">Home</li> -->
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breack-crum -->
+<%- include('../headcontrolpartial')%>
+    <hr>
+    <!-- import file -->
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+            <h5 class="card-title">
+                Athlete Data Import /
+                <small><a href="/xlsx/VolunteerCert_Exemple.xlsx" download="">Download Sample File here</a></small>
+            </h5>
+            
+            <div class="d-flex gap-3 mb-3">
+                <input type="file" id="choose-certimg " class="form-control w-75" />
+                <button class="btn btn-outline-primary w-25" id="cert-img-save">Upload file</button>
+            </div>
+        </div>
+    </div>
+    <div class="card shadow-sm" style="min-height:260px;">
+        <div class="card-body">
+            <!-- Header thống kê -->
+            <div class="row text-center mb-3">
+                <div class="col">
+                    <p class="text-muted mb-1">Tổng VĐV</p>
+                    <h4 class="fw-bold text-primary">23</h4>
+                </div>
+                <div class="col">
+                    <p class="text-muted mb-1">Đã checkin</p>
+                    <h6 class="fw-bold text-primary">1 <small>(4.3%)</small></h6>
+                </div>
+                <div class="col">
+                    <p class="text-muted mb-1">Chưa checkin</p>
+                    <h6 class="fw-bold text-primary">22 <small>(95.7%)</small></h6>
+                </div>
+                <div class="col">
+                    <p class="text-muted mb-1">Uỷ quyền</p>
+                    <h6 class="fw-bold text-primary">1</h6>
+                </div>
+                <div class="col">
+                    <p class="text-muted mb-1">Ký miễn trừ</p>
+                    <h6 class="fw-bold text-primary">2</h6>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm text-center align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Cự ly</th>
+                            <th>Tổng số ( <span class="text-primary">Nam</span> / <span class="text-danger">Nữ</span> )
+                            </th>
+                            <th>Đã checkin</th>
+                            <th>Chưa checkin</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td></td>
+                            <td>0 ( <span class="text-primary">0</span> / <span class="text-danger">0</span> )</td>
+                            <td>0</td>
+                            <td>0 ( <span class="text-primary">0</span> / <span class="text-danger">0</span> )</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>2KM</td>
+                            <td>20 ( <span class="text-primary">11</span> / <span class="text-danger">9</span> )</td>
+                            <td>0</td>
+                            <td>20 ( <span class="text-primary">11</span> / <span class="text-danger">9</span> )</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- table  athlete-->
+    <section  class="card shadow-sm p-4">
+
+        <!-- Tabs -->
+        <div class="d-flex gap-4 fw-bold mb-3">
+            <div class="border-bottom border-3 border-primary pb-1">VĐV</div>
+            <div class="text-muted">Ủy quyền nhóm</div>
+        </div>
+
+        <!-- Search + Checkbox -->
+        <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+            <input type="text" class="form-control w-25" placeholder="Tìm kiếm">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="uyquyen">
+                <label class="form-check-label" for="uyquyen">Đã ủy quyền</label>
+            </div>
+            <button class="btn btn-primary">TÌM KIẾM</button>
+
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-end gap-2 mb-3">
+            <button class="btn btn-success" id="btn-athlete-import">THÊM VĐV</button>
+            <button class="btn btn-warning">ỦY QUYỀN NHÓM</button>
+            <button class="btn btn-info">XUẤT RA EXCEL</button>
+        </div>
+
+        <!-- Table -->
+        <div id="athlete_tbl" class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead>
+                    <tr>
+                        <th>BIB/Cự ly</th>
+                        <th>ChipId</th>
+                        <th>Name-CCCD-Email</th>
+                        <th>Size</th>
+                        <th>Checkin-P</th>
+                        <th>Checkin-G</th>
+                        <th>Mail QR</th>
+                        <th>Author</th>
+                        <th>E-waiver</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-danger fw-bold">20<br><small>2KM</small></td>
+                        <td>16740</td>
+                        <td class=""><span>Vũ Văn Kiên</span> - <span class="text-primary">M</span>
+                            <br>123456789101<br>kienvu.dev@gmail.com</td>
+                        <td></td>
+                        <td></td>
+                        <td>Nam</td>
+                        <td></td>
+                        <td></td>
+                        <td><button class="btn btn-link text-danger p-0"><i class="bi bi-trash"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td class="text-danger fw-bold">19<br><small>2KM</small></td>
+                        <td>3687</td>
+                        <td class=""><span>Lê Phương Thảo</span> - <span class="text-danger">F</span>
+                            <br>123456789101<br>kienvu.dev@gmail.com</td>
+                        <td></td>
+                        <td></td>
+                        <td>Nữ</td>
+                        <td></td>
+                        <td></td>
+                        <td><button class="btn btn-link text-danger p-0"><i class="bi bi-trash"></i></button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+
+
+
+    <!-- script here -->
+    <script>
+        currentStep = 1
+        updateProgress();
+
+        //
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnImport = document.getElementById('btn-athlete-import')
+            btnImport.addEventListener('click', function () {
+                alert('hello')
+            })
+        })
+    </script>

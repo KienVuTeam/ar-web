@@ -1,3 +1,5 @@
+
+
 // gallery.js
 window.MediaGallery = (function () {
   let currentFolder = null;
@@ -11,30 +13,33 @@ window.MediaGallery = (function () {
     // render UI skeleton
     container.innerHTML = `
       <div class="gallery-container">
-        <div class="col-left">
-          <h4>📂 Thư mục</h4>
-          <ul class="folder-list"></ul>
+      <div class="col-left">
+        <h4>📂 Thư mục</h4>
+        <div class="folder-actions">
+          <button class="btn-new-folder btn btn-sm btn-outline-primary">+ Tạo thư mục</button>
         </div>
-        <div class="col-right">
-          <div>
-            <span style="font-size: 20px; font-weight: bold">Gallery</span>
-            <button class="btn-upload btn btn-outline-success">Upload</button>
-          </div>
+        <ul class="folder-list"></ul>
+      </div>
+      <div class="col-right">
+        <div class="top-bar">
+          <span style="font-size: 20px; font-weight: bold">Gallery</span>
+          <button class="btn-upload btn btn-outline-success">Upload</button>
+        </div>
 
-          <input type="file" class="file-input" style="
-              border: 1px dashed #000;
-              padding: 40px 30%;
-              border-radius: 10px;
-              margin: 20px 0px;
-              width: 100%;
-          " />
-          <img class="preview" src="#" alt="Preview" style="display:none;max-width:300px;margin-top:10px" />
+        <input type="file" class="file-input" style="
+            border: 1px dashed #000;
+            padding: 40px 30%;
+            border-radius: 10px;
+            margin: 20px 0px;
+            width: 100%;
+        " />
+        <img class="preview" src="#" alt="Preview" style="display:none;max-width:300px;margin-top:10px" />
 
-          <div class="scroll-wrapper">
-            <div class="image-gallery"></div>
-          </div>
+        <div class="scroll-wrapper">
+          <div class="image-gallery"></div>
         </div>
       </div>
+    </div>
     `;
 
     bindEvents();
@@ -45,6 +50,7 @@ window.MediaGallery = (function () {
     const fileInput = container.querySelector(".file-input");
     const preview = container.querySelector(".preview");
     const uploadBtn = container.querySelector(".btn-upload");
+    const newFolderBtn = container.querySelector('.btn-new-folder')
 
     // preview file
     fileInput.addEventListener("change", function (event) {
@@ -62,7 +68,7 @@ window.MediaGallery = (function () {
       }
     });
 
-    // upload
+    // upload image
     uploadBtn.addEventListener("click", async () => {
       if (!currentFolder) return alert("Vui lòng chọn thư mục trước khi upload!");
       const file = fileInput.files[0];
@@ -77,8 +83,29 @@ window.MediaGallery = (function () {
       fileInput.value = "";
       preview.style.display = "none";
     });
+  //create folder
+  newFolderBtn.addEventListener("click", async()=>{
+    const name = prompt("Nhập tên thư mục mới:");
+    if(!name) return;
+    // createFolderAPI(name);
+    alert("ten folder moi: "+name)
+  })
   }
-
+  
+  //create folder 
+  function createFolderAPI(name){
+    var data= {folder_name: name}
+    fetch('/amdin/',{
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    }).then(res=>{
+      console.log("lamf gi di voi resp")
+      return res.json(); //Promise -> sex resolve ra du lieu that
+    }).then(data=>{
+      // da co data
+    }).catch()
+  }
   function loadFolders() {
     fetch("/admin/img/list-folder")
       .then((res) => res.json())

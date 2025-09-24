@@ -26,9 +26,9 @@
                 9: {text: "Completed", class: "success"}
             }
             %>
-            <tr>
+            <tr data-id="<%=e._id%>">
                 <td>
-                    <a href="/admin/">
+                    <a href="/admin/eventprocessing/event-detail/<%=e._id%>">
                         <%=e.name%>
                     </a>
                 </td>
@@ -45,7 +45,7 @@
                   </div>
                 </td>
                 <td class="text-center" style="position: relative;">
-                  <span class="table-delete-btn">🗑️</span>
+                  <span  class="table-delete-btn">🗑️</span>
                 </td>
               </tr>
         <%})%>
@@ -55,13 +55,39 @@
 </div>
 
 <script>
-  document.querySelectorAll(".table-delete-btn").forEach((btn) => {
+  document.addEventListener('DOMContentLoaded', function(){
+    //write down
+    document.querySelectorAll("table .table-delete-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       if (confirm("Bạn có chắc muốn xóa dòng này?")) {
+        const tr = btn.closest("tr");
+        const rowId = tr.getAttribute("data-id");
+        // alert("dang xoa row: "+rowId)
+        handleDelete(rowId)
+
         btn.closest("tr").remove();
       }
     });
   });
+  function handleDelete(id){
+    $.ajax({
+      url: `/admin/eventprocessing/${id}/delete`,
+      method: 'DELETE',
+      contentType: 'application/json',
+      success: (res)=>{
+        alert("delete success")
+      },
+      error:(err)=>{
+        console.log("Xoa"+err)
+      }
+    })
+  }
+  const toastEl = document.getElementById('errorToast');
+    if (toastEl) {
+      const toast = new bootstrap.Toast(toastEl, { delay: 4000, autohide: true });
+      toast.show();
+    }
+  })
 </script>
 <!-- ======================Toast hiển thị lỗi -->
 <% if (status && status.status === false) { %>
@@ -76,11 +102,5 @@
       </div>
     </div>
   <% } %>
-  <script>
-    const toastEl = document.getElementById('errorToast');
-    if (toastEl) {
-      const toast = new bootstrap.Toast(toastEl, { delay: 4000, autohide: true });
-      toast.show();
-    }
-  </script>
+
   <!-- ======================Toast hiển thị lỗi END -->
