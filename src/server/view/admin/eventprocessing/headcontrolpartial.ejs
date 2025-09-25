@@ -112,13 +112,11 @@
 </div>
 
 <script>
-  // document.addEventListener("DOMContentLoaded", function () {
-    //write down
-    const steps = document.querySelectorAll(".progress-step");
+  // đưa ra global
+  const steps = document.querySelectorAll(".progress-step");
     const progressLine = document.getElementById("progress-line");
-    let currentStep = 0;
 
-    function updateProgress() {
+    function updateProgress(currentStep = 0) {
       steps.forEach((step, idx) => {
         if (idx < currentStep) {
           step.classList.add("finish");
@@ -134,6 +132,9 @@
       let progressPercent = (currentStep / (steps.length - 1)) * 100;
       progressLine.style.width = progressPercent + "%";
     }
+  document.addEventListener("DOMContentLoaded", function () {
+    //write down
+    
 
     // Auto demo (chạy từng step sau 1.5s)
     // setInterval(() => {
@@ -141,15 +142,30 @@
     //   updateProgress();
     // }, 1500);
 
-    updateProgress();
+    updateProgress(0);
     //
     document.querySelectorAll('.progressbar .progress-step').forEach((step, i)=>{
       step.addEventListener('click', function(ev){
         const el = ev.target;
         console.log(el)
-        var step = ev.currentTarget.getAttribute('data-step');
-        alert(step);
+        var _step = ev.currentTarget.getAttribute('data-step');
+        const id = localStorage.getItem('_ei')
+        console.log("inra id"+id)
+        $.ajax({
+          url: `/admin/eventprocessing/load-partial-view?ei=${id}&step=${_step}`,
+          method: 'GET',
+          // contentType: 'application/json',
+          success: (res)=>{
+            if(res.success){
+              window.location.href = res.redirect;
+            }
+          },
+          error: (err)=>{
+            console.log("import athlete "+err);
+            // alert("Loi get athlete");
+          }
+        })
       })
     })
-  // });
+  });
 </script>

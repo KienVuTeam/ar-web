@@ -211,7 +211,7 @@
             data-bs-target="#exampleModal">Choose image</button>
         </div> -->
           <!--  -->
-          <button id="secondEventSubmit" class="btn btn-primary" >Update Event</button>
+          <button id="secondEventSubmit" class="btn btn-primary" >Update Event</button>\
         </div>
       </div>
     </div>
@@ -240,6 +240,10 @@
   }
   MyInitialTinymce();
   //   query hien thi img bi display: none
+  localStorage.setItem('_ei', '<%= typeof eventId !== "undefined" ? eventId : "" %>');
+
+
+  
   // Tìm tất cả khối preview ảnh
   document.querySelectorAll(".img_preview").forEach(preview => {
     const img = preview.querySelector("img");

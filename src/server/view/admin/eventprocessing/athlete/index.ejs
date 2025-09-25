@@ -39,10 +39,11 @@
                 Athlete Data Import /
                 <small><a href="/xlsx/VolunteerCert_Exemple.xlsx" download="">Download Sample File here</a></small>
             </h5>
-            
+
             <div class="d-flex gap-3 mb-3">
-                <input type="file" id="choose-certimg " class="form-control w-75" />
-                <button class="btn btn-outline-primary w-25" id="cert-img-save">Upload file</button>
+                <input type="file" id="athlete-file" class="form-control w-75" />
+                <button class="btn btn-outline-primary w-25" id="btn-submit-athletedata" id="cert-img-save">Upload
+                    file</button>
             </div>
         </div>
     </div>
@@ -106,7 +107,7 @@
         </div>
     </div>
     <!-- table  athlete-->
-    <section  class="card shadow-sm p-4">
+    <section class="card shadow-sm p-4">
 
         <!-- Tabs -->
         <div class="d-flex gap-4 fw-bold mb-3">
@@ -154,7 +155,8 @@
                         <td class="text-danger fw-bold">20<br><small>2KM</small></td>
                         <td>16740</td>
                         <td class=""><span>Vũ Văn Kiên</span> - <span class="text-primary">M</span>
-                            <br>123456789101<br>kienvu.dev@gmail.com</td>
+                            <br>123456789101<br>kienvu.dev@gmail.com
+                        </td>
                         <td></td>
                         <td></td>
                         <td>Nam</td>
@@ -166,7 +168,8 @@
                         <td class="text-danger fw-bold">19<br><small>2KM</small></td>
                         <td>3687</td>
                         <td class=""><span>Lê Phương Thảo</span> - <span class="text-danger">F</span>
-                            <br>123456789101<br>kienvu.dev@gmail.com</td>
+                            <br>123456789101<br>kienvu.dev@gmail.com
+                        </td>
                         <td></td>
                         <td></td>
                         <td>Nữ</td>
@@ -179,19 +182,67 @@
         </div>
 
     </section>
+    <!-- Toast -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+        <div id="myToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive"
+            aria-atomic="true" data-bs-delay="3000"> <!-- 3s = 3000ms -->
+            <div class="d-flex">
+                <div class="toast-body" id="toast-content">
+                    <!-- ✅ This is a success toast message (auto hide in 3s)! -->
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    <!--  -->
 
 
 
     <!-- script here -->
     <script>
-        currentStep = 1
-        updateProgress();
-
         //
         document.addEventListener('DOMContentLoaded', function () {
-            const btnImport = document.getElementById('btn-athlete-import')
+            // write down
+            updateProgress(1);
+            const btnImport = document.getElementById('btn-submit-athletedata')
             btnImport.addEventListener('click', function () {
-                alert('hello')
-            })
+                // alert('hello');
+                handleAthleteImport();
+            });
+            // 
+            function handleAthleteImport() {
+                const file = document.getElementById('athlete-file').files[0];
+                if(!file){
+                    handleErr("No file upload!")
+                    return;
+                }
+                console.log(file);
+                const formData = new FormData();
+                formData.append('ath_data', file);
+                formData.append('ei', localStorage.getItem('_ei'));
+                $.ajax({
+                    url: `/admin/eventprocessing/athlete/import-data`,
+                    method: 'POST',
+                    data: formData,
+                    processData: false, // bắt buộc khi dùng FormData
+                    contentType: false, // bắt buộc khi dùng FormData
+                    success: function (response) {
+                        console.log('Upload thành công:', response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Lỗi upload:', error);
+                        handleErr(error)
+                    }
+
+                })
+            }
+            // handle my err
+            function handleErr(mess){
+                const toastEl = document.getElementById('myToast');
+                const toast = new bootstrap.Toast(toastEl);
+                document.getElementById('toast-content').textContent = mess;
+                toast.show();
+            }
         })
     </script>

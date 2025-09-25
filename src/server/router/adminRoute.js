@@ -203,7 +203,11 @@ router.use(
 router.get("/event2", EventV2Controller.Index.bind(EventV2Controller));
 // ==================================Event 3================================== //
 // =========Athlete
+const upload = require('../config/AthleteUpload')
+//ajax
+router.post('/eventprocessing/athlete/import-data', upload.single('ath_data'), EventProcessingController.AthleteImportData.bind(EventProcessingController)); 
 router.get('/eventprocessing/athlete/', EventProcessingController.AthleteIndex.bind(EventProcessingController));//R
+router.get('/eventprocessing/load-partial-view/', EventProcessingController.LoadPartialView.bind(EventProcessingController));
 
 router.get('/eventprocessing/create-form', EventProcessingController.FormAdd.bind(EventProcessingController)) //c_form
 router.post('/eventprocessing/create', EventProcessingController.Create.bind(EventProcessingController)); //C

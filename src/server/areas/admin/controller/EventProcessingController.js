@@ -1,9 +1,22 @@
+const xlsx = require('xlsx');
+const eventService = require("../../../services/event.service");
 const EventService = require("../../../services/event.service");
 const CNAME = "EventProcessingController: ";
 const VNAME = "admin/eventprocessing/";
 const VLAYOUT = "layout/layoutAdmin";
 
+//function helper
+function normalizeGender(val) {
+  if (!val) return null;
+  const v = val.toString().trim().toLowerCase();
+  if (["m", "male", "nam"].includes(v)) return "M";
+  if (["f", "female", "nữ", "nu"].includes(v)) return "F";
+  return null;
+}
+
 class EventProcessingController {
+
+  
   //============Event Initial
   //index event list
   async Index(req, res) {
@@ -100,6 +113,63 @@ class EventProcessingController {
   //==============Event Management Athlete
   AthleteIndex(req, res){
     res.render(VNAME+"athlete/index", {layout: VLAYOUT, title: "Athlete"})
+  }
+  async LoadPartialView(req, res){
+    try {
+      const _event_id = req.query.ei;
+      const key = req.query.step;
+      const result =await eventService.findEventById(_event_id);
+      const status = result.data.status;
+      // console.log(status)
+
+      // console.log(_event_id+" "+key)
+      switch (key) {
+        case "1":
+          console.log("action 1");
+          res.json({success: true, redirect: `/admin/eventprocessing/event-detail/${_event_id}`})
+          break;
+        case "2": 
+        console.log("action 2")
+        res.status(200).json({success: true, redirect: '/admin/eventprocessing/athlete'})
+        // res.render(VNAME+"athlete/index",{title: 'Athlete', layout: VLAYOUT});
+          break;
+        default:
+          res.json({success: false})
+          break;
+      }
+    } catch (error) {
+      console.log(CNAME+"Loadpartialview: "+error);
+      res.status(500).json({success: false})
+    }
+  }
+  // ajax
+  async AthleteImportData(req, res){
+    try {
+      if(!req.file){
+        return res.status(400).json({success: false, mess: "No file uploaded"});
+      }
+      //read file
+      const workbook = xlsx.read(req.file.buffer, {type: "buffer"});
+      //lay sheet theo ten (vd: 'athleta-data')
+      const _sheetName = 'athlete-data';
+      if(!workbook.SheetNames.includes(_sheetName)){
+        return res.status(400).json({success: false, mess: `Sheet ${_sheetName} not found`});
+      }
+      const worksheet = workbook.Sheets[_sheetName];
+      //convert sheet sang JSON
+      const jsonData = xlsx.utils.sheet_to_json(worksheet).slice(1);
+      if (jsonData.length <= 1) {
+          return res
+            .status(400)
+            .json({ success: false, message: "File Excel không có dữ liệu." });
+        }
+      console.log(jsonData);
+      res.json({success: true, mess: 'upload file success'})
+      
+    } catch (error) {
+      console.log(CNAME+"import athlete "+error)
+      res.status(500).json({success: false, mess: error })
+    }
   }
   async AthleteImport(req, res){}
 
