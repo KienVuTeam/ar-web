@@ -12,6 +12,7 @@ router.get('/dong-goi', (req, res)=>{
         mess: _athletenew.mess
     })
 })
+router.get('/phan-trang', TestController.loadData.bind(TestController));
 router.get('/aws/send-mail', TestController.TestSendMailAWS.bind(TestController))
 router.get('/ggmail/send-mail',TestController.sendMailGG.bind(TestController) )
 router.get('/home-page', TestController.HomePage.bind(TestController))

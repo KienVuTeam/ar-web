@@ -65,13 +65,12 @@ class AthleteService {
       return { status: false, mess: `Err_Service: ExcelToDb - ${error.message}` };
     }
   }
-  //GetList
   async AthleteList(eventId) {
     // eventId ="689d3e161d99d1e9a91f9682"
     try {
       const athletes = await Athlete.find({
         event_id: new mongoose.Types.ObjectId(eventId),
-      }).lean(); // convert string sang ObjectId
+      }).limit(10).sort({bib: 1}).lean(); // convert string sang ObjectId
       var dataFormatDate = athletes.map((item, index)=>({
         ...item,
         dob: FormatDateOnly(item.dob)
@@ -187,6 +186,7 @@ class AthleteService {
       return { status: false, mess: "AthleteService_getDistanceStats" };
     }
   }
+  
 }
 
 module.exports = AthleteService;

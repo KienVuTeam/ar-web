@@ -5,6 +5,7 @@ const { EventStatus } = require("../enums/event.enum");
 const AthleteEntity = require("../model/Athlete");
 const { generateAthleteQR } = require("./qr2.service");
 const QrCodeEntity = require("../model/QRCode");
+const mongoose  = require("mongoose");
 // const EventEntity = require('../model/Event')
 
 class EventService {
@@ -120,17 +121,18 @@ class EventService {
   }
   //
   async changeStatus(id, status) {
-    try {
-      var update = await EventEntity.updateOne(
-        { _id: id }, // Điều kiện tìm document
-        { $set: { status: status } } // Field cần cập nhật
-      );
-      return { status: true, data: "" };
-    } catch (error) {
-      console.log(error);
-      return { status: false, data: "" };
-    }
+  try {
+    const update = await EventEntity.findByIdAndUpdate(
+      id,
+      { isShow: status },
+      { new: true } // trả về document sau khi update
+    );
+    return { status: true, data: update };
+  } catch (error) {
+    console.error(error);
+    return { status: false, data: "" };
   }
+}
   async AthleteQrCode(eventId) {
     const athletes = await AthleteEntity.find({ event_id: eventId });
 

@@ -13,7 +13,7 @@ const connectDB = require("./config/connectDB");
 const multerUpload = require("./config/multerUpload");
 
 // Middleware
-app.use(express.json());
+app.use(express.json());//  // để parse JSON body
 app.use(express.urlencoded({ extended: true })); // để parse form x-www-form-urlencoded
 
 // session

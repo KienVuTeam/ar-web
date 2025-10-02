@@ -30,7 +30,7 @@ router.get("/qr/:athleteId", QrController.getQr.bind(QrController))
 router.post("/qr/decode", QrController.decodeQr.bind(QrController) )
 
 // 
-router.get('/mail/send-mail', TestController.SendMail.bind(TestController))
+// router.get('/mail/send-mail', TestController.SendMail.bind(TestController))
 // 5page
 router.get('/about',HomeController.About)
 

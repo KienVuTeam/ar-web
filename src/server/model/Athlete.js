@@ -16,6 +16,7 @@ const AthleteSchema = new mongoose.Schema(
     phone: { type: String },
     dob: {type: Date},
     cccd: { type: String },
+    nationality: {type: String},
     nation: { type: String },
     city: { type: String },
     address: { type: String },
@@ -30,7 +31,7 @@ const AthleteSchema = new mongoose.Schema(
     patron_phone: { type: String },
     medical: { type: String },
     blood: { type: String },
-    size: { type: String, maxlength: 1 }, // char -> string length 1
+    size: { type: String, maxlength: 6 }, // char -> string length 1
     payment: { type: Boolean },
     checkin: { type: Boolean },
     registry: { type: String }, // chưa rõ kiểu => để string

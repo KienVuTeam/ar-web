@@ -205,10 +205,19 @@ router.get("/event2", EventV2Controller.Index.bind(EventV2Controller));
 // =========Athlete
 const upload = require('../config/AthleteUpload')
 //ajax
+// api cho athlete table
+router.post('/api/athlete/data-table', EventProcessingController.APIAthleteDataTable.bind(EventProcessingController));
+router.post('/api/athlete/athlete-export', EventProcessingController.AthleteDataExportExcel.bind(EventProcessingController));
+//
 router.post('/eventprocessing/athlete/import-data', upload.single('ath_data'), EventProcessingController.AthleteImportData.bind(EventProcessingController)); 
-router.get('/eventprocessing/athlete/', EventProcessingController.AthleteIndex.bind(EventProcessingController));//R
+router.post('/eventprocessing/athlete/import-once/:eid',EventProcessingController.AthleteImportOnce.bind(EventProcessingController));
+router.post('/eventprocessing/athlete/detail-ath', EventProcessingController.AthleteDetail.bind(EventProcessingController));
+router.post('/eventprocessing/athlete/update-ath-detail/:id', EventProcessingController.AthleteDetailUpdate.bind(EventProcessingController));
+router.delete('/eventprocessing/athlete/delete/:id', EventProcessingController.AthleleDetailDelete.bind(EventProcessingController));
+router.get('/eventprocessing/athlete/:id', EventProcessingController.AthleteIndex.bind(EventProcessingController));//R
 router.get('/eventprocessing/load-partial-view/', EventProcessingController.LoadPartialView.bind(EventProcessingController));
 
+router.post('/eventprocessing/change-status', EventProcessingController.EventShowHide.bind(EventProcessingController));
 router.get('/eventprocessing/create-form', EventProcessingController.FormAdd.bind(EventProcessingController)) //c_form
 router.post('/eventprocessing/create', EventProcessingController.Create.bind(EventProcessingController)); //C
 router.get('/eventprocessing/event-detail/:id', EventProcessingController.EditForm.bind(EventProcessingController)) //u_form

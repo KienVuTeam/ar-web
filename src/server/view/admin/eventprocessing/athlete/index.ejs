@@ -1,248 +1,1122 @@
 <style>
-    #athlete_tbl thead th {
-        color: black;
-        font-size: 12px !important;
-    }
+  #athlete_tbl thead th {
+    color: black;
+    font-size: 12px !important;
+  }
 
-    #athlete_tbl tbody td:nth-child(3) {
-        font-size: 10px !important;
-        font-weight: 600;
-    }
+  #athlete_tbl tbody td:nth-child(3){
+    font-size: 12px !important;
+    font-weight: 500;
+  }
+  #athlete_tbl tbody tr:nth-child(even){
+    background-color: #F5F7FC;
+  }
+  #athlete_tbl tbody tr:hover{
+    background-color: #e6f3ff;
+  }
+  #modalAthlete .modal.fade .modal-dialog {
+    transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+  }
+  table tbody tr td{
+    padding: 4px 10px !important;
+  }
+
+  body {
+    /* font-family: 'be'; */
+  }
+  /* css for table */
+
+
+.table-controls, .table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0px;
+}
+
+.search-box input {
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.pagination button {
+  margin: 0 2px;
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+.pagination button:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
 </style>
 
 <!-- breack-crum -->
 <div class="page-header">
-    <div class="page-block">
-        <div class="row align-items-center">
-            <div class="col-md-12">
-                <div class="page-header-title">
-                    <h5 class="m-b-10">Event</h5>
-                </div>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="/admin/eventprocessing/">list</a>
-                    </li>
-                    <li class="breadcrumb-item"><span style="color: green;">Athlete</span></li>
-                    <!-- <li class="breadcrumb-item" aria-current="page">Home</li> -->
-                </ul>
-            </div>
+  <div class="page-block">
+    <div class="row align-items-center">
+      <div class="col-md-12">
+        <div class="page-header-title">
+          <h5 class="m-b-10">Event</h5>
         </div>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/admin/eventprocessing/">list</a>
+          </li>
+          <li class="breadcrumb-item">
+            <span style="color: green">Athlete</span>
+          </li>
+          <!-- <li class="breadcrumb-item" aria-current="page">Home</li> -->
+        </ul>
+      </div>
     </div>
+  </div>
 </div>
 <!-- breack-crum -->
 <%- include('../headcontrolpartial')%>
-    <hr>
-    <!-- import file -->
-    <div class="card shadow-sm mb-3">
-        <div class="card-body">
-            <h5 class="card-title">
-                Athlete Data Import /
-                <small><a href="/xlsx/VolunteerCert_Exemple.xlsx" download="">Download Sample File here</a></small>
-            </h5>
+  <hr />
+  <!-- import file -->
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      <h5 class="card-title">
+        Athlete Data Import /
+        <small><a href="/xlsx/VolunteerCert_Exemple.xlsx" download="">Download Sample File here</a></small>
+      </h5>
 
-            <div class="d-flex gap-3 mb-3">
-                <input type="file" id="athlete-file" class="form-control w-75" />
-                <button class="btn btn-outline-primary w-25" id="btn-submit-athletedata" id="cert-img-save">Upload
-                    file</button>
-            </div>
-        </div>
+      <div class="d-flex gap-3 mb-3">
+        <input type="file" id="athlete-file" class="form-control w-75" />
+        <button class="btn btn-outline-primary w-25" id="btn-submit-athletedata" id="cert-img-save">
+          Upload file
+        </button>
+      </div>
+      <div id="result" style="
+        display: none;
+        max-height: 400px;
+        overflow: auto;
+        background: #f7f7f7;
+        padding: 10px;
+        border: 1px solid #ddd;
+      "></div>
     </div>
-    <div class="card shadow-sm" style="min-height:260px;">
-        <div class="card-body">
-            <!-- Header thống kê -->
-            <div class="row text-center mb-3">
-                <div class="col">
-                    <p class="text-muted mb-1">Tổng VĐV</p>
-                    <h4 class="fw-bold text-primary">23</h4>
-                </div>
-                <div class="col">
-                    <p class="text-muted mb-1">Đã checkin</p>
-                    <h6 class="fw-bold text-primary">1 <small>(4.3%)</small></h6>
-                </div>
-                <div class="col">
-                    <p class="text-muted mb-1">Chưa checkin</p>
-                    <h6 class="fw-bold text-primary">22 <small>(95.7%)</small></h6>
-                </div>
-                <div class="col">
-                    <p class="text-muted mb-1">Uỷ quyền</p>
-                    <h6 class="fw-bold text-primary">1</h6>
-                </div>
-                <div class="col">
-                    <p class="text-muted mb-1">Ký miễn trừ</p>
-                    <h6 class="fw-bold text-primary">2</h6>
-                </div>
-            </div>
-
-            <!-- Table -->
-            <div class="table-responsive">
-                <table class="table table-bordered table-sm text-center align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>#</th>
-                            <th>Cự ly</th>
-                            <th>Tổng số ( <span class="text-primary">Nam</span> / <span class="text-danger">Nữ</span> )
-                            </th>
-                            <th>Đã checkin</th>
-                            <th>Chưa checkin</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td></td>
-                            <td>0 ( <span class="text-primary">0</span> / <span class="text-danger">0</span> )</td>
-                            <td>0</td>
-                            <td>0 ( <span class="text-primary">0</span> / <span class="text-danger">0</span> )</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>2KM</td>
-                            <td>20 ( <span class="text-primary">11</span> / <span class="text-danger">9</span> )</td>
-                            <td>0</td>
-                            <td>20 ( <span class="text-primary">11</span> / <span class="text-danger">9</span> )</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+  </div>
+  <div class="card shadow-sm" style="min-height: 260px">
+    <div class="card-body">
+      <!-- Header thống kê -->
+      <div class="row text-center mb-3">
+        <div class="col">
+          <p class="text-muted mb-1">Tổng VĐV</p>
+          <h4 class="fw-bold text-primary">
+            <%=(ov && ov.total)? ov.total: 0%>
+          </h4>
         </div>
+        <div class="col">
+          <p class="text-muted mb-1">Đã checkin</p>
+          <h6 class="fw-bold text-primary">
+            <%=(ov&& ov.checkedIn)? ov.checkedIn: 0 %>
+              <small>(<%=checkinPercent?checkinPercent: 0 %>%)</small>
+          </h6>
+        </div>
+        <div class="col">
+          <p class="text-muted mb-1">Chưa checkin</p>
+          <h6 class="fw-bold text-primary">
+            <%=(ov && ov.notCheckedIn) ? ov.notCheckedIn: null%>
+              <small>(<%=notCheckinPercent?notCheckinPercent: 0%>%)</small>
+          </h6>
+        </div>
+        <div class="col">
+          <p class="text-muted mb-1">Uỷ quyền</p>
+          <h6 class="fw-bold text-primary">...</h6>
+        </div>
+        <div class="col">
+          <p class="text-muted mb-1">Ký miễn trừ</p>
+          <h6 class="fw-bold text-primary">...</h6>
+        </div>
+      </div>
+
+      <!-- Table  overview-->
+      <div id="" class="table-responsive">
+        <table class="table table-bordered table-sm text-center align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Cự ly</th>
+              <th>
+                Tổng số ( <span class="text-primary">Nam</span> /
+                <span class="text-danger">Nữ</span> )
+              </th>
+              <th>Đã checkin</th>
+              <th>Chưa checkin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if(bd && bd.length>0) { %> <% bd.forEach((i, index)=> { %>
+                <tr>
+                  <td>
+                    <%= index + 1 %>
+                  </td>
+                  <td>
+                    <%= i._id %>
+                  </td>
+                  <td>
+                    <%= i.total %>
+                      ( <span class="text-primary">
+                        <%= i.male %>
+                      </span> /
+                      <span class="text-danger">
+                        <%= i.female %>
+                      </span> )
+                  </td>
+                  <td>
+                    <%= i.checkedIn %>
+                  </td>
+                  <td>
+                    <%= i.notCheckedIn %>
+                      ( <span class="text-primary">
+                        <%= i.male %>
+                      </span> /
+                      <span class="text-danger">
+                        <%= i.female %>
+                      </span> )
+                  </td>
+                </tr>
+                <% }) %>
+
+                  <%}else{ %>
+                    <tr>
+                      <td colspan="5">Không có dữ liệu</td>
+                    </tr>
+                    <%}%>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <!-- table  athlete-->
-    <section class="card shadow-sm p-4">
+  </div>
+  <!-- table  athlete-->
+  <section class="card shadow-sm p-4">
+    <!-- Tabs -->
+    <div class="d-flex gap-4 fw-bold mb-3">
+      <div class="border-bottom border-3 border-primary pb-1">VĐV</div>
+      <div class="text-muted">Ủy quyền nhóm</div>
+    </div>
 
-        <!-- Tabs -->
-        <div class="d-flex gap-4 fw-bold mb-3">
-            <div class="border-bottom border-3 border-primary pb-1">VĐV</div>
-            <div class="text-muted">Ủy quyền nhóm</div>
-        </div>
+    <!-- Search + Checkbox  d-flex justify-content-between align-items-center gap-3 mb-3-->
+    <!-- <div class="d-flex gap-3 mb-3"> 
+      <input type="text" class="form-control w-50" id="input-cta-search-auto" placeholder="Tìm kiếm" />
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="uyquyen" />
+        <label class="form-check-label" for="uyquyen">Đã ủy quyền</label>
+      </div>
+       <button class="btn btn-primary" >TÌM KIẾM</button>
+    </div> -->
 
-        <!-- Search + Checkbox -->
-        <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
-            <input type="text" class="form-control w-25" placeholder="Tìm kiếm">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="uyquyen">
-                <label class="form-check-label" for="uyquyen">Đã ủy quyền</label>
-            </div>
-            <button class="btn btn-primary">TÌM KIẾM</button>
+    <!-- Buttons -->
+    <div class="d-flex justify-content-end gap-2 mb-3">
+      <button class="btn btn-outline-info" id="btn-athlete-import-onece" >THÊM VĐV</button>
+      <button class="btn btn-outline-success" id="btn-athlete-export" >EXPORT DATA</button>
+      <!-- <button class="btn btn-warning">ỦY QUYỀN NHÓM</button> -->
+      <!-- <button class="btn btn-info">XUẤT RA EXCEL</button> -->
+    </div>
 
-        </div>
-
-        <!-- Buttons -->
-        <div class="d-flex justify-content-end gap-2 mb-3">
-            <button class="btn btn-success" id="btn-athlete-import">THÊM VĐV</button>
-            <button class="btn btn-warning">ỦY QUYỀN NHÓM</button>
-            <button class="btn btn-info">XUẤT RA EXCEL</button>
-        </div>
-
-        <!-- Table -->
-        <div id="athlete_tbl" class="table-responsive">
-            <table class="table table-bordered align-middle">
-                <thead>
-                    <tr>
-                        <th>BIB/Cự ly</th>
-                        <th>ChipId</th>
-                        <th>Name-CCCD-Email</th>
-                        <th>Size</th>
-                        <th>Checkin-P</th>
-                        <th>Checkin-G</th>
-                        <th>Mail QR</th>
-                        <th>Author</th>
-                        <th>E-waiver</th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="text-danger fw-bold">20<br><small>2KM</small></td>
-                        <td>16740</td>
-                        <td class=""><span>Vũ Văn Kiên</span> - <span class="text-primary">M</span>
-                            <br>123456789101<br>kienvu.dev@gmail.com
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td>Nam</td>
-                        <td></td>
-                        <td></td>
-                        <td><button class="btn btn-link text-danger p-0"><i class="bi bi-trash"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td class="text-danger fw-bold">19<br><small>2KM</small></td>
-                        <td>3687</td>
-                        <td class=""><span>Lê Phương Thảo</span> - <span class="text-danger">F</span>
-                            <br>123456789101<br>kienvu.dev@gmail.com
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td>Nữ</td>
-                        <td></td>
-                        <td></td>
-                        <td><button class="btn btn-link text-danger p-0"><i class="bi bi-trash"></i></button></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-    </section>
-    <!-- Toast -->
-    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
-        <div id="myToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive"
-            aria-atomic="true" data-bs-delay="3000"> <!-- 3s = 3000ms -->
-            <div class="d-flex">
-                <div class="toast-body" id="toast-content">
-                    <!-- ✅ This is a success toast message (auto hide in 3s)! -->
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-                    aria-label="Close"></button>
-            </div>
-        </div>
+    <!-- Table -->
+     <div class="table-container">
+  <!-- Top controls -->
+  <div class="table-controls">
+    
+    <div class="search-boxa">
+      <label>
+        <!-- Search: -->
+        <input type="text" class="form-control " id="input-cta-search-auto" placeholder="Tìm kiếm" />
+      </label>
     </div>
     <!--  -->
+    <div class="entry ">
+      <label class="d-flex align-items-center gap-2">
+        Show
+        <select class="form-select" id="entriesSelect">
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        entries
+      </label>
+    </div>
+  </div>
 
+  <!-- Your custom table -->
+  <div id="athlete_tbl" class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead>
+          <tr>
+            <th>BIB/Cự ly</th>
+            <th>ChipId</th>
+            <th>Name-CCCD-Email</th>
+            <th>Size</th>
+            <th>Checkin-P</th>
+            <th>Checkin-G</th>
+            <th>Mail QR</th>
+            <th>Author</th>
+            <th>E-waiver</th>
+          </tr>
+        </thead>
+        <tbody id="athlete-tbody">
+          <% if(aths){ %>
+            <% aths.forEach((ath, i)=>{%>
+              <% const genderLabel=ath.gender ? '<span class="text-primary">M</span>'
+                : '<span class="text-danger">F</span>' %>
+                <tr data-id="<%=ath._id%>">
+                  <td class=" fw-bold">
+                    <span class="text-danger">
+                      <%=ath.bib%>
+                    </span>
+                    <br /><small>
+                      <%=ath.distance%>
+                    </small>
+                  </td>
+                  <td>
+                    <%=ath.chip%>
+                  </td>
+                  <td class="">
+                    <span>
+                      <%=ath.name%>
+                    </span> -
+                    <span class="text-primary"><%-genderLabel%></span>
+                    <br />
+                    <%=ath.cccd%><br />
+                      <%=ath.email%>
+                  </td>
+                  <td>
+                    <%=ath.size%>
+                  </td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>
+                    <button class="btn btn-link text-danger p-0">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                <%})%>
+                  <%}else{%>
+                    <tr>
+                      <td colspan="9">No data</td>
+                    </tr>
+                    <%}%>
 
+                      <!-- <tr>
+          <td class="text-danger fw-bold">19<br /><small>2KM</small></td>
+          <td>3687</td>
+          <td class="">
+            <span>Lê Phương Thảo</span> - <span class="text-danger">F</span>
+            <br />123456789101<br />kienvu.dev@gmail.com
+          </td>
+          <td></td>
+          <td></td>
+          <td>Nữ</td>
+          <td></td>
+          <td></td>
+          <td>
+            <button class="btn btn-link text-danger p-0">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr> -->
+        </tbody>
+      </table>
+    </div>
 
-    <!-- script here -->
-    <script>
-        //
-        document.addEventListener('DOMContentLoaded', function () {
-            // write down
-            updateProgress(1);
-            const btnImport = document.getElementById('btn-submit-athletedata')
-            btnImport.addEventListener('click', function () {
-                // alert('hello');
-                handleAthleteImport();
-            });
-            // 
-            function handleAthleteImport() {
-                const file = document.getElementById('athlete-file').files[0];
-                if(!file){
-                    handleErr("No file upload!")
-                    return;
-                }
-                console.log(file);
-                const formData = new FormData();
-                formData.append('ath_data', file);
-                formData.append('ei', localStorage.getItem('_ei'));
-                $.ajax({
-                    url: `/admin/eventprocessing/athlete/import-data`,
-                    method: 'POST',
-                    data: formData,
-                    processData: false, // bắt buộc khi dùng FormData
-                    contentType: false, // bắt buộc khi dùng FormData
-                    success: function (response) {
-                        console.log('Upload thành công:', response);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Lỗi upload:', error);
-                        handleErr(error)
-                    }
+  <!-- Bottom controls -->
+  <div class="table-footer ath_tbl_footer">
+    <div class="info">
+      Showing 1 to <span class="ath_tbl_limit">10</span> of <span class="ath_tbl_total">57</span> entries
+    </div>
+    <div class="pagination">
+      <button disabled>&laquo;</button>
+      <button class="active">1</button>
+      <button>2</button>
+      <button>3</button>
+      <button>4</button>
+      <button>5</button>
+      <button>6</button>
+      <button>&raquo;</button>
+    </div>
+  </div>
+</div>
 
-                })
+    
+  </section>
+  <!-- Toast -->
+  <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999">
+    <div id="myToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive"
+      aria-atomic="true" data-bs-delay="5000">
+      <!-- 3s = 3000ms -->
+      <div class="d-flex">
+        <div class="toast-body" id="toast-content">
+          <!-- ✅ This is a success toast message (auto hide in 3s)! -->
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+          aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+  <!--  -->
+
+  <!-- script here -->
+  <script>
+    //
+    document.addEventListener("DOMContentLoaded", function () {
+      // write down
+      updateProgress(1);
+      //btn import
+      const btnImport = document.getElementById("btn-submit-athletedata");
+      btnImport.addEventListener("click", function () {
+        // alert('hello');
+        handleAthleteImport();
+      });
+      //
+      function handleAthleteImport() {
+        const file = document.getElementById("athlete-file").files[0];
+        if (!file) {
+          handleErr("No file upload!");
+          return;
+        }
+        console.log(file);
+        const formData = new FormData();
+        formData.append("ath_data", file);
+        formData.append("event_id", localStorage.getItem("_ei"));
+        $.ajax({
+          url: `/admin/eventprocessing/athlete/import-data`,
+          method: "POST",
+          data: formData,
+          processData: false, // bắt buộc khi dùng FormData
+          contentType: false, // bắt buộc khi dùng FormData
+          success: function (res) {
+            // console.log('Upload thành công:', res);
+            renderJson(res, "result");
+            if (!res.success) {
+              handleErr(res.errors);
             }
-            // handle my err
-            function handleErr(mess){
-                const toastEl = document.getElementById('myToast');
-                const toast = new bootstrap.Toast(toastEl);
-                document.getElementById('toast-content').textContent = mess;
-                toast.show();
+          },
+          error: function (xhr, status, error) {
+            console.error("Lỗi upload:", error);
+            handleErr(error);
+          },
+        });
+      }
+      // handle my err
+      function handleErr(mess) {
+        const toastEl = document.getElementById("myToast");
+        const toast = new bootstrap.Toast(toastEl);
+        document.getElementById("toast-content").textContent = mess;
+        toast.show();
+      }
+      //render json vào div result
+      function renderJson(data, idSelector) {
+        const formatted = JSON.stringify(data, null, 2);
+        const html = `<pre style="white-space:pre-wrap; word-wrap:break-word;">${formatted}</pre>`;
+        const el = document.getElementById(idSelector);
+        el.innerHTML = html;
+        el.style.display = "block";
+      }
+      // main func
+      // document.querySelectorAll('#athlete_tbl tbody tr').forEach(function (row) {
+      //   row.addEventListener('click', function (ev) {
+      //     //console.log(ev.target) //IN RA cau truc the tr
+      //     //console.log(ev) // in ra eventobject
+      //     const id = ev.currentTarget.getAttribute('data-id');
+      //     // alert(id)
+      //     athleteInfoDetail(id);
+      //     // openModal();
+
+      //   })
+      // })
+      //------------Gắn sự kiện 1 lần duy nhất
+      document.querySelector('#athlete-tbody').addEventListener('click', function(ev){
+        const row = ev.target.closest('tr'); //tim <tr> gan nhat
+          if(!row) return;
+          const id = row.getAttribute('data-id');
+          if(id){
+            athleteInfoDetail(id);
+          }
+      })
+
+      //fx athlete information 
+      function athleteInfoDetail(id) {
+        $.ajax({
+          url: `/admin/eventprocessing/athlete/detail-ath`,
+          method: "POST",
+          contentType: 'application/json',
+          data: JSON.stringify({ eventId: localStorage.getItem('_ei'), athId: id }),
+          success: (res) => {
+            if (res.success) {
+              openModal();
+              console.log('success')
+              console.log(res.ath)
+              handleMappingAthModal(res.ath);
+
             }
+          },
+          error: (err) => {
+            alert('detail ath: ' + err)
+          }
         })
-    </script>
+      }
+      // open & hide modal
+      function openModal() {
+        const modalElement = document.getElementById('modalAthlete');
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+      }
+      function closeModal() {
+        const modalElement = document.getElementById('modalAthlete');
+        // const modal = new bootstrap.Modal(modalElement);
+        modalAthlete.addEventListener('hidden.bs.modal', function () {
+          document.activeElement.blur(); // bỏ focus
+          // document.getElementById('btn-open-modal')?.focus(); // nếu có nút mở modal
+        });
+        const modal = bootstrap.Modal.getInstance(modalElement); // lấy instance hiện tại
+        modal.hide();
+      }
+      //formatDate
+      function formatDate(isoString) {
+        const date = new Date(isoString);
+        return date.toLocaleString('vi-VN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+      }
+      //format date
+      function formatDate2(date) {
+        return date.slice(date, 10);
+      }
+      //fx handle mapping athlete
+      function handleMappingAthModal(ath) {
+        $("#ath-createAt").text("Ngày tạo: " + formatDate(ath.updatedAt))
+        $("#ath-distance").val(ath.distance)
+        $("#ath-chip").val(ath.chip)
+        $("#ath-ho").val(ath.name)
+        $("#athlete_id").val(ath._id)
+        $("#ath-gender").val(String(ath.gender))
+        $("#ath-email").val(ath.email)
+        $("#ath-cccd").val(ath.cccd)
+        $("#ath-team").val(ath.team)
+        $("#ath-bibName").val(ath.bib_name)
+        $("#ath-patronName").val(ath.patron_name)
+        $("#ath-blood").val(ath.blood)
+        // 
+        $("#ath-bib").val(ath.bib)
+        $("#ath-epc").val(ath.epc)
+        $("#ath-name").val(ath.name)
+
+        $("#ath-dob").val(formatDate2(ath.dob))
+        $("#ath-phone").val(ath.phone)
+        $("#ath-nation").val(ath.nation)
+        $("#ath-size").val(ath.size)
+        $("#ath-patronPhone").val(ath.patron_phone)
+        $("#ath-medical").val(ath.medical)
+      }
+      // handle get value athlete
+      function handleGetValueAthModal() {
+        const data = {
+          distance: $("#ath-distance").val(),
+          chip: $("#ath-chip").val(),
+          name: $("#ath-ho").val(),
+          athlete_id: $("#athlete_id").val(),
+          e_id: localStorage.getItem('_ei'),
+          gender: $("#ath-gender").val(),
+          email: $("#ath-email").val(),
+          cccd: $("#ath-cccd").val(),
+          team: $("#ath-team").val(),
+          bibName: $("#ath-bibName").val(),
+          patronName: $("#ath-patronName").val(),
+          blood: $("#ath-blood").val(),
+          bib: $("#ath-bib").val(),
+          epc: $("#ath-epc").val(),
+          name: $("#ath-name").val(),
+          dob: $("#ath-dob").val(),
+          phone: $("#ath-phone").val(),
+          nation: $("#ath-nation").val(),
+          size: $("#ath-size").val(),
+          patronPhone: $("#ath-patronPhone").val(),
+          medical: $("#ath-medical").val()
+        }
+        console.log(data);
+        return data;
+      }
+      // handle saveChange
+      document.getElementById('btn-cta-savechange').addEventListener('click', function (ev) {
+        // alert('hehe')
+        const data = handleGetValueAthModal();
+        $.ajax({
+          url: `/admin/eventprocessing/athlete/update-ath-detail/${data.athlete_id}`,
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(data),
+          success: (res) => {
+            // alert('success')
+            // if(res.success){
+            closeModal();
+            // }
+          },
+          error: (err) => {
+            console.log(err);
+          }
+        })
+      })
+      //handle delete
+      function handleDeleteAth(id) {
+        const confirmed = confirm("R you sure?"); 
+        if (confirmed) {
+          $.ajax({
+            url: `/admin/eventprocessing/athlete/delete/${id}`,
+            method: 'DELETE',
+            contentType: 'application/json',
+            data: JSON.stringify({ eid: localStorage.getItem('_ei') }),
+            success: (res) => {
+              if (res.success) {
+                // alert('delete success')
+                closeModal();
+              }
+            },
+            error: (err) => {
+              console.log(err)
+            }
+          })
+        }
+      }
+      document.getElementById('modal-btn-delete-athlete').addEventListener('click', function (ev) {
+        const _athId = document.getElementById('athlete_id').value;
+        console.log(_athId);
+        handleDeleteAth(_athId);
+      });
+      //handle create new athlete
+      function handleCreateNewAth(){
+        const modalAddAth = document.getElementById('modalCreateAthlete');
+        const modal = new bootstrap.Modal(modalAddAth);
+        modal.show();
+      }
+      document.getElementById('btn-athlete-import-onece').addEventListener('click', function(ev){
+        handleCreateNewAth();
+      })
+      function helperGetValueAthAddModal() {
+        const data = {
+          distance: $("#new-distance").val(),
+          chip: $("#new-chip").val(),
+          name: $("#new-ho").val(),
+          e_id: localStorage.getItem('_ei'),
+          gender: $("#new-gender").val(),
+          email: $("#new-email").val(),
+          cccd: $("#new-cccd").val(),
+          team: $("#new-team").val(),
+          bibName: $("#new-bibName").val(),
+          patronName: $("#new-patronName").val(),
+          blood: $("#new-blood").val(),
+          bib: $("#new-bib").val(),
+          epc: $("#new-epc").val(),
+          name: $("#new-name").val(),
+          dob: $("#new-dob").val(),
+          phone: $("#new-phone").val(),
+          nation: $("#new-nation").val(),
+          size: $("#new-size").val(),
+          patronPhone: $("#new-patronPhone").val(),
+          medical: $("#new-medical").val()
+        }
+        console.log(data);
+        return data;
+      }
+      document.getElementById('btn-create-ath-onece').addEventListener('click', function(ev){
+        const data = helperGetValueAthAddModal();
+        // console.log('---data-----')
+        // console.log(data)
+        //luu vdv
+        $.ajax({
+          url: `/admin/eventprocessing/athlete/import-once/${localStorage.getItem('_ei')}`,
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(data),
+          success: (res)=>{
+            if(res.success){
+              alert('them moi thanh cong')
+            }
+          },
+          error: (err)=>{
+            console.log(err)
+          }
+        })
+      })
+      document.getElementById('btn-athlete-export').addEventListener('click', function(ex){
+        // alert('hello')
+        $.ajax({
+          url: '/admin/api/athlete/athlete-export',
+          method: "POST",
+          // contentType: 'application/json',
+          data:{ei: localStorage.getItem('_ei')},
+          xhrFields: {
+            responseType: 'blob' // quan trọng: nhận file dạng blob
+          },
+          success: (blob)=>{
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "athlete.xlsx";
+            document.body.appendChild(a);
+            a.click(); //kich hoat download
+            a.remove();
+            //giai phong url tam
+            window.URL.revokeObjectURL(url)
+          },
+          error: (err)=>{
+            console.log(err);
+          }
+        })
+      })
+      //dataTable
+      // ================== CONFIG ==================
+      const TABLE_KEY = 'ath_tableConfig';
+      const ath_tbody = document.getElementById('athlete-tbody');
+      const searchBox = document.getElementById('input-cta-search-auto');
+
+      // ================== STATE ==================
+      let debounceTimer;
+      let tableConfig = JSON.parse(localStorage.getItem(TABLE_KEY)) || { limit: 10, page: 1,search: "" };
+      //=================== Choose number record/page
+      const limitSelect = document.getElementById('entriesSelect');
+
+      // Khi user chọn số row
+      limitSelect.addEventListener('change', function () {
+        const newLimit = Number(this.value);
+
+        // Cập nhật vào state
+        tableConfig.limit = newLimit;
+        tableConfig.page = 1; // reset về page 1
+        localStorage.setItem(TABLE_KEY, JSON.stringify(tableConfig));
+
+        // Load lại bảng
+        loadPage(tableConfig.page, tableConfig.search);
+      });
+
+      // Khi init page, set giá trị select theo state
+      limitSelect.value = tableConfig.limit;
+      // ================== API ==================
+      async function fetchAthletes({ search = "", page = 1, limit = 10 }) {
+        return $.ajax({
+          url: `/admin/api/athlete/data-table`,
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ limit, page, ei: localStorage.getItem('_ei'), search })
+        });
+      }
+
+      // ================== RENDER TABLE ==================
+      function renderTable(data) {
+        ath_tbody.innerHTML = "";
+
+        data.forEach((ath) => {
+          const genderLabel = ath.gender
+            ? `<span class="text-primary">M</span>`
+            : `<span class="text-danger">F</span>`;
+
+          const tr = document.createElement("tr");
+          tr.setAttribute("data-id", ath._id);
+
+          tr.innerHTML = `
+            <td class="fw-bold">
+              <span class="text-danger">${ath.bib}</span><br/>
+              <small>${ath.distance}</small>
+            </td>
+            <td>${ath.chip || ""}</td>
+            <td>
+              <span>${ath.name}</span> - ${genderLabel}<br/>
+              ${ath.cccd || ""}<br/>${ath.email || ""}
+            </td>
+            <td>${ath.size || ""}</td>
+            <td></td><td></td><td></td><td></td>
+            <td>
+              <button class="btn btn-link text-danger p-0">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          `;
+          ath_tbody.appendChild(tr);
+        });
+      }
+
+      // ================== RENDER PAGINATION ==================
+      function renderPagination({ page, totalPages }) {
+        const paginationDiv = document.querySelector(".pagination");
+        paginationDiv.innerHTML = "";
+
+        // Helper: add button
+        function addPageBtn(p, active = false) {
+          const btn = document.createElement("button");
+          btn.textContent = p;
+          if (active) btn.classList.add("active");
+          btn.addEventListener("click", () => loadPage(p));
+          paginationDiv.appendChild(btn);
+        }
+
+        // Prev
+        const prevBtn = document.createElement("button");
+        prevBtn.innerHTML = "&laquo;";
+        prevBtn.disabled = page === 1;
+        prevBtn.addEventListener("click", () => loadPage(page - 1));
+        paginationDiv.appendChild(prevBtn);
+
+        // Trang đầu
+        addPageBtn(1, page === 1);
+
+        if (page > 4) paginationDiv.appendChild(document.createTextNode("..."));
+
+        for (let i = Math.max(2, page - 2); i <= Math.min(totalPages - 1, page + 2); i++) {
+          addPageBtn(i, i === page);
+        }
+
+        if (page < totalPages - 3) paginationDiv.appendChild(document.createTextNode("..."));
+
+        if (totalPages > 1) addPageBtn(totalPages, page === totalPages);
+
+        // Next
+        const nextBtn = document.createElement("button");
+        nextBtn.innerHTML = "&raquo;";
+        nextBtn.disabled = page === totalPages;
+        nextBtn.addEventListener("click", () => loadPage(page + 1));
+        paginationDiv.appendChild(nextBtn);
+      }
+
+      // ================== LOAD PAGE ==================
+      async function loadPage(page = 1, search = tableConfig.search) {
+        tableConfig.page = page;
+        tableConfig.search = search;   // 👉 cập nhật search vào state
+        localStorage.setItem(TABLE_KEY, JSON.stringify(tableConfig));
+
+        try {
+          const res = await fetchAthletes({ search, page, limit: tableConfig.limit });
+
+          // Update info text
+          const { pagination, data } = res.data;
+          const start = (pagination.page - 1) * pagination.limit + 1;
+          const end = Math.min(pagination.page * pagination.limit, pagination.total);
+
+          document.querySelector(".info").textContent =
+            `Showing ${start} to ${end} of ${pagination.total} entries`;
+
+          // Render table + pagination
+          renderTable(data);
+          renderPagination(pagination);
+
+        } catch (err) {
+          console.error("Load page error:", err);
+        }
+      }
+
+      // ================== SEARCH (debounce) ==================
+      searchBox.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          const searchValue = searchBox.value.trim();
+          // 👉 Lưu searchValue vào state
+          tableConfig.search = searchValue;
+          localStorage.setItem(TABLE_KEY, JSON.stringify(tableConfig));
+
+          loadPage(1, searchValue);
+        }, 500);
+      });
+
+      // ================== INIT ==================
+      localStorage.setItem(TABLE_KEY, tableConfig.search ="")
+      if (tableConfig.search) {
+        // searchBox.value = tableConfig.search;  // 👉 set lại input value
+      }
+      loadPage(tableConfig.page, tableConfig.search);
+      //js end
+    });
+
+  </script>
+
+  <!-- ============MODAL =============-->
+  <div class="modal fade" id="modalAthlete" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Thông tin VĐV: | <span id="ath-createAt"></span> </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>
+          <div class="row" style="padding: 0 50px;">
+            <div class="col-6">
+              <input type="checkbox" name="" id=""> <span>Đã checkin</span> <br> <br>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="" class="form-label">Cự ly</label>
+                    <input type="text" id="ath-distance" class="form-control" id="ath_distance">
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="" class="form-label">ChipId</label>
+                    <input type="text" class="form-control" id="ath-chip">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">Tên</label><input type="text"
+                      class="form-control" id="ath-name"></div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">SĐT</label><input type="text"
+                      class="form-control" id="ath-phone"></div>
+                </div>
+              </div>
+
+              <div class="form-group"><label for="" class="form-label">Email</label><input type="text"
+                  class="form-control" id="ath-email"></div>
+              <div class="form-group"><label for="" class="form-label">CMND/CCCD/Passport/</label><input type="text"
+                  class="form-control" id="ath-cccd"></div>
+              <div class="form-group"><label for="" class="form-label">CLB/Nhóm</label><input type="text"
+                  class="form-control" id="ath-team"></div>
+              <div class="form-group"><label for="" class="form-label">Tên trên BIB</label><input type="text"
+                  class="form-control" id="ath-bibName"></div>
+
+              <input type="checkbox" name="" id=""> <span>Ủy quyền nhận BIB</span>
+
+            </div>
+            <div class="col-6">
+              <input type="checkbox" name="" id=""> <span>checkin theo nhóm</span> <br><br>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">BIB</label><input type="text"
+                      class="form-control" id="ath-bib"></div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">EPC</label><input type="text"
+                      class="form-control" id="ath-epc"></div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="" class="form-label">Giới tính</label>
+                    <select class="form-select w-75" name="" id="ath-gender">
+                      <option value="true">Nam</option>
+                      <option value="false">Nữ</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">Nhóm máu</label><input type="text"
+                      class="form-control" id="ath-blood"></div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">DOB <small>(mm/dd/yyyy)</small></label><input
+                      type="date" class="form-control" id="ath-dob"></div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">Thông tin y tế</label><input type="text"
+                      class="form-control" id="ath-medical"></div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">Quốc tịch</label><input type="text"
+                      class="form-control" id="ath-nation"></div>
+
+                </div>
+                <div class="col-6">
+                  <div class="form-group w-50"><label for="" class="form-label">Size áo</label><input type="text"
+                      class="form-control" id="ath-size"></div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">Người liên hệ khẩn cấp</label><input
+                      type="text" class="form-control" id="ath-patronName"></div>
+
+                </div>
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">SĐT người liên hệ khẩn cấp</label><input
+                      type="text" class="form-control" id="ath-patronPhone"></div>
+
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+          </p>
+        </div>
+        <div class="modal-footer" style="justify-content: space-between !important;">
+          <!-- <div style="display: flex; justify-content: space-between;"> -->
+          <div class="col-left">
+            <button id="modal-btn-delete-athlete" type="button" class="btn btn-danger">Delete</button>
+          </div>
+          <div class="col-right">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Close
+            </button>
+            <button id="btn-cta-savechange" type="button" class="btn btn-primary">Save changes</button>
+            <input type="hidden" id="athlete_id" name="">
+          </div>
+          <!-- </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ====================Modal create new athlete -->
+   <div class="modal fade" id="modalCreateAthlete" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Thêm VĐV: | <span id="ath-createAt"></span> </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>
+          <div class="row" style="padding: 0 50px;">
+            <div class="col-6">
+              <input type="checkbox" name="" id=""> <span>Đã checkin</span> <br> <br>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="" class="form-label">Cự ly</label>
+                    <input type="text" id="new-distance" class="form-control" id="new_distance">
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="" class="form-label">ChipId</label>
+                    <input type="text" class="form-control" id="new-chip">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">Tên</label><input type="text"
+                      class="form-control" id="new-name"></div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">SĐT</label><input type="text"
+                      class="form-control" id="new-phone"></div>
+                </div>
+              </div>
+
+              <div class="form-group"><label for="" class="form-label">Email</label><input type="text"
+                  class="form-control" id="new-email"></div>
+              <div class="form-group"><label for="" class="form-label">CMND/CCCD/Passport/</label><input type="text"
+                  class="form-control" id="new-cccd"></div>
+              <div class="form-group"><label for="" class="form-label">CLB/Nhóm</label><input type="text"
+                  class="form-control" id="new-team"></div>
+              <div class="form-group"><label for="" class="form-label">Tên trên BIB</label><input type="text"
+                  class="form-control" id="new-bibName"></div>
+
+              <input type="checkbox" name="" id=""> <span>Ủy quyền nhận BIB</span>
+
+            </div>
+            <div class="col-6">
+              <input type="checkbox" name="" id=""> <span>checkin theo nhóm</span> <br><br>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">BIB</label><input type="text"
+                      class="form-control" id="new-bib"></div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">EPC</label><input type="text"
+                      class="form-control" id="new-epc"></div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="" class="form-label">Giới tính</label>
+                    <select class="form-select w-75" name="" id="new-gender">
+                      <option value="true">Nam</option>
+                      <option value="false">Nữ</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">Nhóm máu</label><input type="text"
+                      class="form-control" id="new-blood"></div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">DOB <small>(mm/dd/yyyy)</small></label><input
+                      type="date" class="form-control" id="new-dob"></div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">Thông tin y tế</label><input type="text"
+                      class="form-control" id="new-medical"></div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">Quốc tịch</label><input type="text"
+                      class="form-control" id="new-nation"></div>
+
+                </div>
+                <div class="col-6">
+                  <div class="form-group w-50"><label for="" class="form-label">Size áo</label><input type="text"
+                      class="form-control" id="new-size"></div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">Người liên hệ khẩn cấp</label><input
+                      type="text" class="form-control" id="new-patronName"></div>
+
+                </div>
+                <div class="col-6">
+                  <div class="form-group"><label for="" class="form-label">SĐT người liên hệ khẩn cấp</label><input
+                      type="text" class="form-control" id="new-patronPhone"></div>
+
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+          </p>
+        </div>
+        <div class="modal-footer" >
+          <!-- <div style="display: flex; justify-content: space-between;"> -->
+         
+          <div class="">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Close
+            </button>
+            <button id="btn-create-ath-onece" type="button" class="btn btn-primary">Add New</button>
+          </div>
+          <!-- </div> -->
+        </div>
+      </div>
+    </div>
+  </div>

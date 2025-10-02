@@ -305,7 +305,7 @@ document.getElementById("searchBtn").addEventListener("click", function () {
     // highlight để dễ nhìn
     rows.forEach(r => r.classList.remove("table-highlight"));
     foundRow.classList.add("table-highlight");
-    setTimeout(() => foundRow.classList.remove("table-highlight"), 2000);
+    setTimeout(() => foundRow.classList.remove("table-highlight"), 10000);
   } else {
     alert("Không tìm thấy volunteer phù hợp!");
   }

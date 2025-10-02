@@ -4,7 +4,7 @@
   <h2 class="mb-4">Danh sách giải chạy</h2>
 
   <div class="table-responsive">
-    <table class="table table-hover align-middle">
+    <table class="table table-hover align-middle" id="event-tbl">
       <thead class="table-light">
         <tr>
           <th>Tên</th>
@@ -18,89 +18,130 @@
       </thead>
       <tbody>
         <% events.forEach((e, i)=>{ %>
-            <%
-            const statusEnum = {
-                0: {text: "Initital", class: "secondary"},
-                1: {text: "ProcessData", class: "info text-dark"},
-                2: {text: "Send Notification", class: "warning text-dark"},
-                9: {text: "Completed", class: "success"}
-            }
-            %>
+          <% const statusEnum={ 0: {text: "Initital" , class: "secondary" }, 1: {text: "ProcessData" ,
+            class: "info text-dark" }, 2: {text: "Send Notification" , class: "warning text-dark" }, 9:
+            {text: "Completed" , class: "success" } } %>
             <tr data-id="<%=e._id%>">
-                <td>
-                    <a href="/admin/eventprocessing/event-detail/<%=e._id%>">
-                        <%=e.name%>
-                    </a>
-                </td>
-                <td><%=e.place%></td>
-                <td><%= new Date(e.startDate).toLocaleDateString('vi-VN')%></td>
-                <td><%= new Date(e.endDate).toLocaleDateString('vi-VN')%></td>
-                <td>
-                    <% const s= statusEnum[e.status] || {text: "err", class: "dark"} %>
-                    <span class="badge db-<%=s.class%>"><%=s.text%></span>
-                </td>
-                <td>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" <%= e.isShow ? 'checked' : '' %> />
-                  </div>
-                </td>
-                <td class="text-center" style="position: relative;">
-                  <span  class="table-delete-btn">🗑️</span>
-                </td>
-              </tr>
-        <%})%>
+              <td>
+                <a href="/admin/eventprocessing/event-detail/<%=e._id%>">
+                  <%=e.name%>
+                </a>
+              </td>
+              <td>
+                <%=e.place%>
+              </td>
+              <td>
+                <%= new Date(e.startDate).toLocaleDateString('vi-VN')%>
+              </td>
+              <td>
+                <%= new Date(e.endDate).toLocaleDateString('vi-VN')%>
+              </td>
+              <td>
+                <% const s=statusEnum[e.status] || {text: "err" , class: "dark" } %>
+                  <span class="badge db-<%=s.class%>">
+                    <%=s.text%>
+                  </span>
+              </td>
+              <td>
+                <div class="form-check form-switch">
+                  <input class="form-check-input cta-change-status" type="checkbox" <%=e.isShow ? 'checked' : '' %> />
+                </div>
+              </td>
+              <td class="text-center" style="position: relative;">
+                <span class="table-delete-btn">🗑️</span>
+              </td>
+            </tr>
+            <%})%>
       </tbody>
     </table>
   </div>
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function(){
+  document.addEventListener('DOMContentLoaded', function () {
     //write down
-    document.querySelectorAll("table .table-delete-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      if (confirm("Bạn có chắc muốn xóa dòng này?")) {
-        const tr = btn.closest("tr");
-        const rowId = tr.getAttribute("data-id");
-        // alert("dang xoa row: "+rowId)
-        handleDelete(rowId)
-
-        btn.closest("tr").remove();
-      }
-    });
-  });
-  function handleDelete(id){
-    $.ajax({
-      url: `/admin/eventprocessing/${id}/delete`,
-      method: 'DELETE',
-      contentType: 'application/json',
-      success: (res)=>{
-        alert("delete success")
-      },
-      error:(err)=>{
-        console.log("Xoa"+err)
+    const table = document.getElementById('event-tbl');
+    table.addEventListener('click', function (ev) {
+      if (ev.target.classList.contains('table-delete-btn')) {
+        const tr = ev.target.closest('tr');
+        const rowId = tr.getAttribute('data-id');
+        handleDelete(rowId);
+        tr.remove();
       }
     })
-  }
-  const toastEl = document.getElementById('errorToast');
+    //   document.querySelectorAll("table .table-delete-btn").forEach((btn) => {
+    //   btn.addEventListener("click", () => {
+    //     if (confirm("Bạn có chắc muốn xóa dòng này?")) {
+    //       const tr = btn.closest("tr");
+    //       const rowId = tr.getAttribute("data-id");
+    //       // alert("dang xoa row: "+rowId)
+    //       handleDelete(rowId)
+
+    //       btn.closest("tr").remove();
+    //     }
+    //   });
+
+    // });
+
+    function handleDelete(id) {
+      $.ajax({
+        url: `/admin/eventprocessing/${id}/delete`,
+        method: 'DELETE',
+        contentType: 'application/json',
+        success: (res) => {
+          // alert("delete success")
+        },
+        error: (err) => {
+          console.log("Xoa" + err)
+        }
+      })
+    }
+    //
+    function changeStatus(status, ei){
+      
+      $.ajax({
+        url: `/admin/eventprocessing/change-status`,
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ei: ei, status: status}),
+        success: (res)=>{
+          // cón('change success')
+        },
+        error: (err)=>{
+          console.log(err)
+        }
+      })
+    }
+    document.getElementById('event-tbl').addEventListener('change', function (ev) {
+      if (ev.target.classList.contains('cta-change-status')) {
+        console.log(ev.target.closest('tr'))
+        const isCheck = ev.target.checked;
+        const id = ev.target.closest('tr').getAttribute('data-id');
+        alert(id +" "+isCheck)
+        changeStatus(isCheck, id)
+      }
+    })
+    //
+    const toastEl = document.getElementById('errorToast');
     if (toastEl) {
       const toast = new bootstrap.Toast(toastEl, { delay: 4000, autohide: true });
       toast.show();
     }
+    // end
   })
 </script>
 <!-- ======================Toast hiển thị lỗi -->
-<% if (status && status.status === false) { %>
-    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055">
-      <div id="errorToast" class="toast align-items-center text-bg-danger border-0 show" role="alert">
-        <div class="d-flex">
-          <div class="toast-body">
-            <%= status.mess %>
-          </div>
-          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+<% if (status && status.status===false) { %>
+  <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055">
+    <div id="errorToast" class="toast align-items-center text-bg-danger border-0 show" role="alert">
+      <div class="d-flex">
+        <div class="toast-body">
+          <%= status.mess %>
         </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
       </div>
     </div>
+  </div>
   <% } %>
 
-  <!-- ======================Toast hiển thị lỗi END -->
+    <!-- ======================Toast hiển thị lỗi END -->

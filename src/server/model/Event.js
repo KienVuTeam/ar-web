@@ -4,9 +4,9 @@ const { EventStatus } = require("../enums/event.enum");
 
 const EventSchame = mongoose.Schema(
   {
-    name: { type: String, require },
+    name: { type: String, required: true },
     desc: { type: String },
-    slug: { type: String, require },
+    slug: { type: String, required: true },
     content: { type: String },
     imagePath: { type: String },
     image_thumb: {type: String},
@@ -14,10 +14,10 @@ const EventSchame = mongoose.Schema(
     // image_v_cert: {type: String},
     image_a_cert: {type: String},
     apiLink: { type: String },
-    isShow: { type: Boolean, require },
-    status: { type: Number, enum: Object.values(EventStatus), require },
-    place: { type: String, require },
-    rankType: { type: Boolean, require },
+    isShow: { type: Boolean, required: true },
+    status: { type: Number, enum: Object.values(EventStatus), required: true },
+    place: { type: String, required: true },
+    rankType: { type: Boolean, required: true },
     startDate: {
       type: Date,
       required: true,
