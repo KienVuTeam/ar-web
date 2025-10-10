@@ -66,7 +66,7 @@ function parseExcelDate(value) {
 }
 //map data
 function mapRowByIndex(row, eventId, rowNumber, errors) {
-  athlete = {
+  let athlete = {
     event_id: eventId,
     bib: String(row[0] || ""), // BIB
     chip: String(row[1] || ""), // CHIPCODE
@@ -472,7 +472,6 @@ class EventProcessingController {
   //ajax import once
   async AthleteImportOnce(req, res) {
     try {
-      console.log("run 1");
       const _eId = req.params.eid;
       const data = req.body;
       const athService = new AthleteV1Service();

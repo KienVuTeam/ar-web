@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Konva Drag TextBox with Fixed Fields</title>
+  <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+  <style>
+    body { font-family: sans-serif; }
+    #container { border: 1px solid #ccc; margin: 10px auto; display: block; }
+    button, input { margin: 5px; }
+  </style>
+</head>
+<body>
+  <h2>Kéo thả Text-Box cố định + thêm mới</h2>
+  <div>
+    <button id="addText">➕ Thêm Text</button>
+    <button id="saveData">💾 Lưu tọa độ</button>
+    <button id="exportImg">📷 Xuất ảnh</button>
+    <label>
+      Font-size:
+      <input type="number" id="fontSizeInput" min="8" max="100" value="20" style="width:60px;">
+    </label>
+  </div>
+  <div id="container"></div>
+
+  <script>
+    // 1. Khởi tạo stage + layer
+    const stage = new Konva.Stage({
+      container: "container",
+      width: 800,
+      height: 600,
+    });
+    const layer = new Konva.Layer();
+    stage.add(layer);
+
+    // 2. Load ảnh nền
+    const background = new Konva.Image({
+      x: 0,
+      y: 0,
+      width: stage.width(),
+      height: stage.height(),
+    });
+    layer.add(background);
+
+    const imageObj = new Image();
+    imageObj.onload = function () {
+      background.image(imageObj);
+      layer.draw();
+    };
+    imageObj.src = "https://picsum.photos/800/600"; // 👉 đổi ảnh template
+
+    let selectedTextNode = null; // text đang được chọn để chỉnh font
+
+    // 3. Function tạo text-box (có fieldName để mapping với DB)
+    function createTextBox(fieldName, text, x = 50, y = 50, isFixed = false, fontSize = 20) {
+      const textNode = new Konva.Text({
+        text: text,
+        x: x,
+        y: y,
+        fontSize: fontSize,
+        draggable: true,
+        fill: "red",
+        name: fieldName, // để mapping với DB
+        ellipsis: true,  // nếu dài quá thì thêm "..."
+        wrap: "word"
+      });
+
+      // Chọn text để chỉnh font-size
+      textNode.on("click", () => {
+        selectedTextNode = textNode;
+        document.getElementById("fontSizeInput").value = textNode.fontSize();
+      });
+
+      // Cho phép sửa text nếu KHÔNG phải field cố định
+      if (!isFixed) {
+        textNode.on("dblclick", () => {
+          const newText = prompt("Nhập text:", textNode.text());
+          if (newText) textNode.text(newText);
+          layer.draw();
+        });
+      }
+
+      layer.add(textNode);
+      layer.draw();
+    }
+
+    // 4. Tạo sẵn các text-box cố định (mapping DB field)
+    const fixedFields = [
+      { field: "name", label: "Tên" },
+      { field: "dob", label: "Ngày sinh" },
+      { field: "address", label: "Địa chỉ" },
+      { field: "email", label: "Email" },
+    ];
+
+    fixedFields.forEach((f, i) => {
+      createTextBox(f.field, f.label, 50, 50 + i * 40, true);
+    });
+
+    // 5. Thêm text-box custom
+    document.getElementById("addText").addEventListener("click", () => {
+      createTextBox("custom_" + Date.now(), "Text mới");
+    });
+
+    // 6. Thay đổi font-size khi nhập input
+    document.getElementById("fontSizeInput").addEventListener("input", (e) => {
+      if (selectedTextNode) {
+        selectedTextNode.fontSize(parseInt(e.target.value, 10));
+        layer.draw();
+      }
+    });
+
+    // 7. Lưu data (bao gồm fieldName để biết mapping DB + fontSize)
+    document.getElementById("saveData").addEventListener("click", () => {
+      const data = [];
+      layer.find("Text").forEach((t) => {
+        data.push({
+          field: t.name(),  // field trong DB
+          text: t.text(),   // text hiện tại (label)
+          x: t.x(),
+          y: t.y(),
+          fontSize: t.fontSize(),
+          fill: t.fill(),
+        });
+      });
+      console.log("Data lưu:", data);
+      alert("Check console để xem JSON data (lưu vào DB).");
+    });
+
+    // 8. Xuất ảnh
+    document.getElementById("exportImg").addEventListener("click", () => {
+      const dataURL = stage.toDataURL({ pixelRatio: 2 });
+      const link = document.createElement("a");
+      link.download = "output.png";
+      link.href = dataURL;
+      link.click();
+    });
+  </script>
+</body>
+</html>

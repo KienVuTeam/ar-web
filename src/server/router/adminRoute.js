@@ -7,7 +7,9 @@ const multer = require("multer");
 const myPath = require("../config/path.config");
 const { uploadExcel, uploadImage } = require("../config/multerUpload");
 const uploadExcelVolunteer = require("../config/excelMulterVolunteer");
-// const uploadImageVolunteer = require("../config/uploadImageVolunteer");
+const upload = require('../config/AthleteUpload');
+const uploadImageECert = require("../config/uploadImageECert");
+const uploadECertXcel = require('../config/ecert-xlsx.config');
 
 // =================Config muter ====================== //
 const uploadDir = path.join(
@@ -46,6 +48,7 @@ const EventController = require("../areas/admin/controller/EventController");
 const AthleteController = require("../areas/admin/controller/AthleteController");
 const EventV2Controller = require("../areas/admin/controller/EventV2Controller");
 const EventProcessingController = require("../areas/admin/controller/EventProcessingController");
+const ECertController = require('../areas/admin/controller/ECertController');
 //======== start new way
 //services
 const _PostService = require("../services/post.service"); // server nap ngoai nay de de test
@@ -112,6 +115,17 @@ router.get("/volunteer/render-cert", volunteerController.RenderCert);
 router.get("/volunteer/", volunteerController.Index);
 //======== end
 
+//=============Admin ECert
+router.post('/e-cert/data-table/:cid', ECertController.DataTable.bind(ECertController));
+router.get('/e-cert/render-cert', ECertController.RenderCertificate.bind(ECertController));
+router.post('/e-cert/save-position/:id', ECertController.SavePosition.bind(ECertController));
+router.post('/e-cert/create-contest', ECertController.AddContest.bind(ECertController));  
+router.delete('/e-cert/delete-contest/:id', ECertController.DeleteContest.bind(ECertController));
+router.post('/e-cert/upload-data/:id',uploadECertXcel.single('ecert_xlsx'), ECertController.UploadExcel.bind(ECertController));
+router.post('/e-cert/upload-image', uploadImageECert.single('ecert_img'), ECertController.UploadImage.bind(ECertController));
+
+router.get('/e-cert/contest-detail/:id', ECertController.ContestDetail.bind(ECertController));
+router.get('/e-cert', ECertController.Index.bind(ECertController));
 //EventController
 router.put(
   "/event/update-event/:id",
@@ -203,7 +217,7 @@ router.use(
 router.get("/event2", EventV2Controller.Index.bind(EventV2Controller));
 // ==================================Event 3================================== //
 // =========Athlete
-const upload = require('../config/AthleteUpload')
+
 //ajax
 // api cho athlete table
 router.post('/api/athlete/data-table', EventProcessingController.APIAthleteDataTable.bind(EventProcessingController));

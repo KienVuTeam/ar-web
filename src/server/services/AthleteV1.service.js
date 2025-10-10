@@ -136,7 +136,7 @@ class AthleteV1 extends athleteService {
   }
   //api athlete control
   async athleteControl({event_id="" ,page = 1, limit =10, search ="", sort="bib:asc"}){
-    console.log('trong service')
+    // console.log('trong service')
     console.log(event_id,page, limit, search)
     const query ={ 
       event_id: new mongoose.Types.ObjectId(event_id)

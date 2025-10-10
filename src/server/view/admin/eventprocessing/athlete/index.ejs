@@ -116,7 +116,7 @@
         <div class="col">
           <p class="text-muted mb-1">Tổng VĐV</p>
           <h4 class="fw-bold text-primary">
-            <%=(ov && ov.total)? ov.total: 0%>
+            <%= (ov && typeof ov.total === 'number') ? ov.total : 0 %>
           </h4>
         </div>
         <div class="col">
@@ -839,7 +839,7 @@
       });
 
       // ================== INIT ==================
-      localStorage.setItem(TABLE_KEY, tableConfig.search ="")
+      localStorage.setItem(TABLE_KEY, tableConfig.search ="", tableConfig.limit="10", tableConfig.page="1")
       if (tableConfig.search) {
         // searchBox.value = tableConfig.search;  // 👉 set lại input value
       }

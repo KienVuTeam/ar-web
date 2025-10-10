@@ -1,6 +1,6 @@
 const app = require("./app");
 require("dotenv").config();
-// const PORT = process.env.PORT || 3000;
+const TEMP_PORT = 3000;
 const HOST ='0.0.0.0';
 const fs = require("fs");
 const http = require("http");
@@ -18,8 +18,8 @@ const httpServer = http.createServer(app);
 const httpsServer = https.createServer(sslOptions, app);
 
 // 🚀 Khởi chạy cả hai server song song
-httpServer.listen(process.env.HTTP_PORT, HOST, () => {
-  console.log(`HTTP server chạy tại http://localhost:${process.env.HTTP_PORT}`);
+httpServer.listen(process.env.TEMP_PORT, HOST, () => {
+  console.log(`HTTP server chạy tại http://localhost:${process.env.TEMP_PORT}`);
 });
 
 httpsServer.listen(process.env.HTTPS_PORT, HOST, () => {

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fabric.js Text Panel Demo</title>
+  <style>
+    body {
+      display: flex;
+      gap: 20px;
+      font-family: Arial, sans-serif;
+    }
+    #controls {
+      width: 200px;
+      padding: 10px;
+      border: 1px solid #aaa;
+    }
+    #c {
+      border: 1px solid #000;
+    }
+    button {
+      display: block;
+      margin: 10px 0;
+      padding: 6px 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Control Panel -->
+  <div id="controls">
+    <h3>Control Panel</h3>
+    <button id="addText">➕ Add Text</button>
+    <button id="delete">🗑️ Delete Selected</button>
+  </div>
+
+  <!-- Canvas -->
+  <canvas id="c" width="600" height="400"></canvas>
+
+  <!-- Fabric.js v6.7.0 -->
+  <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/670/index.min.js"
+      integrity="sha512-NHKUnTLVg2kGp3RipXfZj8GwI/tAZ2E3NbVcJMYjTC5t1umpLpRn+svXWmwcl6GD1ZMVBfPwsoR5exiCXUPxew=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+  <script>
+    const canvas = new fabric.Canvas('c');
+
+    // Load background image
+    fabric.Image.fromURL(
+      "https://via.placeholder.com/600x400.png?text=Background+Image", // Using a public placeholder image for reliability
+      (img) => {
+        if (img) {
+          img.scaleToWidth(canvas.width);
+          canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+          console.log("Background image loaded successfully:", img);
+        } else {
+          console.error("Failed to load background image: placeholder.svg");
+        }
+      },
+      { crossOrigin: 'anonymous' } // Added crossOrigin for potential issues with external images
+    );
+
+    // Add textbox
+    document.getElementById("addText").onclick = () => {
+      const text = new fabric.Textbox("Type here", {
+        left: 50,
+        top: 50,
+        fontSize: 24,
+        fill: "red",
+        editable: true,
+        selectable: true,
+        hasControls: true
+      });
+      canvas.add(text);
+      canvas.setActiveObject(text);
+    };
+
+    // Delete selected object
+    document.getElementById("delete").onclick = () => {
+      const active = canvas.getActiveObject();
+      if (active) {
+        canvas.remove(active);
+      }
+    };
+  </script>
+</body>
+</html>

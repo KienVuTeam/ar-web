@@ -1,0 +1,32 @@
+<div class="cert-data">
+  <table id="datauser_tbl" class="table table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>...</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="userdata_body">
+      <%if(ud && ud.length >0){%> <%ud.forEach((u, i)=>{ %>
+      <tr data-id="<%=u._id%>">
+        <td><%=i+1%></td>
+        <td><%=u.name%></td>
+        <td><%=u.field_1%></td>
+        <td><button class="btn btn-outline-info">Cert</button></td>
+      </tr>
+      <%})%>
+      <%}else{%>
+      <tr>
+        <td colspan="4" class="text-center">No data</td>
+      </tr>
+      <%}%>
+    </tbody>
+  </table>
+</div>
+// document.querySelector('#cert-tbl tbody').addEventListener('click',
+function(ev){ // if(ev.target && ev.target.matches('button.btn-outline-info')){
+// ev.preventDefault(); // const row = ev.target.closest('tr'); // const userId
+= row.getAttribute('data-id'); // console.log('Cert click for user: ',userId);
+// renderCert(userId) // } // })

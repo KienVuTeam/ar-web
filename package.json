@@ -13,8 +13,11 @@
   "description": "",
   "dependencies": {
     "body-parser": "^2.2.0",
+    "bootstrap": "^5.3.8",
     "canvas": "^3.2.0",
     "crypto": "^1.0.1",
+    "datatables.net-bs5": "^2.3.4",
+    "datatables.net-dt": "^2.3.4",
     "dotenv": "^17.2.1",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
@@ -25,7 +28,10 @@
     "multer": "^2.0.2",
     "nodemailer": "^7.0.5",
     "qrcode": "^1.5.4",
+    "sharp": "^0.34.4",
     "slugify": "^1.6.6",
+    "sweetalert2": "^11.24.0",
+    "text-to-svg": "^3.1.5",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
