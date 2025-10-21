@@ -12,7 +12,13 @@ body{
     font-family: 'Inter', 'Be Vietnam Pro', sans-serif;
 }
 
-/*  */
+/*common  */
+.limit-text-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; /* Số dòng muốn hiển thị */
+  overflow: hidden;
+}
 .main-content{
     width: 100%;
     max-width: calc(100% - 20%);

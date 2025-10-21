@@ -119,6 +119,7 @@ router.get("/volunteer/", volunteerController.Index);
 router.post('/e-cert/data-table/:cid', ECertController.DataTable.bind(ECertController));
 router.get('/e-cert/render-cert', ECertController.RenderCertificate.bind(ECertController));
 router.post('/e-cert/save-position/:id', ECertController.SavePosition.bind(ECertController));
+router.post('/e-cert/update-contest', ECertController.EditContest.bind(ECertController));
 router.post('/e-cert/create-contest', ECertController.AddContest.bind(ECertController));  
 router.delete('/e-cert/delete-contest/:id', ECertController.DeleteContest.bind(ECertController));
 router.post('/e-cert/upload-data/:id',uploadECertXcel.single('ecert_xlsx'), ECertController.UploadExcel.bind(ECertController));

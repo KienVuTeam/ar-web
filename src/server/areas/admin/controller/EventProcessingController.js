@@ -345,12 +345,6 @@ class EventProcessingController {
         const athleteData = mapRowByIndex(row, _eventId, rowNumber, errors);
         athletes.push(athleteData);
       });
-
-      // const result = await AthleteEntity.insertMany(athletes);
-      // console.log("data sau khi làm sạch: ");
-      // console.log(athletes);
-      // const result =await Athlete
-      //==============INSERT vao DB
       // 🔥 bulk update/insert theo event_id + bib
       const bulkOps = athletes.map((athlete) => {
         const { _id, ...rest } = athlete; // bỏ _id

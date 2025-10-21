@@ -1,10 +1,6 @@
 const CertificatePositionEntity = require("../../../model/CertificatePosition");
 const CertificateDataEntity = require("../../../model/CertificateData");
-const {
-  successResponse,
-  errorResponse,
-} = require("../../../utils/response.util");
-const slugify = require("slugify");
+
 const fs = require("fs");
 const sharp = require("sharp");
 const TextToSVG = require("text-to-svg");
@@ -12,7 +8,9 @@ const path = require("path");
 const xlsx = require("xlsx");
 const myPath = require("../../../config/path.config");
 const { default: mongoose } = require("mongoose");
-const { listEvent } = require("../../../services/event.service");
+const multer = require("multer");
+
+const pathConfig = require("../../../config/path.config");
 const CNAME = "ECertController.js ";
 const VNAME = "admin/e_cert/";
 const VLayout = "layout/layoutAdmin";
@@ -41,6 +39,28 @@ async function CertDataHelper(id) {
   const result =
     (await CertificateDataEntity.find({ contest_ref: id }).lean()) || [];
   return result;
+}
+function uploadEcertImage() {
+  const uploadDir = pathConfig.root + "/src/public/uploads/ecert";
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+      // console.log(file);
+      const uniqueName = Date.now() + "-" + file.originalname;
+      cb(null, uniqueName);
+    },
+  });
+  const fileFilter = (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (![".jpg", ".jpeg", ".png"].includes(ext)) {
+      return cb(new Error("accept file (jpg, jpeg, png)"), false);
+    }
+    cb(null, true);
+  };
+  const upload = multer({ storage, fileFilter });
+  return upload;
 }
 class ECertController {
   async Index(req, res) {
@@ -117,19 +137,72 @@ class ECertController {
       res.status(500).json({ success: false, mess: "Lỗi server" });
     }
   }
+  // async AddContest(req, res) {
+  //   try {
+  //     // uploadEcertImage().single('image')(req, res,async (err)=>{
+  //     //   if(err){
+  //     //     return res.status(400).json({success: false, mess: err.message})
+  //     //   }
+  //     // })
+  //     // start
+  //     const upload = uploadEcertImage().single('image');//khoi tao
+  //     upload(req, res, async(err)=>{
+  //       if(err){
+  //         return res.status(400).json({success: false, mess: err.message})
+  //       }
+  //     });
+  //     const file = req.file;
+  //     console.log(file)
+  //     const { name, desc } = req.body;
+  //     const cp = new CertificatePositionEntity({
+  //       title: name,
+  //       desc: desc,
+  //     });
+  //     // await cp.save();
+  //     res.json({ success: true, mess: "tao contest thanh cong" });
+  //   } catch (error) {
+  //     console.log(CNAME + error);
+  //     res.status(500).json({ success: false, mess: error.message });
+  //   }
+  // }
   async AddContest(req, res) {
-    try {
-      const { name, desc } = req.body;
-      const cp = new CertificatePositionEntity({
-        title: name,
-        desc: desc,
-      });
-      await cp.save();
-      res.json({ success: true, mess: "tao contest thanh cong" });
-    } catch (error) {
-      console.log(CNAME + error);
-      res.status(500).json({ success: false, mess: error.message });
-    }
+    const upload = uploadEcertImage().single("image"); // Khởi tạo multer
+
+    upload(req, res, async (err) => {
+      if (err) {
+        return res.status(400).json({ success: false, mess: err.message });
+      }
+
+      try {
+        const { name, desc } = req.body;
+        const file = req.file;
+
+        console.log("🧩 file:", file);
+        console.log("🧩 name:", name);
+        console.log("🧩 desc:", desc);
+
+        if (!name || !desc) {
+          return res
+            .status(400)
+            .json({ success: false, mess: "Thiếu dữ liệu" });
+        }
+
+        const imgPath = file ? `/uploads/ecert/${file.filename}` : "";
+
+        const cp = new CertificatePositionEntity({
+          title: name,
+          desc: desc,
+          img_thumb: imgPath,
+        });
+
+        await cp.save();
+
+        res.json({ success: true, mess: "Tạo contest thành công" });
+      } catch (error) {
+        console.log(CNAME, error);
+        res.status(500).json({ success: false, mess: error.message });
+      }
+    });
   }
   async DeleteContest(req, res) {
     try {
@@ -140,6 +213,51 @@ class ECertController {
       }
     } catch (error) {
       console.log(CNAME, error);
+      res.status(500).json({ success: false, mess: error.message });
+    }
+  }
+  async EditContest(req, res) {
+    const uploadDir = "/uploads/ecert/";
+    try {
+      const upload = uploadEcertImage().single("image");
+      upload(req, res, async (err) => {
+        if (err) {
+          return res.status(400).json({ success: false, mess: err.message });
+        }
+        const { title, desc, id } = req.body;
+        const file = req.file;
+        const isExitThumb = await CertificatePositionEntity.findOne({
+          _id: id,
+        }).lean();
+        if (isExitThumb.img_thumb) {
+          const imgPathRemove = path.join(
+            pathConfig.root,
+            "src",
+            "public",
+            isExitThumb.img_thumb,
+          );
+          console.log("path: " + pathConfig.root);
+          console.log("path check: " + imgPathRemove);
+          if (fs.existsSync(imgPathRemove)) {
+            fs.unlinkSync(imgPathRemove);
+          }
+        }
+        const cpDTO = {
+          title: title,
+          desc: desc,
+          img_thumb: uploadDir + file.filename,
+        };
+        console.log(cpDTO);
+        const result = await CertificatePositionEntity.findOneAndUpdate(
+          { _id: id },
+          { $set: cpDTO },
+          { upsert: true },
+        );
+        console.log(result);
+        res.json({ success: true });
+      });
+    } catch (error) {
+      console.log(VNAME, error.message);
       res.status(500).json({ success: false, mess: error.message });
     }
   }
@@ -177,7 +295,7 @@ class ECertController {
       const contest_id = req.params.id;
       const file = req.file;
       if (!file) {
-        return res.json
+        return res
           .status(400)
           .json({ success: false, mess: "No file uploaded" });
       }
@@ -215,6 +333,7 @@ class ECertController {
             filter: {
               contest_ref: new mongoose.Types.ObjectId(data.contestId),
               name: data.name,
+              field_1: data.field_1,
             },
             update: { $set: rest },
             upsert: true,
@@ -224,6 +343,7 @@ class ECertController {
       const result = await CertificateDataEntity.bulkWrite(bulkOps, {
         ordered: false,
       });
+      console.log(result);
       // console.log(jsonData);
       res.json({ success: true, mess: "import data success" });
     } catch (error) {
@@ -235,19 +355,20 @@ class ECertController {
   async RenderCertificate(req, res) {
     //Initial
     const idUser = req.query.uid;
-    const idContest =req.query.cid;
+    const idContest = req.query.cid;
     console.log(idUser, idContest);
-    const certConfig = await CertificatePositionEntity.findOne({_id: idContest}).lean();
+    const certConfig = await CertificatePositionEntity.findOne({
+      _id: idContest,
+    }).lean();
     // console.log(certConfig)
-    const bgUrlImage = "src/public"+certConfig.img_path;
-    const certUser = await CertificateDataEntity.findOne({_id: idUser}).lean();
+    const bgUrlImage = "src/public" + certConfig.img_path;
+    const certUser = await CertificateDataEntity.findOne({
+      _id: idUser,
+    }).lean();
     // console.log(bgUrlImage, certUser)
 
     // 🔹 Load background
-    const bgPath = path.join(
-      myPath.root, bgUrlImage, 
-    );
-
+    const bgPath = path.join(myPath.root, bgUrlImage);
     // 🔹 Load font
     const fontPath = path.join(
       myPath.root,
@@ -267,34 +388,9 @@ class ECertController {
       //   email: "test@gmail.com",
       //   role: "Staff",
       // };
-      
-      const fakeData=certUser;
-      const fakePosition = certConfig.config;
-      // const fakePosition = [
-      //   {
-      //     field: "name",
-      //     fill: "green",
-      //     fontSize: 102,
-      //     h: 102,
-      //     text: "Tên",
-      //     w: 781.4277343750019,
-      //     x: 611.9999999999981,
-      //     y: 534.999999999998,
-      //     align: "center", // 👈 có thể là "left", "center", hoặc "right"
-      //   },
-      //   {
-      //     field: "field_1",
-      //     fill: "green",
-      //     fontSize: 50,
-      //     h: 50,
-      //     text: "Text 01",
-      //     w: 187.8320312500019,
-      //     x: 1450.9999999999982,
-      //     y: 745.0072600696172,
-      //     align: "left", // 👈 có thể là "left", "center", hoặc "right"
-      //   },
-      // ];
 
+      const fakeData = certUser;
+      const fakePosition = certConfig.config;
 
       const bgImage = sharp(bgPath);
       const metadata = await bgImage.metadata();
@@ -332,19 +428,42 @@ class ECertController {
             left = p.x + (p.w - textWidth) / 2;
             break;
         }
+        // const padding = 20;
+        // const svg = textToSVG.getSVG(val, {
+        //   x: 0,
+        //   y: 0,
+        //   fontSize: p.fontSize,
+        //   anchor: "top",
+        //   attributes: { fill: p.fill || "black" },
+        // });
 
-        const svg = textToSVG.getSVG(val, {
-          x: 0,
-          y: 0,
+        // return {
+        //   input: Buffer.from(svg),
+        //   top: Math.round(top),
+        //   left: Math.round(left),
+        // };
+        // cach mới
+        // Thêm padding an toàn (2 bên và trên dưới)
+        const padding = 30;
+
+        // Lấy path vector chữ
+        const path = textToSVG.getPath(val, {
           fontSize: p.fontSize,
           anchor: "top",
-          attributes: { fill: p.fill || "black" },
         });
-
+        // Tạo SVG bao ngoài có padding
+        const svg = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="${textWidth + padding * 2}" height="${textHeight + padding * 2}">
+            <g transform="translate(${padding}, ${padding})" fill="${p.fill || "black"}">
+              ${path}
+            </g>
+          </svg>
+        `;
+        // Dịch vị trí vẽ để không bị lệch do padding thêm
         return {
           input: Buffer.from(svg),
-          top: Math.round(top),
-          left: Math.round(left),
+          top: Math.round(top - padding),
+          left: Math.round(left - padding),
         };
       });
       const finalImage = await bgImage.composite(svgLayers).png().toBuffer();
@@ -363,55 +482,53 @@ class ECertController {
     try {
       const dc = req.body;
       const cID = req.params.cid;
+      console.log("data check");
+      console.log(dc);
+      console.log(cID);
       //
       const draw = dc.draw;
       const start = parseInt(dc.start) || 0;
       const length = parseInt(dc.length) || 10;
-      const searchValue = dc?.value || "";
+      const searchValue = dc.search?.value.trim() || "";
       const orderCol = dc.order?.[0]?.column || 0;
       const orderDir = dc.order?.[0]?.dir || "asc";
       // const orderField = dc.columns?.[orderCol]?.dc || "name";
       const orderField = "name";
 
-      console.log(dc, cID);
       //tao query truy vam
       let query = {};
-      if(cID){
-        query.contest_ref =cID;
+      if (cID) {
+        query.contest_ref = cID;
       }
       if (searchValue) {
-        query = {
-          $or: [
-            { name: { $regex: searchValue, $options: "i" } },
-            { field_1: { $regex: searchValue, $options: "i" } },
-          ],
-        };
+        query.$or = [
+          { name: { $regex: searchValue, $options: "i" } },
+          { field_1: { $regex: searchValue, $options: "i" } },
+        ];
       }
-
       const totalRecords = await CertificateDataEntity.countDocuments();
       const filteredRecords = await CertificateDataEntity.countDocuments(query);
 
       const dataRaw = await CertificateDataEntity.find(query)
-      .sort({[orderField]: orderDir ==='asc'?1:-1})
-      .skip(start)
-      .limit(length);
-      const data = dataRaw.map(item => ({
-      ...item.toObject(),
-      // _id: item._id.toString(),
-      contest_ref: item.contest_ref.toString() // hoặc populate name nếu muốn
-    }));
+        .sort({ [orderField]: orderDir === "asc" ? 1 : -1 })
+        .skip(start)
+        .limit(length);
+      const data = dataRaw.map((item) => ({
+        ...item.toObject(),
+        // _id: item._id.toString(),
+        contest_ref: item.contest_ref.toString(), // hoặc populate name nếu muốn
+      }));
       // console.log('data server tra ve ',data)
       res.json({
         draw,
         recordsTotal: totalRecords,
         recordsFiltered: filteredRecords,
         data,
-
-      })
+      });
       // end
     } catch (error) {
       console.log(error);
-      res.status(500).json({err: error.message})
+      res.status(500).json({ err: error.message });
     }
   }
 }

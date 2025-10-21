@@ -4,9 +4,10 @@ const router = express.Router();
 const NewsController = require('../controller/NewsController');
 const TestController = require('../controller/TestController');
 const QrController = require('../controller/QrController');
+const ECertController = require('../controller/ecert.controller')();
+const HomeController = require('../controller/home.controller')();
 
 //new pattern
-const HomeController = require('../controller/home.controller')();
 //end new pattern
 //
 router.use('/news', NewsController.Index.bind(NewsController));
@@ -35,7 +36,14 @@ router.post("/qr/decode", QrController.decodeQr.bind(QrController) )
 router.get('/about',HomeController.About)
 
 //--------------------------
-router.get('/event', HomeController.Event)
+router.get('/event', HomeController.Event);
+// new
+router.get('/load-font', ECertController.LoadAllFont);
+router.get('/e-cert/render-cert', ECertController.RenderCertificate);
+router.get('/e-cert/contest-detail/:slug', ECertController.ECetDetail);
+router.post('/e-cert/data-table/:slug', ECertController.DataTable);
+router.get('/e-cert', ECertController.Index);
+
 // 
 router.get('/volunteer/volunteer-involved/:id', HomeController.VolunteerInvolved)
 router.post('/volunteer/certificate', HomeController.VolunteerCertificate)

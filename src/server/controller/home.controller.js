@@ -8,6 +8,8 @@ const VolunteerEntity = require("../model/Volunteer");
 const CertificateConfigEntity = require("../model/CertificateConfig");
 const pathConfig = require("../config/path.config");
 const fontConfig = require("../config/fontConfig");
+const CertificatePositionEntity = require('../model/CertificatePosition');
+const CertificateDataEntity = require('../model/CertificateData');
 
 // Image cache to avoid reloading images from filesystem
 const imageCache = new Map();
@@ -28,7 +30,7 @@ module.exports = () => {
     },
     About: (req, res) => {
       res.render("pages/about", {
-        layout: false,
+        layout: 'layout/main',
         title: "About",
         data: pageConfig,
       });
@@ -234,5 +236,133 @@ module.exports = () => {
         res.json({ success: false, mess: "failed" });
       }
     },
+    // new
+    //svg-to-text
+      async RenderCertificate(req, res) {
+        //Initial
+        const idUser = req.query.uid;
+        const idContest =req.query.cid;
+        console.log(idUser, idContest);
+        const certConfig = await CertificatePositionEntity.findOne({_id: idContest}).lean();
+        // console.log(certConfig)
+        const bgUrlImage = "src/public"+certConfig.img_path;
+        const certUser = await CertificateDataEntity.findOne({_id: idUser}).lean();
+        // console.log(bgUrlImage, certUser)
+    
+        // 🔹 Load background
+        const bgPath = path.join(
+          pathConfig.root, bgUrlImage, 
+        );
+        // 🔹 Load font
+        const fontPath = path.join(
+          pathConfig.root,
+          "src/public/font/AlexBrush-Regular.ttf",
+        );
+        if (!fs.existsSync(fontPath)) {
+          throw new Error("Font file not found: " + fontPath);
+        }
+        //
+        try {
+          // 🔹 Fake data
+          // const fakeData = {
+          //   name: "Vũ Văn Kiên",
+          //   field_1: "Staff",
+          //   dob: "20/11/2002",
+          //   address: "Ha Noi",
+          //   email: "test@gmail.com",
+          //   role: "Staff",
+          // };
+          
+          const fakeData=certUser;
+          const fakePosition = certConfig.config;
+          // const fakePosition = [
+          //   {
+          //     field: "name",
+          //     fill: "green",
+          //     fontSize: 102,
+          //     h: 102,
+          //     text: "Tên",
+          //     w: 781.4277343750019,
+          //     x: 611.9999999999981,
+          //     y: 534.999999999998,
+          //     align: "center", // 👈 có thể là "left", "center", hoặc "right"
+          //   },
+          //   {
+          //     field: "field_1",
+          //     fill: "green",
+          //     fontSize: 50,
+          //     h: 50,
+          //     text: "Text 01",
+          //     w: 187.8320312500019,
+          //     x: 1450.9999999999982,
+          //     y: 745.0072600696172,
+          //     align: "left", // 👈 có thể là "left", "center", hoặc "right"
+          //   },
+          // ];
+    
+    
+          const bgImage = sharp(bgPath);
+          const metadata = await bgImage.metadata();
+    
+          const textToSVG = TextToSVG.loadSync(fontPath);
+    
+          // 🔹 Dùng Sharp để composite SVG text lên background
+          //===============NEW C2\
+          const svgLayers = fakePosition.map((p) => {
+            const val = fakeData[p.field] || "";
+    
+            // ✅ Lấy thông tin kích thước thật của text
+            const metrics = textToSVG.getMetrics(val, {
+              fontSize: p.fontSize,
+              anchor: "top",
+            });
+    
+            // ✅ Tính lại toạ độ căn giữa chính xác
+            const textWidth = metrics.width;
+            const textHeight = metrics.height;
+    
+            const top = p.y + (p.h - textHeight) / 2;
+            // const left = p.x + (p.w - textWidth) / 2;
+            // ✅ Căn ngang theo p.align
+            let left;
+            switch (p.align) {
+              case "left":
+                left = p.x; // bám sát lề trái
+                break;
+              case "right":
+                left = p.x + p.w - textWidth; // bám sát lề phải
+                break;
+              default:
+                // center (hoặc nếu không có align thì mặc định center)
+                left = p.x + (p.w - textWidth) / 2;
+                break;
+            }
+    
+            const svg = textToSVG.getSVG(val, {
+              x: 0,
+              y: 0,
+              fontSize: p.fontSize,
+              anchor: "top",
+              attributes: { fill: p.fill || "black" },
+            });
+    
+            return {
+              input: Buffer.from(svg),
+              top: Math.round(top),
+              left: Math.round(left),
+            };
+          });
+          const finalImage = await bgImage.composite(svgLayers).png().toBuffer();
+    
+          // 🔹 Gửi ảnh về client
+          res.setHeader("Content-Type", "image/png");
+          res.send(finalImage);
+        } catch (err) {
+          console.error(err);
+          res
+            .status(500)
+            .json({ message: "Error rendering font", error: err.message });
+        }
+      }
   };
 };

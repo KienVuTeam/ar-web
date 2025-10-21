@@ -62,6 +62,11 @@
                     <textarea name="" class="form-control" name="c-desc" id="c-desc" placeholder="desc" id=""
                         rows="5"></textarea>
                 </div>
+                <div class="form-group" style="display: flex; flex-direction: column;">
+                    <label for="" class="form-label">image</label>
+                    <input type="file" id="img_file" class="form-control">
+                    <img src="" id="img_preview" alt="" style="display: none;">
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" id="btn-create-contest" class="btn btn-primary">Save change</button>
@@ -79,6 +84,8 @@
         //global here
         const modalContest = document.getElementById('contestModal');
         const myModal = new bootstrap.Modal(modalContest);
+        const imageInput = document.getElementById('img_file');
+        const imagePreview = document.getElementById('img_preview');
 
         //mo modal
         document.getElementById('btn-open-modal').addEventListener('click', function (ev) {
@@ -91,12 +98,35 @@
             myModal.hide();
         })
         //
+        imageInput.addEventListener('change', ()=>{
+            const file = imageInput.files[0];//lay file dau tien
+            if(file){
+                const reader = new FileReader();
+                reader.onload = function(e){
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display='block';
+                    imagePreview.style.objectFit ='cover';
+                    imagePreview.style.height ='150px';
+                    imagePreview.style.width='auto'
+                }
+                reader.readAsDataURL(file);
+            }else{
+                imagePreview.src ='';
+                imagePreview.style.display ='none';
+            }
+        })
         function addContest() {
             //
             const data = {
                 name: modalContest.querySelector('#c-name').value.trim(),
                 desc: modalContest.querySelector('#c-desc').value.trim(),
+                image: modalContest.querySelector('#img_file').files[0]
             }
+            const formData = new FormData();
+            formData.append('name', modalContest.querySelector('#c-name').value.trim());
+            formData.append('desc', modalContest.querySelector('#c-desc').value.trim());
+            formData.append('image', modalContest.querySelector('#img_file').files[0]);
+            console.log(formData)
             if (!data.name || !data.desc) {
                 showAlert('pls enter input', 'warning');
                 return;
@@ -105,11 +135,13 @@
             $.ajax({
                 url: '/admin/e-cert/create-contest',
                 method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(data),
+                processData: false,
+                contentType: false,
+                data: formData,
                 success: (res) => {
                     if (res.success) {
                         showAlert(res.mess, 'success');
+                        location.reload();
                     }
                     resetModal();
                     myModal.hide();
@@ -119,7 +151,7 @@
                     // console.log('xhr:', xhr);
                     // console.log('status:', status);
                     // console.log('error:', err);
-                    showAlert(xhr.responseJSON.mess, 'danger');
+                    showAlert(xhr.responseJSON?.mess||"Server error", 'danger');
                 }
             })
         }
@@ -186,13 +218,6 @@
                 alertEl.close();
             }, duration);
         }
-        // function clearModalFocus(modalId) {
-        //     const modalEl = document.getElementById(modalId);
-        //     modalEl.addEventListener('hide.bs.modal', () => {
-        //         // khi modal ẩn xong, dời focus ra ngoài
-        //         document.activeElement.blur();
-        //     });
-        // }
         clearModalFocus('contestModal');
         //end
     })
