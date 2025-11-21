@@ -43,10 +43,15 @@ router.get('/e-cert/render-cert', ECertController.RenderCertificate);
 router.get('/e-cert/contest-detail/:slug', ECertController.ECetDetail);
 router.post('/e-cert/data-table/:slug', ECertController.DataTable);
 router.get('/e-cert', ECertController.Index);
-
+// test area 
+router.get('/h2', (req, res)=>{
+    res.render('pages/home2', {layout: 'layout/main', title: 'home 2'})
+})
 // 
 router.get('/volunteer/volunteer-involved/:id', HomeController.VolunteerInvolved)
 router.post('/volunteer/certificate', HomeController.VolunteerCertificate)
 router.get('/volunteer', HomeController.Volunteer);
 router.get('/', HomeController.Index)
+
+
 module.exports = router;

@@ -28,7 +28,7 @@ app.use(
     },
   }),
 );
-
+console.log("aaa", process.env.MONGO_URI)
 // Cấu hình EJS
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "view"));
@@ -39,17 +39,9 @@ app.set("layout", "layout/main");
 
 // Serve static files
 app.use(express.static(path.join(__dirname, "../public")));
-// ⚠️ Trỏ đúng tới thư mục public chứa file CSS/JS
-// Cho phép truy cập thư mục uploads từ trình duyệt
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-//config route | truyen app vao func routes
-// console.log("co gi: "+route)
-app.use("/hehe", (req, res) => {
-  res.render("admin/home/index", {
-    layout: "layout/layoutAdmin",
-  });
-});
+
 const uploadDir = path.join(__dirname, "../uploads");
 app.use("/uploads", express.static(uploadDir));
 

@@ -2,8 +2,8 @@ const crypto = require("crypto");
 const QRCode = require("qrcode");
 require('dotenv').config;
 
-const SECRET_SIGN = process.env.SECRET_KEY_SIGN;   // để sign
-const SECRET_ENC  = Buffer.from(process.env.SECRET_KEY_ENC, "hex"); // 32 bytes cho AES-256
+// const SECRET_SIGN = process.env.SECRET_KEY_SIGN;   // để sign
+// const SECRET_ENC  = Buffer.from(process.env.SECRET_KEY_ENC, "hex"); // 32 bytes cho AES-256
 
 function encrypt(text) {
   const iv = crypto.randomBytes(16);

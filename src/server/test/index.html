@@ -1,153 +1,110 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Website Đơn Giản</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hero Video YouTube</title>
   <style>
-    /* Reset nhẹ */
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;line-height:1.5;color:#111}
-
-    /* Layout */
-    header{background:linear-gradient(90deg,#0ea5a4,#06b6d4);color:#fff;padding:18px 20px}
-    .container{max-width:1100px;margin:0 auto;padding:20px}
-    .brand{font-weight:700;font-size:20px}
-
-    /* Nav */
-    nav{display:flex;align-items:center;justify-content:space-between}
-    .nav-links{display:flex;gap:14px}
-    .nav-links a{color:#fff;text-decoration:none;padding:8px;border-radius:8px}
-    .btn{background:#fff;color:#06b6d4;padding:8px 12px;border-radius:8px;font-weight:600;text-decoration:none}
-
-    /* Hero */
-    .hero{display:flex;gap:30px;align-items:center;padding:48px 0}
-    .hero-text{flex:1}
-    .hero h1{font-size:36px;margin-bottom:12px}
-    .hero p{color:rgba(255,255,255,0.95);margin-bottom:16px}
-    .hero-cta{display:flex;gap:12px}
-
-    .card{background:#fff;color:#0f172a;padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.08)}
-
-    /* Features */
-    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}
-    .feature h3{margin-bottom:8px}
-
-    /* Contact */
-    .contact{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:28px}
-    form input, form textarea{width:100%;padding:10px;border:1px solid #e6eef0;border-radius:8px}
-    form button{background:#06b6d4;color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
-
-    /* Footer */
-    footer{margin-top:40px;padding:24px 0;text-align:center;color:#64748b}
-
-    /* Responsive */
-    @media (max-width:900px){
-      .hero{flex-direction:column;text-align:center}
-      .features{grid-template-columns:repeat(2,1fr)}
-      .contact{grid-template-columns:1fr}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    @media (max-width:560px){
-      .features{grid-template-columns:1fr}
-      .nav-links{display:none}
+
+    body, html {
+      height: 100%;
+      font-family: 'Arial', sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+
+    .hero {
+      position: relative;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    /* iframe chứa video YouTube */
+    .hero iframe {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 120%;
+      height: 120%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      pointer-events: none; /* chặn click vào video */
+      filter: brightness(65%);
+    }
+
+    .hero-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .hero button {
+      padding: 0.8rem 1.6rem;
+      font-size: 1rem;
+      border: none;
+      background-color: #ff5f00;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .hero button:hover {
+      background-color: #ff7a33;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="container" role="banner">
-      <nav>
-        <div class="brand">Web Đơn Giản</div>
-        <div class="nav-links" aria-hidden="false">
-          <a href="#">Trang chủ</a>
-          <a href="#features">Tính năng</a>
-          <a href="#contact">Liên hệ</a>
-        </div>
-        <a class="btn" href="#contact">Liên hệ</a>
-      </nav>
+
+  <section class="hero">
+    <!-- Video YouTube -->
+    <iframe 
+  width="560" 
+  height="315" 
+  src="https://www.youtube.com/embed/Au6LqK1UH8g?autoplay=1&mute=1&controls=0&loop=1&playlist=Au6LqK1UH8g&modestbranding=1&showinfo=0"
+  title="YouTube video player"
+  frameborder="0"
+  allow="autoplay; fullscreen; encrypted-media"
+  allowfullscreen>
+</iframe>
+
+    <!-- Nội dung Hero -->
+    <div class="hero-content">
+      <h1>Đêm Chạy Thành Phố</h1>
+      <p>Khởi đầu hành trình với tinh thần bứt phá</p>
+      <button>Tham gia ngay</button>
     </div>
-  </header>
+  </section>
 
-  <main class="container">
-    <!-- Hero -->
-    <section class="hero" aria-label="Giới thiệu">
-      <div class="hero-text">
-        <h1>Chào mừng đến với website đơn giản</h1>
-        <p>Trang này là mẫu HTML/CSS một trang (single page) gọn nhẹ — phù hợp để học hoặc dùng làm trang giới thiệu nhanh.</p>
-        <div class="hero-cta">
-          <a class="btn" href="#features">Xem tính năng</a>
-          <a class="card" href="#contact">Gửi phản hồi</a>
-        </div>
-      </div>
-      <div style="flex:0.9">
-        <div class="card">
-          <h2>Nội dung nổi bật</h2>
-          <p>Bạn có thể chỉnh sửa văn bản, thêm ảnh, hoặc gắn link tới các trang khác. Giữ cấu trúc và style riêng để dễ bảo trì.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Features -->
-    <section id="features">
-      <h2 style="margin-top:8px;margin-bottom:12px">Tính năng chính</h2>
-      <div class="features">
-        <div class="feature card">
-          <h3>Nhẹ & Nhanh</h3>
-          <p>Chỉ HTML/CSS/JS cơ bản — tải nhanh và dễ chỉnh sửa.</p>
-        </div>
-        <div class="feature card">
-          <h3>Responsive</h3>
-          <p>Đã tối ưu cho điện thoại và máy tính để bàn bằng media queries.</p>
-        </div>
-        <div class="feature card">
-          <h3>Dễ mở rộng</h3>
-          <p>Thêm component mới (section) rất dễ: copy + paste rồi sửa nội dung.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact" style="margin-top:20px">
-      <h2>Liên hệ</h2>
-      <div class="contact">
-        <div class="card">
-          <h3>Thông tin</h3>
-          <p>Email: ban@example.com</p>
-          <p>Điện thoại: 0123 456 789</p>
-        </div>
-        <form class="card" onsubmit="handleSubmit(event)">
-          <label style="display:block;margin-bottom:8px">Tên</label>
-          <input id="name" placeholder="Tên của bạn" required />
-          <label style="display:block;margin:12px 0 8px">Nội dung</label>
-          <textarea id="message" rows="4" placeholder="Viết tin nhắn..." required></textarea>
-          <div style="margin-top:12px;text-align:right">
-            <button type="submit">Gửi</button>
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <footer>
-      © " + new Date().getFullYear() + " - Website Đơn Giản. Tạo bởi bạn.
-    </footer>
-  </main>
-
-  <script>
-    // JS nhẹ: chặn submit demo và show alert
-    function handleSubmit(e){
-      e.preventDefault();
-      const name = document.getElementById('name').value.trim();
-      const msg = document.getElementById('message').value.trim();
-      if(!name || !msg){
-        alert('Vui lòng điền đủ thông tin.');
-        return;
-      }
-      alert('Cảm ơn ' + name + '! Tin nhắn của bạn đã được ghi nhận (demo).');
-      e.target.reset();
-    }
-  </script>
 </body>
 </html>
-
-
-<div class=""></div>

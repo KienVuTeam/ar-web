@@ -1,112 +1,78 @@
-<style>
-  .banner {
-    height: calc(100vh - 80px);
-    background: url("/img/ar-hero.jpg") center/cover no-repeat;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-  }
-  .banner::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.1515); /* tăng độ tối overlay từ 0.2 lên 0.45 */
-  }
-  .banner-content h2,
-  .banner-content p {
-    color: #fff; /* chữ trắng rõ ràng */
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85); /* bóng chữ đậm hơn */
-    font-weight: 700; /* chữ đậm */
-  }
-  .banner-content {
-    background: rgba(0, 0, 0, 0.17); /* nền mờ chỉ cho phần chữ */
-    position: relative;
-    z-index: 1;
-    max-width: 800px;
-    padding: 0 20px;
-  }
-  .banner-content h2 {
-    font-size: 3rem;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    animation: fadeInUp 1s ease forwards;
-  }
-  .banner-content p {
-    font-size: 1.2rem;
-    margin-bottom: 30px;
-    animation: fadeInUp 1.5s ease forwards;
-  }
-  .banner-content button {
-    background: #ffcc00;
-    border: none;
-    padding: 15px 30px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-    animation: fadeInUp 2s ease forwards;
-  }
-  .banner-content button:hover {
-    opacity: 1;
-    background: #ff9900;
-    transform: scale(1.05);
-  }
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  section {
-    padding: 80px 20px;
-    text-align: center;
-    background: #fff;
-    color: #333;
-  }
-  section h3 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-  section p {
-    font-size: 1rem;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-  
-</style>
+
 <% locals.f_data = hp.f_desc %>
-<div class="banner">
+<style>
+  #about{
+    background-image: url('/img/map-desktop.svg');
+    background-size: cover;          /* Ảnh phủ toàn bộ section */
+  background-position: center;     /* Căn giữa ảnh */
+  background-blend-mode: soft-light; /* hoặc soft-light, overlay */
+  /* opacity: 0.1; giảm độ rõ của họa tiết */
+  }
+</style>
+<div class="banner-hero">
+  <!-- 🔥 Video nền YouTube -->
+  <iframe
+    src="https://www.youtube.com/embed/Au6LqK1UH8g?autoplay=1&mute=1&controls=0&loop=1&playlist=Au6LqK1UH8g&modestbranding=1&showinfo=0"
+    frameborder="0"
+    allow="autoplay; fullscreen; encrypted-media"
+    allowfullscreen>
+  </iframe>
+
   <div class="banner-content">
     <h2><%=hp.hero_title%></h2>
-    <p>
-      <%-hp.hero_desc%>
-    </p>
-    <!-- Optimizing every race – from management, timing, to athlete experience. -->
-    <button onclick="scrollToSection('about')">Explore now</button>
+    <p><%-hp.hero_desc%></p>
+    <!-- <button onclick="scrollToSection('about')">Explore now</button> -->
   </div>
-</div> 
+</div>
 
-
-<section id="about">
+<section class="section-hero" id="about">
   <h3><%=hp.about_title%></h3>
-  <p>
-    <%-hp.about_desc%>
-    <!-- We bring comprehensive solutions for running events, combining
-    high-precision timing technology with an intelligent management platform.
-    From organization to race day, every detail is optimized to deliver a smooth
-    and professional experience for both organizers and participants. -->
-  </p>
+  <p><%-hp.about_desc%></p>
 </section>
-
+<style>
+  .my-card{
+    /* background-image: url('https://pace8.vn/assets/pace8vn/img/article.png') ; */
+    height: 250px;
+    width: 300px;
+    border: 1px solid #ccc;
+    position: relative;
+    z-index: 5;
+  }
+  .my-card img{
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+  }
+  .my-card::before {
+   content: "";
+  position: absolute;
+  inset: 0;
+  /* https://pace8.vn/assets/pace8vn/img/article.png */
+  /* /img/pattern_rbg.png */
+  background: url("/img/pattern_rbg.png");
+  background-size: contain;
+  opacity: 0.2;
+  mix-blend-mode: soft-light; /* hoặc overlay, soft-light */
+  pointer-events: none;
+  z-index: 0;
+}
+.my-container{
+  /* margin: 0 auto; */
+  display: flex;
+  justify-content: center;
+}
+</style>
+<div class="my-container">
+  <div class="my-card">
+  <div class="card-header">
+    <img src="/img/ar-hero.jpg" alt="">
+  </div>
+  <div class="card-body">
+    <p class="title">Title</p>
+    <p>Lorem ipsum dolor sit amet.</p>
+  </div>
+</div>
+</div>
 <!-- FontAwesome -->
 <link
   rel="stylesheet"
@@ -117,5 +83,4 @@
   function scrollToSection(id) {
     document.getElementById(id).scrollIntoView({ behavior: "smooth" });
   }
-  
 </script>

@@ -77,7 +77,7 @@
   body {
     padding: 0 20px;
   }
-  .my-card{
+  .my-card {
     padding: 20px;
     background-color: #fafafb;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -86,7 +86,6 @@
 <div class="modal fade" id="renderCertModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
-      
       <div class="modal-body text-center">
         <img src="" alt="Certificate" class="img-fluid rounded shadow" />
       </div>
@@ -149,7 +148,7 @@
         <div class="card-body">
           <h5 class="card-title">
             2.Excel File/<small
-              ><a href="/xlsx/VolunteerCert_Exemple.xlsx" download=""
+              ><a href="/xlsx/ECert_Exemple.xlsx" download=""
                 >Sample File</a
               ></small
             >
@@ -208,19 +207,45 @@
 </section>
 <!-- section content -->
 <section class="content">
-  <div class="ecert-header mt-2 my-card" style="text-align: left" >
-    <label for="" class="form-label d-flex justify-content-between">Title <button id="contest-edit" class="btn btn-warning">Edit</button></label>
-    <input class="form-control" id="ce_title" type="text" value="<%=(c&&c.title)?c.title:''%>">
+  <div class="ecert-header mt-2 my-card" style="text-align: left">
+    <label for="" class="form-label d-flex justify-content-between"
+      >Title
+      <button id="contest-edit" class="btn btn-warning">Edit</button></label
+    >
+    <input
+      class="form-control"
+      id="ce_title"
+      type="text"
+      value="<%=(c&&c.title)?c.title:''%>"
+    />
     <label for="" class="form-label">Desc</label>
-    <textarea name="" id="ce_desc"  class="form-control"><%=(c&&c.desc)?c.desc: "" %></textarea>
+    <textarea name="" id="ce_desc" class="form-control">
+<%=(c&&c.desc)?c.desc: "" %></textarea
+    >
     <label for="" class="form-label">Image</label>
-    <input class="form-control" type="file" name=""  id="ce_image">
+    <input class="form-control" type="file" name="" id="ce_image" />
     <div class="mt-1">
       <%if(c&&c.img_thumb){%>
-      <img src="<%=c.img_thumb%>" id="ce_imgpreview" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" >
-    <%}else{%>
-      <img src="" id="ce_imgpreview" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; display: none;" >
-    <%}%>
+      <img
+        src="<%=c.img_thumb%>"
+        id="ce_imgpreview"
+        alt=""
+        style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px"
+      />
+      <%}else{%>
+      <img
+        src=""
+        id="ce_imgpreview"
+        alt=""
+        style="
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 8px;
+          display: none;
+        "
+      />
+      <%}%>
     </div>
   </div>
   <!--  -->
@@ -260,9 +285,9 @@
       ajax: {
         url: `/admin/e-cert/data-table/${c_id}`,
         type: "POST",
-        data: function(d){
+        data: function (d) {
           return d;
-        }
+        },
       },
       columns: [
         { data: null, render: (data, type, row, meta) => meta.row + 1 },
@@ -283,7 +308,7 @@
       .querySelector("#cert-tbl tbody")
       .addEventListener("click", function (ev) {
         const cell = ev.target.closest("td:nth-child(2)");
-        console.log(cell)
+        console.log(cell);
         if (!cell) return;
         const row = cell.closest("tr");
         if (!row) return;
@@ -1022,40 +1047,42 @@
       },
     });
   }
-  document.querySelector('#contest-edit').addEventListener('click', function(ev){
-    // alert('helo')
-    const formData = new FormData();
-    formData.append('title', document.querySelector('#ce_title').value);
-    formData.append('desc', document.querySelector('#ce_desc').value);
-    formData.append('image', document.querySelector('#ce_image').files[0]);
-    formData.append('id', c_id)
-    $.ajax({
-      url: '/admin/e-cert/update-contest',
-      method: 'POST',
-      contentType: false,
-      processData: false,
-      data: formData,
-      success: (res)=>{
-        myNotification('Edit success', 'success')
-      },
-      error: (xhr, status, err)=>{
-        console.log(xhr.responseJSON?.mess);
-        myNotification('Server error', 'error');
-      }
-    })
-  });
-  document.getElementById('ce_image').addEventListener('change', (ev)=>{
+  document
+    .querySelector("#contest-edit")
+    .addEventListener("click", function (ev) {
+      // alert('helo')
+      const formData = new FormData();
+      formData.append("title", document.querySelector("#ce_title").value);
+      formData.append("desc", document.querySelector("#ce_desc").value);
+      formData.append("image", document.querySelector("#ce_image").files[0]);
+      formData.append("id", c_id);
+      $.ajax({
+        url: "/admin/e-cert/update-contest",
+        method: "POST",
+        contentType: false,
+        processData: false,
+        data: formData,
+        success: (res) => {
+          myNotification("Edit success", "success");
+        },
+        error: (xhr, status, err) => {
+          console.log(xhr.responseJSON?.mess);
+          myNotification("Server error", "error");
+        },
+      });
+    });
+  document.getElementById("ce_image").addEventListener("change", (ev) => {
     // debugger
-    const imgPreview = document.querySelector('#ce_imgpreview');
-    const file = document.getElementById('ce_image').files[0];
-    document.querySelector('#ce_imgpreview').style.display='block';
-    if(!file) return;
+    const imgPreview = document.querySelector("#ce_imgpreview");
+    const file = document.getElementById("ce_image").files[0];
+    document.querySelector("#ce_imgpreview").style.display = "block";
+    if (!file) return;
     const reader = new FileReader();
-    reader.onload= function(e){
+    reader.onload = function (e) {
       imgPreview.src = e.target.result;
-    }
+    };
     reader.readAsDataURL(file);
-  })
+  });
   //
   //toast
   function myNotification(mess, status, position = "center", time = 1500) {

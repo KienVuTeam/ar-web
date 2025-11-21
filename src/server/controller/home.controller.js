@@ -22,7 +22,7 @@ module.exports = () => {
     Index: async (req, res) => {
       //   var hp = await PageSettingEntity.findOne({ type: "home_page" });
       var hp = await HomePageHelper();
-      res.render("pages/home", {
+      res.render("pages/home3", {
         title: "Trang chu",
         hp: hp,
         f_data: hp?.f_desc || "",
