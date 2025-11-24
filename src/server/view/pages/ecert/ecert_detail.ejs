@@ -69,68 +69,11 @@
       align-items: center;
       gap: 6px;
     }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .marathon .content h1 {
-        font-size: 18px;
+    #ecert_tbl_wrapper div.dt-layout-start .dt-length select.form-select-sm, 
+      #ecert_tbl_wrapper div.dt-layout-end .dt-search input.form-control.form-control-sm{
+        font-size: 20px !important;
       }
-
-      .marathon .content p {
-        font-size: 13px;
-      }
-      .main-container{
-        width: calc(94% - 10px) !important;
-      }
-    }
-    /* ============================
-   MOBILE FONT OPTIMIZATION
-   ============================ */
-@media (max-width: 768px) {
-
-  /* Giảm cỡ chữ bảng */
-  #ecert_tbl_wrapper .dt-top-flex-fix {
-    font-size: 12px !important;
-  }
-
-  /* Giảm font của select length */
-  #ecert_tbl_wrapper .dt-length select {
-    font-size: 12px !important;
-    padding: 4px 6px !important;
-  }
-
-  /* Giảm font ô search */
-  #ecert_tbl_wrapper .dt-search input {
-    font-size: 12px !important;
-    height: 30px !important;
-    padding: 4px 8px !important;
-  }
-
-  /* Giảm font trong header */
-  #ecert_tbl thead th {
-    font-size: 11px !important;
-    padding: 10px 5px !important;
-  }
-
-  /* Giảm font body bảng */
-  #ecert_tbl tbody td {
-    font-size: 12px !important;
-    padding: 6px 4px !important;
-  }
-
-  /* Nút Ecert */
-  #ecert_tbl button {
-    font-size: 11px !important;
-    padding: 4px 6px !important;
-  }
-
-  /* Icon nhỏ hơn */
-  #ecert_tbl img.btn-cert {
-    width: 22px !important;
-    height: 22px !important;
-  }
-}
-
+    
     /* css */
     .table-box {
       background: #fff;
@@ -185,7 +128,72 @@
   transition: background-color 0.4s ease;
   /* box-shadow: inset 0 0 0 2px #26c6da; */
 }
+/* search */
+.search-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto 20px auto;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  padding: 4px 12px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
 
+.search-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 30px;
+  background: transparent;
+}
+
+.search-box button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #666;
+  padding: 6px 10px;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.search-box button:hover {
+  background: #f0f0f0;
+}
+/* can giua text */
+#ecert_tbl  th, #ecert_tbl td{
+  text-align: center !important;
+}
+#ecert_tbl thead th, #ecert_tbl tbody, td{
+  font-size: 15px;
+}
+/* Responsive */
+    @media (max-width: 768px) {
+      .marathon .content h1 {
+        font-size: 18px;
+      }
+
+      .marathon .content p {
+        font-size: 13px;
+      }
+      .main-container{
+        width: calc(94% - 10px) !important;
+      }
+      #ecert_tbl_wrapper div.dt-layout-start .dt-length select.form-select-sm, 
+      #ecert_tbl_wrapper div.dt-layout-end .dt-search input.form-control.form-control-sm{
+        font-size: 15px !important;
+      }
+      #ecert_tbl thead th, #ecert_tbl tbody, td{
+  font-size: 10px !important;
+}
+    }
 </style>
 
 <!-- NEW -->
@@ -329,53 +337,36 @@
 myDataTable.on('init', function() {
   console.log('✅ DataTable đã khởi tạo xong!');
   // new
-  const wrapper = document.querySelector('#ecert_tbl_wrapper');
-  if (!wrapper) return;
-
-  const dtLength = wrapper.querySelector('.dt-length');
-  const dtSearch = wrapper.querySelector('.dt-search');
-
-  // Nếu không có thì dừng
-  if (!dtLength || !dtSearch) return;
-
-  // Tạo wrapper mới chứa cả 2 thành phần
-  let topFlex = document.createElement("div");
-  topFlex.className = "dt-top-flex-fix";
-
-  // Chèn wrapper mới vào đúng vị trí
-  dtLength.parentNode.insertBefore(topFlex, dtLength);
-
-  // Nhét length + search vào trong wrapper mới
-  topFlex.appendChild(dtLength);
-  topFlex.appendChild(dtSearch);
-
-  // Ép layout flex
-  Object.assign(topFlex.style, {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    marginBottom: "10px",
-    flexWrap: "nowrap"
-  });
-
-  // Thu gọn ô search trên mobile
-  const input = dtSearch.querySelector("input");
-  if (input) {
-    input.style.maxWidth = "140px";
-    input.style.width = "140px";
-  }
-
-  // Ẩn label length + search
-  const lbl1 = dtLength.querySelector("label");
-  const lbl2 = dtSearch.querySelector("label");
-  if (lbl1) lbl1.style.display = "none";
-  if (lbl2) lbl2.style.display = "none";
-
-  // Ẩn info phía dưới
-  const info = wrapper.querySelector('.dt-info');
-  if (info) info.style.display = "none";
+//   document.querySelector('#ecert_tbl_wrapper div:first-child').style.cssText = `
+//     display: flex;
+//     justify-content: space-around !important;
+// `;
+// document.querySelector('#ecert_tbl_wrapper .row >*').style.cssText =`
+//   width: auto !important;
+//   max-width: none !important;
+// `
+document.querySelector('#ecert_tbl_wrapper .row.mt-2').style.cssText=`
+  display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    padding: 10px 0;
+`
+document.querySelector('#ecert_tbl_wrapper .row.mt-2 > div').style.cssText=`
+  width: auto !important;
+    max-width: none !important;
+    flex: 0 0 auto !important;
+`
+// document.querySelector('#ecert_tbl_wrapper div.dt-layout-start .dt-length select.form-select-sm')
+//     .style.cssText = `
+//         font-size: 20px !important;
+//     `;
+//     document.querySelector('#ecert_tbl_wrapper div.dt-layout-end .dt-search input.form-control-sm')
+//     .style.cssText = `
+//         font-size: 20px !important;
+//     `;
   //old
+  document.querySelector('#ecert_tbl_wrapper div.dt-layout-end').style.width="auto"
   document.querySelector('#ecert_tbl_wrapper div.dt-length label').style.display='none';
 document.querySelector('#ecert_tbl_wrapper div.dt-search input').placeholder='Name'
   const elSearch = document.querySelector('#ecert_tbl_wrapper div.dt-search label');

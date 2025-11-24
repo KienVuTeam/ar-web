@@ -48,7 +48,7 @@ function uploadEcertImage() {
     },
     filename: (req, file, cb) => {
       // console.log(file);
-      const uniqueName = Date.now() + "-" + file.originalname;
+      const uniqueName = Date.now() + "-" + file.originalname.toLowerCase();
       cb(null, uniqueName);
     },
   });
@@ -137,34 +137,6 @@ class ECertController {
       res.status(500).json({ success: false, mess: "Lỗi server" });
     }
   }
-  // async AddContest(req, res) {
-  //   try {
-  //     // uploadEcertImage().single('image')(req, res,async (err)=>{
-  //     //   if(err){
-  //     //     return res.status(400).json({success: false, mess: err.message})
-  //     //   }
-  //     // })
-  //     // start
-  //     const upload = uploadEcertImage().single('image');//khoi tao
-  //     upload(req, res, async(err)=>{
-  //       if(err){
-  //         return res.status(400).json({success: false, mess: err.message})
-  //       }
-  //     });
-  //     const file = req.file;
-  //     console.log(file)
-  //     const { name, desc } = req.body;
-  //     const cp = new CertificatePositionEntity({
-  //       title: name,
-  //       desc: desc,
-  //     });
-  //     // await cp.save();
-  //     res.json({ success: true, mess: "tao contest thanh cong" });
-  //   } catch (error) {
-  //     console.log(CNAME + error);
-  //     res.status(500).json({ success: false, mess: error.message });
-  //   }
-  // }
   async AddContest(req, res) {
     const upload = uploadEcertImage().single("image"); // Khởi tạo multer
 
@@ -226,6 +198,8 @@ class ECertController {
         }
         const { title, desc, id } = req.body;
         const file = req.file;
+        console.log("file: ",file)
+        console.log('A');
         const isExitThumb = await CertificatePositionEntity.findOne({
           _id: id,
         }).lean();
@@ -253,7 +227,7 @@ class ECertController {
           { $set: cpDTO },
           { upsert: true },
         );
-        console.log(result);
+        // console.log(result);
         res.json({ success: true });
       });
     } catch (error) {

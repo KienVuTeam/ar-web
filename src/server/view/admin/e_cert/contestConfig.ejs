@@ -210,7 +210,7 @@
   <div class="ecert-header mt-2 my-card" style="text-align: left">
     <label for="" class="form-label d-flex justify-content-between"
       >Title
-      <button id="contest-edit" class="btn btn-warning">Edit</button></label
+      <button id="contest-edit" class="btn btn-warning">Update card</button></label
     >
     <input
       class="form-control"
@@ -1051,6 +1051,11 @@
     .querySelector("#contest-edit")
     .addEventListener("click", function (ev) {
       // alert('helo')
+      const file = document.querySelector("#ce_image").files[0];
+      if(!file){
+        myNotification('No file upload !', 'warning');
+        return; 
+      }
       const formData = new FormData();
       formData.append("title", document.querySelector("#ce_title").value);
       formData.append("desc", document.querySelector("#ce_desc").value);
