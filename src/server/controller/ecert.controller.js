@@ -134,9 +134,11 @@ module.exports = () => {
       // const bgPath = path.join(pathConfig.root, bgUrlImage);\
       const bgPath = pathConfig.root + bgUrlImage;
       // 🔹 Load font
+      // C:\Workspaces\Nodejs\access-race\src\public\font\blona\Blona-Regular.ttf
+      //"src/public/font/AlexBrush-Regular.ttf",
       const fontPath = path.join(
         pathConfig.root,
-        "src/public/font/AlexBrush-Regular.ttf",
+        "src/public/font/blona/Blona-Regular.ttf",
       );
       if (!fs.existsSync(fontPath)) {
         throw new Error("Font file not found: " + fontPath);
