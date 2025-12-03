@@ -28,7 +28,6 @@ app.use(
     },
   }),
 );
-console.log("aaa", process.env.MONGO_URI)
 // Cấu hình EJS
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "view"));
@@ -49,7 +48,7 @@ app.use("/uploads", express.static(uploadDir));
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
-console.log("path: " + uploadDir);
+// console.log("path: " + uploadDir);
 
 route(app);
 

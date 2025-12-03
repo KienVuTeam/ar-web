@@ -119,10 +119,11 @@ module.exports = () => {
       const idUser = req.query.uid;
       const idContest = req.query.cid;
       console.log(idUser, idContest);
-      console.log(idUser, idContest);
       const certConfig = await CertificatePositionEntity.findOne({
         slug: idContest,
       }).lean();
+      var isCamau = idContest ==="gia-lai-city-trail-2025-1763710004523"
+      console.log('isCamau right: ', isCamau);
       // console.log(certConfig)
       const bgUrlImage = "src/public" + certConfig.img_path;
       const certUser = await CertificateDataEntity.findOne({
@@ -136,13 +137,25 @@ module.exports = () => {
       // 🔹 Load font
       // C:\Workspaces\Nodejs\access-race\src\public\font\blona\Blona-Regular.ttf
       //"src/public/font/AlexBrush-Regular.ttf",
-      const fontPath = path.join(
+      let fontPath =""
+      if(isCamau){
+        fontPath = path.join(
+        pathConfig.root,
+        "src/public/font/BarlowCondensed-MediumItalic.ttf",
+      );
+      if (!fs.existsSync(fontPath)) {
+        throw new Error("Font file not found: " + fontPath);
+      }
+      }else{
+        fontPath = path.join(
         pathConfig.root,
         "src/public/font/blona/Blona-Regular.ttf",
       );
       if (!fs.existsSync(fontPath)) {
         throw new Error("Font file not found: " + fontPath);
       }
+      }
+      
       //
       try {
         const fakeData = certUser;
